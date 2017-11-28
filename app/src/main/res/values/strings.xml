@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">MyDemoApp</string>
+    <string name="description">Indian captain Sunil Chettri said that the entire team was jumping when Jeakson Singh scored a goal against Colombia in the FIFA U-17 World Cup. Jeaksons goal took the Indian under 17 side on level terms with Colombia momentarily before conceding just a minute late. I was jumping, man! We all were jumping! said Chettri.</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+
+    <string-array name="event_type">
+        <item>Holiday</item>
+        <item>Exam</item>
+        <item>Curricular</item>
+    </string-array>
+
+    <string-array name="class_type">
+        <item>All</item>
+        <item>1st</item>
+        <item>2nd</item>
+        <item>4th</item>
+        <item>5th</item>
+        <item>6th</item>
+        <item>7th</item>
+        <item>8th</item>
+        <item>9th</item>
+        <item>10th</item>
+    </string-array>
+
+    <string-array name="image_type">
+        <item>News Feed</item>
+        <item>Blog</item>
+        <item>Achievement</item>
+        <item>Gallery</item>
+        <item>Staff Information</item>
+        <item>School Facilities</item>
+    </string-array>
+
+
+</resources>

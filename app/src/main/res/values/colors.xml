@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#af3a40</color>
+    <color name="colorPrimaryDark">#8c080f</color>
+    <color name="colorAccent">#424242</color>
+    <color name="textcolor">#616161</color>
+    <color name="social_bar_color">#4d4d4d</color>
+
+    <bool name="default_circle_indicator_centered">true</bool>
+    <color name="default_circle_indicator_fill_color">#FFFFFFFF</color>
+    <color name="default_circle_indicator_page_color">#00000000</color>
+    <integer name="default_circle_indicator_orientation">0</integer>
+    <dimen name="default_circle_indicator_radius">3dp</dimen>
+    <bool name="default_circle_indicator_snap">false</bool>
+    <color name="default_circle_indicator_stroke_color">#FFDDDDDD</color>
+    <color name="deselected_pager">#a8a9ad</color>
+    <dimen name="default_circle_indicator_stroke_width">1dp</dimen>
+    <color name="cluster_bg">#FAB200</color>
+    <color name="help_search_bg_color">#f4f4f4</color>
+    <color name="header_color">#4b4b4b</color>
+    <color name="disable_btn_color">#efcd6f</color>
+    <color name="printflow_background_color">#dedede</color>
+    <color name="green">#8FCC85</color>
+    <color name="blue">#ff33b5e5</color>
+    <color name="white">#ffffff</color>
+    <color name="bottom_bar">#4c4c4c</color>
+</resources>
