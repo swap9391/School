@@ -2,7 +2,6 @@ package com.exa.mydemoapp.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +15,7 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.NewsFeedsAdapter;
+import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,10 +33,11 @@ import java.util.Map;
  * Created by midt-006 on 6/9/17.
  */
 
-public class NewsFeedFragment extends Fragment {
+public class NewsFeedFragment extends CommonFragment {
 
     final List<ImageRequest> questionList = new ArrayList<>();
     public NewsFeedsAdapter mAdapter;
+    @ViewById(R.id.recyclerView)
     private RecyclerView recyclerView;
     List<String> albumNames;
     private ArrayList<ImageRequest> AllImages;
@@ -54,8 +55,7 @@ public class NewsFeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_news_feed, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-
+        initViewBinding(view);
         Bundle bundle = getArguments();
         feed = bundle.getString("FEED");
         albumNames = new ArrayList<>();

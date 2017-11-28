@@ -77,12 +77,14 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     ImageRequest imageRequest;
     LocationUpdateService myservice;
     private boolean bound = false;
-    TextView lat, longit;
     View view;
     boolean isEdit = false;
     List<String> listEventType;
     ArrayList<ImageRequest> imageRequestArrayList;
-
+    @ViewById(R.id.lattitude)
+    TextView lat;
+    @ViewById(R.id.longitude)
+    TextView longit;
     @ViewById(R.id.edt_title)
     private EditText edt_title;
     @ViewById(R.id.edt_description)
@@ -105,8 +107,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         getMyActivity().toolbar.setTitle("Upload Photo");
         getMyActivity().init();
         initViewBinding(view);
-        lat = (TextView) view.findViewById(R.id.lattitude);
-        longit = (TextView) view.findViewById(R.id.longitude);
 
         listEventType = Arrays.asList(getResources().getStringArray(R.array.image_type));
         ArrayAdapter<String> eventAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listEventType);

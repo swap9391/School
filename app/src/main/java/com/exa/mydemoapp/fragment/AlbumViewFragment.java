@@ -2,7 +2,6 @@ package com.exa.mydemoapp.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +15,7 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
+import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,9 +33,10 @@ import java.util.Map;
  * Created by midt-006 on 21/8/17.
  */
 
-public class AlbumViewFragment extends Fragment {
+public class AlbumViewFragment extends CommonFragment {
     private ArrayList<ImageRequest> images;
     private GalleryAdapter mAdapter;
+    @ViewById(R.id.recycler_view)
     private RecyclerView recyclerView;
     View view;
     ProgressDialog progressDialog;
@@ -52,7 +53,7 @@ public class AlbumViewFragment extends Fragment {
         view = inflater.inflate(R.layout.layout_gallery, container, false);
         getMyActivity().toolbar.setTitle("Image Album");
         getMyActivity().init();
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        initViewBinding(view);
         images = new ArrayList<>();
         if (Connectivity.isConnected(getMyActivity())) {
             progressDialog = new ProgressDialog(getMyActivity());
