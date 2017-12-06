@@ -10,7 +10,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -18,16 +17,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.andreabaccega.googlshortenerlib.GooglShortenerRequestBuilder;
-import com.andreabaccega.googlshortenerlib.GooglShortenerResult;
-import com.andreabaccega.googlshortenerlib.GoogleShortenerPerformer;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,12 +35,14 @@ import java.util.List;
 public class CommonActivity extends AppCompatActivity {
     public DatabaseReference databaseReference;
     public StorageReference mStorageRef;
+    public FirebaseFirestore db;
 
     public void init() {
         // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+       // databaseReference = FirebaseDatabase.getInstance().getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
+        db = FirebaseFirestore.getInstance();
 
     }
 
@@ -138,45 +135,6 @@ public class CommonActivity extends AppCompatActivity {
     }
 
 
-    class Retrievedata extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                //Your code
-                GoogleShortenerPerformer shortener = new GoogleShortenerPerformer(new OkHttpClient());
-
-                String longUrl = "http://www.andreabaccega.com/";
-
-                GooglShortenerResult result = shortener.shortenUrl(
-                        new GooglShortenerRequestBuilder()
-                                .buildRequest(longUrl)
-                );
-
-                if (GooglShortenerResult.Status.SUCCESS.equals(result.getStatus())) {
-                    // all ok result.getShortenedUrl() contains the shortened url!
-                } else if (GooglShortenerResult.Status.IO_EXCEPTION.equals(result.getStatus())) {
-                    // connectivity error. result.getException() returns the thrown exception while performing
-                    // the request to google servers!
-                } else {
-                    // Status.RESPONSE_ERROR
-                    // this happens if google replies with an unexpected response or if there are some other issues processing
-                    // the result.
-
-                    // result.getException() contains a GooglShortenerException containing a message that can help resolve the issue!
-                }
-            } catch (Exception e) {
-
-            }
-            return null;
-        }
-    }
-
-    public void shorten() {
-
-        Retrievedata retrievedata = new Retrievedata();
-        retrievedata.execute((String[]) null);
-
-    }
 
     public void deleteFirebaseFile(String url) {
         StringBuilder builder = new StringBuilder();
