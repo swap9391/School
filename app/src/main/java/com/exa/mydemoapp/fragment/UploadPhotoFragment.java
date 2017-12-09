@@ -49,9 +49,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -71,6 +73,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
     Uri fileView;
     List<Uri> imglist = new ArrayList<>();
+    List<String> imageUrlList = new ArrayList<>();
     private int REQUEST_CAMERA = 101, PICK_IMAGE = 102;
     Uri imageUri;
     int count = 0;
@@ -154,10 +157,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                     e.printStackTrace();
                 }
 
-               /* if (check()) {
-                    //startCamera();
-                    picfromGallery();
-                }*/
+               // firestoreDemo();
 
             }
         });
@@ -222,7 +222,9 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                         // Get a URL to the uploaded content
                         Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
                         imageRequest.setImg(downloadUrl.toString());
-                        saveUserInformation();
+                        imageUrlList.add(downloadUrl.toString());
+                        //saveUserInformation();
+                        firestoreDemo();
                         progressDialog.dismiss();
                         Log.e("Result", "");
                         imglist.remove(0);
@@ -472,7 +474,8 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 if (!isEdit && imglist.size() > 0) {
                     uploadImage();
                 } else {
-                    saveUserInformation();
+                    //saveUserInformation();
+                    firestoreDemo();
                 }
                 break;
             case R.id.action_gallery:
@@ -577,5 +580,49 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
      }*/
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();
+    }
+
+    private void firestoreDemo() {
+        DocumentReference ref = getMyActivity().db.collection("my_collection").document();
+        String uniqueid = ref.getId();
+        Gson gson = new Gson();
+        bindModel();
+        imageRequest.setImageUrl(imageUrlList);
+        imageRequest.setUniqKey(uniqueid);
+        String json = gson.toJson(imageRequest);
+        Map<String, Object> hashMap = new HashMap<>();
+        hashMap = (Map<String, Object>) gson.fromJson(json, hashMap.getClass());
+      /*  if (!isEdit) {
+            Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+        } else {
+            bindModel();
+            for (ImageRequest imageRequest1 : imageRequestArrayList) {
+                imageRequest.setUniqKey(imageRequest1.getUniqKey());
+                getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
+                Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+            }
+            isEdit = false;
+            if (imglist.size() > 0) {
+                uploadImage();
+            }
+
+        }
+
+*/
+        getMyActivity().db.collection("cities").document("LA")
+                .set(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                        Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
     }
 }
