@@ -24,7 +24,7 @@ public class RequiredFieldException extends ShowableException {
     }
 
     public String toString() {
-        String msg = fieldName + " cannot be null";
+        String msg = fieldName;
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
         return msg;
     }

@@ -1,23 +1,30 @@
 package com.exa.mydemoapp.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.HomeGridAdapter;
+import com.exa.mydemoapp.annotation.ViewById;
+
+import java.util.Random;
 
 /**
  * Created by midt-006 on 4/10/17.
  */
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends CommonFragment {
     View view;
+    @ViewById(R.id.grid_view)
     GridView gridview;
+    @ViewById(R.id.image)
+    ImageView imageView;
 
     public static String[] osNameList = {
             "About School",
@@ -56,8 +63,7 @@ public class DashboardFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_dashboard, container, false);
         getMyActivity().toolbar.setTitle("Home");
-
-        gridview = (GridView) view.findViewById(R.id.grid_view);
+        initViewBinding(view);
         gridview.setAdapter(new HomeGridAdapter(getMyActivity(), osNameList, osImages));
 
      /*   ((Button) view.findViewById(R.id.btnUpload)).setOnClickListener(this);
@@ -75,43 +81,47 @@ public class DashboardFragment extends Fragment {
     }
 
 
-   /* @Override
-    public void onClick(View view) {
-        Bundle bundle = new Bundle();
-        switch (view.getId()) {
-            case R.id.btnUpload:
-                getMyActivity().showFragment(new UploadPhotoFragment(), null);
-                break;
-            case R.id.btnAlbum:
-                getMyActivity().showFragment(new AlbumViewFragment(), null);
-                break;
-            case R.id.btnNewsFeed:
-                bundle.putString("FEED", "News Feed");
-                getMyActivity().showFragment(new NewsFeedFragment(), bundle);
-                break;
-            case R.id.btnArchivement:
-                bundle.putString("FEED", "Achievement");
-                getMyActivity().showFragment(new NewsFeedFragment(), bundle);
-                break;
-            case R.id.btnBlog:
-                bundle.putString("FEED", "Blog");
-                getMyActivity().showFragment(new NewsFeedFragment(), bundle);
-                break;
-            case R.id.btnFacilities:
-                bundle.putString("FEED", "School Facilities");
-                getMyActivity().showFragment(new NewsFeedFragment(), bundle);
-                break;
-            case R.id.btnCalender:
-                getMyActivity().showFragment(new CalenderViewFragment(), null);
-                break;
-            case R.id.btnAnnualEvent:
-                getMyActivity().showFragment(new AnnualEventFragment(), null);
-                break;
+    /* @Override
+     public void onClick(View view) {
+         Bundle bundle = new Bundle();
+         switch (view.getId()) {
+             case R.id.btnUpload:
+                 getMyActivity().showFragment(new UploadPhotoFragment(), null);
+                 break;
+             case R.id.btnAlbum:
+                 getMyActivity().showFragment(new AlbumViewFragment(), null);
+                 break;
+             case R.id.btnNewsFeed:
+                 bundle.putString("FEED", "News Feed");
+                 getMyActivity().showFragment(new NewsFeedFragment(), bundle);
+                 break;
+             case R.id.btnArchivement:
+                 bundle.putString("FEED", "Achievement");
+                 getMyActivity().showFragment(new NewsFeedFragment(), bundle);
+                 break;
+             case R.id.btnBlog:
+                 bundle.putString("FEED", "Blog");
+                 getMyActivity().showFragment(new NewsFeedFragment(), bundle);
+                 break;
+             case R.id.btnFacilities:
+                 bundle.putString("FEED", "School Facilities");
+                 getMyActivity().showFragment(new NewsFeedFragment(), bundle);
+                 break;
+             case R.id.btnCalender:
+                 getMyActivity().showFragment(new CalenderViewFragment(), null);
+                 break;
+             case R.id.btnAnnualEvent:
+                 getMyActivity().showFragment(new AnnualEventFragment(), null);
+                 break;
 
 
-        }
+         }
 
-    }*/
+     }*/
+    public int getRandomColor() {
+        Random rnd = new Random();
+        return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+    }
 
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();

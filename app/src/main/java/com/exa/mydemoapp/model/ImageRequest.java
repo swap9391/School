@@ -13,7 +13,6 @@ import java.util.List;
 public class ImageRequest implements Serializable {
     @Required(message = "Place Name")
     private String placeName;
-    @Required
     private String description;
     private String rating;
     private String visiblity;

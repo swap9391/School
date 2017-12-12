@@ -15,16 +15,20 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 
+import com.exa.mydemoapp.annotation.ViewById;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +44,7 @@ public class CommonActivity extends AppCompatActivity {
     public void init() {
         // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
-       // databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         db = FirebaseFirestore.getInstance();
 
@@ -154,5 +158,28 @@ public class CommonActivity extends AppCompatActivity {
                 CommonUtils.showToast(CommonActivity.this, exception.getMessage());
             }
         });
+    }
+
+    protected void initViewBinding(View fragmentView) {
+        Field[] fields = this.getClass().getDeclaredFields();
+        if (fields != null && fields.length > 0) {
+            for (Field field : fields) {
+                ViewById viewById = field.getAnnotation(ViewById.class);
+                if (viewById != null) {
+                    View view = fragmentView.findViewById(viewById.value());
+                    field.setAccessible(true);
+                    try {
+                       /* if (view instanceof MaterialSpinner) {
+                            MaterialSpinner materialSpinner = (MaterialSpinner) view;
+                            materialSpinner.setBackground(getActivity().getResources().getDrawable(R.drawable.textview_border));
+                        }*/
+                        field.set(this, view);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
     }
 }

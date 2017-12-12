@@ -33,5 +33,21 @@
         <item>School Facilities</item>
     </string-array>
 
+    <string-array name="school_name">
+        <item>New English school</item>
+        <item>Ideal School</item>
+        <item>Indira School</item>
+        <item>Gallery</item>
+        <item>Staff Information</item>
+        <item>School Facilities</item>
+    </string-array>
+
+    <string-array name="division_name">
+        <item>A Division</item>
+        <item>B Division</item>
+        <item>C Division</item>
+        <item>D Division</item>
+    </string-array>
+
 
 </resources>
