@@ -43,7 +43,6 @@ public class CommonActivity extends AppCompatActivity {
 
     public void init() {
         // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         db = FirebaseFirestore.getInstance();
