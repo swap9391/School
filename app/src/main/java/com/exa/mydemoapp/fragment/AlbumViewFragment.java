@@ -60,6 +60,8 @@ public class AlbumViewFragment extends CommonFragment {
             progressDialog.setTitle("Loading...");
             progressDialog.show();
             getImageData();
+        }else {
+            getMyActivity().showToast("Please Connect to internet !!");
         }
         return view;
     }

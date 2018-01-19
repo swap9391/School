@@ -33,15 +33,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.FloatingActionButton;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
-import com.exa.mydemoapp.annotation.RequiredFieldException;
-import com.exa.mydemoapp.annotation.Validator;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
-import com.exa.mydemoapp.model.LocationRequest;
+import com.exa.mydemoapp.model.LocationModel;
 import com.exa.mydemoapp.service.LocationUpdateService;
 import com.exa.mydemoapp.service.ServiceCallbacks;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -60,8 +59,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Swapnil Jadhav on 3/8/17.
@@ -144,7 +141,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 //perform click
                 bindModel();
 
-                try {
+              /*  try {
                     if (Validator.validateForNulls(imageRequest, getMyActivity())) {
                         // Do something that you want to
                         Log.d(TAG, "Validations Successful");
@@ -152,12 +149,12 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 } catch (RequiredFieldException | ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
                     // Inform user about his SINS
                     e.printStackTrace();
-                }
+                }*/
 
-               /* if (check()) {
+                if (check()) {
                     //startCamera();
                     picfromGallery();
-                }*/
+                }
 
             }
         });
@@ -462,6 +459,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Add your menu entries here
         inflater.inflate(R.menu.menu_save_info, menu);
+        menu.findItem(R.id.action_gallery).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -469,10 +467,14 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                if (!isEdit && imglist.size() > 0) {
-                    uploadImage();
+                if (Connectivity.isConnected(getMyActivity())) {
+                    if (!isEdit && imglist.size() > 0) {
+                        uploadImage();
+                    } else {
+                        saveUserInformation();
+                    }
                 } else {
-                    saveUserInformation();
+                    getMyActivity().showToast("Please Connect to internet !!");
                 }
                 break;
             case R.id.action_gallery:
@@ -515,18 +517,18 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         getMyActivity().databaseReference.child("location_db").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, LocationRequest> td = new HashMap<String, LocationRequest>();
+                Map<String, LocationModel> td = new HashMap<String, LocationModel>();
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    LocationRequest locationRequest = Snapshot.getValue(LocationRequest.class);
-                    lat.setText(locationRequest.getLattitude().toString());
-                    longit.setText(locationRequest.getLongitude().toString());
-                    td.put(Snapshot.getKey(), locationRequest);
+                    LocationModel locationModel = Snapshot.getValue(LocationModel.class);
+                    lat.setText(locationModel.getLattitude().toString());
+                    longit.setText(locationModel.getLongitude().toString());
+                    td.put(Snapshot.getKey(), locationModel);
                 }
 
-                ArrayList<LocationRequest> values = new ArrayList<>(td.values());
+                ArrayList<LocationModel> values = new ArrayList<>(td.values());
                 List<String> keys = new ArrayList<String>(td.keySet());
 
-                for (LocationRequest job : values) {
+                for (LocationModel job : values) {
                     Log.d("firebase", job.getLattitude().toString());
                 }
             }

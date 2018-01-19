@@ -2,13 +2,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:gravity="center"
+    android:padding="10dp">
+
+    <EditText
+        android:id="@+id/txt_van_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Van Type"
+        android:maxLength="15" />
 
     <Button
-        android:text="Login With Pinterest"
-        android:layout_width="wrap_content"
-        android:layout_centerInParent="true"
+        android:id="@+id/btn_start_drive"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/login"/>
+        android:layout_below="@+id/txt_van_type"
+        android:background="@color/colorPrimary"
+        android:text="Start Drive"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/btn_stop_drive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_start_drive"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
+        android:text="Stop Drive"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

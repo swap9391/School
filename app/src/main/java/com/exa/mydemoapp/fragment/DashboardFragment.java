@@ -1,19 +1,23 @@
 package com.exa.mydemoapp.fragment;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
+import com.exa.mydemoapp.LoginActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.HomeGridAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
-
-import java.util.Random;
 
 /**
  * Created by midt-006 on 4/10/17.
@@ -37,7 +41,8 @@ public class DashboardFragment extends CommonFragment {
             "Community",
             "Staff Information",
             "Upload Image",
-            "Annual Event"
+            "Annual Event",
+            "Bus Location"
     };
     public static int[] osImages = {
             R.drawable.ic_about_school,
@@ -50,12 +55,15 @@ public class DashboardFragment extends CommonFragment {
             R.drawable.ic_community,
             R.drawable.ic_teacher,
             R.drawable.ic_paren_student,
-            R.drawable.ic_paren_student
+            R.drawable.ic_paren_student,
+            R.drawable.icon_bus_location
     };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -63,6 +71,7 @@ public class DashboardFragment extends CommonFragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_dashboard, container, false);
         getMyActivity().toolbar.setTitle("Home");
+
         initViewBinding(view);
         gridview.setAdapter(new HomeGridAdapter(getMyActivity(), osNameList, osImages));
 
@@ -118,12 +127,28 @@ public class DashboardFragment extends CommonFragment {
          }
 
      }*/
-    public int getRandomColor() {
-        Random rnd = new Random();
-        return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-    }
 
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_logout, menu);
+        //menu.findItem(R.id.action_gallery).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                CommonUtils.removeSharePref(Constants.USER_NAME, getMyActivity());
+                Intent intent = new Intent(getMyActivity(), LoginActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
+
     }
 }

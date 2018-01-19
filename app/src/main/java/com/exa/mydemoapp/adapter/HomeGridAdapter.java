@@ -1,6 +1,7 @@
 package com.exa.mydemoapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +9,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.exa.mydemoapp.HomeActivity;
+import com.exa.mydemoapp.MapsActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.UpdateBusLocation;
+import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
@@ -85,7 +88,7 @@ public class HomeGridAdapter extends BaseAdapter {
                 Bundle bundle = new Bundle();
                 switch (position) {
                     case 0:
-                        Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_SHORT).show();
+                        context.showFragment(new AboutSchoolFragment(), null);
                         break;
                     case 1:
                         bundle.putString("FEED", "School Facilities");
@@ -113,13 +116,19 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new CommunityFragment(), null);
                         break;
                     case 8:
-                        Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_SHORT).show();
+                        Intent intent1 = new Intent(context, MapsActivity.class);
+                        context.startActivity(intent1);
                         break;
                     case 9:
                         context.showFragment(new UploadPhotoFragment(), null);
                         break;
                     case 10:
                         context.showFragment(new AnnualEventFragment(), null);
+                        break;
+                    case 11:
+                        Intent intent = new Intent(context, UpdateBusLocation.class);
+                        context.startActivity(intent);
                         break;
                 }
             }

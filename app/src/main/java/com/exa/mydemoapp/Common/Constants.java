@@ -6,10 +6,16 @@ package com.exa.mydemoapp.Common;
 
 public interface Constants {
 
-    public static String MAIN_TABLE="SCHOOLDATA";
-    public static String IMAGE_TABLE="IMAGETABLE";
-    public static String EVENT_TABLE="EVENTTABLE";
-    public static String STUDENT="STUDENT";
-    public static String COMMUNITY_TABLE="COMMUNITY_TABLE";
-    public static String DATE_FORMAT="dd-MM-yyyy hh:mm";
+    public static String MAIN_TABLE = "SCHOOLDATA";
+    public static String IMAGE_TABLE = "IMAGETABLE";
+    public static String EVENT_TABLE = "EVENTTABLE";
+    public static String STUDENT = "STUDENT";
+    public static String LOCATION_TABLE = "LOCATION_TABLE";
+    public static String COMMUNITY_TABLE = "COMMUNITY_TABLE";
+    public static String DATE_FORMAT = "dd-MM-yyyy hh:mm";
+    public static String USER_NAME = "USER_NAME";
+    public static String LAST_VAN_TYPE = "LAST_VAN_TYPE";
+    public static int UPDATE_INTERVAL = 3000; // 3 sec
+    public static int FATEST_INTERVAL = 3000; // 5 sec
+    public static int DISPLACEMENT = 10; // 10 meters
 }

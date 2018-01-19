@@ -107,6 +107,8 @@ public class CalenderViewFragment extends Fragment {
         // Attach to the activity
         if (Connectivity.isConnected(getMyActivity())) {
             getData();
+        }else {
+            getMyActivity().showToast("Please Connect to internet !!");
         }
         // Setup listener
         final CaldroidListener listener = new CaldroidListener() {
@@ -129,6 +131,8 @@ public class CalenderViewFragment extends Fragment {
                 countWeekendDays(year, month);
                 if (Connectivity.isConnected(getMyActivity())) {
                     getData();
+                }else {
+                    getMyActivity().showToast("Please Connect to internet !!");
                 }
             }
 

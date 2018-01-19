@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.exa.mydemoapp.Common.CommonActivity;
+import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
@@ -42,6 +43,8 @@ public class HomeActivity extends CommonActivity {
     public SlideshowDialogFragment slideshowDialogFragment;
     public UploadPhotoFragment uploadPhotoFragment;
     public CommunityFragment communityFragment;
+    public AboutSchoolFragment aboutSchoolFragment;
+    public ProfileFragment profileFragment;
     public List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
     public boolean isGallery = true;
 
@@ -97,26 +100,23 @@ public class HomeActivity extends CommonActivity {
 
         if (dashboardFragment != null && dashboardFragment == currentFragment) {
             super.onBackPressed();
-        }
-        if (newsFeedFragment != null && newsFeedFragment.getClass() == currentFragment.getClass()) {
+        } else if (newsFeedFragment != null && newsFeedFragment.getClass() == currentFragment.getClass()) {
             showFragment(dashboardFragment, null);
-        }
-        if (uploadPhotoFragment != null && uploadPhotoFragment.getClass() == currentFragment.getClass()) {
+        } else if (uploadPhotoFragment != null && uploadPhotoFragment.getClass() == currentFragment.getClass()) {
             showFragment(dashboardFragment, null);
-        }
-        if (albumViewFragment != null && albumViewFragment.getClass() == currentFragment.getClass()) {
+        } else if (albumViewFragment != null && albumViewFragment.getClass() == currentFragment.getClass()) {
             showFragment(dashboardFragment, null);
-        }
-        if (calenderViewFragment != null && calenderViewFragment.getClass() == currentFragment.getClass()) {
+        } else if (calenderViewFragment != null && calenderViewFragment.getClass() == currentFragment.getClass()) {
             showFragment(dashboardFragment, null);
-        }
-        if (annualEventFragment != null && annualEventFragment.getClass() == currentFragment.getClass()) {
+        } else if (annualEventFragment != null && annualEventFragment.getClass() == currentFragment.getClass()) {
             showFragment(dashboardFragment, null);
-        }
-        if (galleryViewFragment != null && galleryViewFragment.getClass() == currentFragment.getClass()) {
+        } else if (galleryViewFragment != null && galleryViewFragment.getClass() == currentFragment.getClass()) {
             showFragment(albumViewFragment, null);
-        }
-        if (slideshowDialogFragment != null && slideshowDialogFragment.getClass() == currentFragment.getClass()) {
+        } else if (aboutSchoolFragment != null && aboutSchoolFragment.getClass() == currentFragment.getClass()) {
+            showFragment(dashboardFragment, null);
+        } else if (profileFragment != null && profileFragment.getClass() == currentFragment.getClass()) {
+            showFragment(dashboardFragment, null);
+        } else if (slideshowDialogFragment != null && slideshowDialogFragment.getClass() == currentFragment.getClass()) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("mylist", (Serializable) getListAlbumChild());
             if (isGallery) {
@@ -124,9 +124,10 @@ public class HomeActivity extends CommonActivity {
             } else {
                 showFragment(communityFragment, null);
             }
-        }
-        if (communityFragment != null && communityFragment.getClass() == currentFragment.getClass()) {
+        } else if (communityFragment != null && communityFragment.getClass() == currentFragment.getClass()) {
             showFragment(dashboardFragment, null);
+        } else {
+            super.onBackPressed();
         }
 
     }
@@ -149,6 +150,8 @@ public class HomeActivity extends CommonActivity {
         slideshowDialogFragment = new SlideshowDialogFragment();
         uploadPhotoFragment = new UploadPhotoFragment();
         communityFragment = new CommunityFragment();
+        aboutSchoolFragment = new AboutSchoolFragment();
+        profileFragment = new ProfileFragment();
     }
 
     public List<ImageRequest> getListAlbumChild() {
@@ -166,5 +169,25 @@ public class HomeActivity extends CommonActivity {
     public void setGallery(boolean gallery) {
         isGallery = gallery;
     }
+
+   /* @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_logout, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                CommonUtils.removeSharePref(Constants.USER_NAME, HomeActivity.this);
+                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
+
+    }*/
 }
 

@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
@@ -122,7 +123,11 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             case R.id.action_save:
                 bindModel();
                 if (check()) {
-                    saveUserInformation();
+                    if (Connectivity.isConnected(getMyActivity())) {
+                        saveUserInformation();
+                    } else {
+                        getMyActivity().showToast("Please Connect to internet !!");
+                    }
                 }
                 break;
 
@@ -171,6 +176,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
                     listEvent.add(bean);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("Exception", "onCancelled", databaseError.toException());
@@ -187,7 +193,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
         Calendar calender = Calendar.getInstance();
         Bundle args = new Bundle();
         args.putInt("year", calender.get(Calendar.YEAR));
-        args.putInt("month", calender.get(Calendar.MONTH) );
+        args.putInt("month", calender.get(Calendar.MONTH));
         args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
         date.setArguments(args);
         /**
@@ -202,7 +208,15 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
             monthOfYear += 1;
-            Date date = CommonUtils.toDate(year + "" + monthOfYear + "" + dayOfMonth, "yyyyMMdd");
+            String month = "" + monthOfYear;
+            String day = "" + dayOfMonth;
+            if (monthOfYear < 10) {
+                month = "0" + monthOfYear;
+            }
+            if (dayOfMonth < 10) {
+                day = "0" + dayOfMonth;
+            }
+            Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
             String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT);
             eventModel.setEventDate(formatedDate);
 
