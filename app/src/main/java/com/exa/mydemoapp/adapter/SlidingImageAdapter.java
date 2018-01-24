@@ -19,6 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
@@ -65,6 +66,11 @@ public class SlidingImageAdapter extends PagerAdapter {
 
         progressBar = (ProgressBar) imageLayout.findViewById(R.id.progress_slider);
         imgDelete = (ImageButton) imageLayout.findViewById(R.id.img_delete);
+        if (AppController.isAdmin(context)) {
+            imgDelete.setVisibility(View.VISIBLE);
+        } else {
+            imgDelete.setVisibility(View.GONE);
+        }
         imageView.setTag(R.id.image, position);
         String path = listImages.get(position).getImg();
         if (position > 0) {

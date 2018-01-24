@@ -1,22 +1,29 @@
 package com.exa.mydemoapp;
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.animation.LinearInterpolator;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.exa.mydemoapp.Common.CommonActivity;
+import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.model.LocationModel;
+import com.exa.mydemoapp.tracker.TrackerActivity;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,6 +41,7 @@ import com.google.android.gms.maps.model.SquareCap;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -42,7 +50,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
@@ -64,6 +74,8 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     private Polyline blackPolyline, greyPolyLine;
     private boolean driveStarted = false;
     private String vanType;
+    private LinkedList<Map<String, Object>> mTransportStatuses = new LinkedList<>();
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +86,12 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         polyLineList = new ArrayList<>();
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setTitle("Bus Location");
+        setSupportActionBar(toolbar);
 
-        destination = "Navi Sanghvi";
+        destination = "Shivajinagar,Pune";
         destination = destination.replace(" ", "+");
         Log.d(TAG, destination);
         mapFragment.getMapAsync(MapsActivity.this);
@@ -94,15 +110,15 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        final double latitude = 18.520430;
-        double longitude = 73.856744;
+        final double latitude = 18.559147;
+        double longitude = 73.790681;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setTrafficEnabled(false);
         mMap.setIndoorEnabled(false);
         mMap.setBuildingsEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         // Add a marker in Home and move the camera
-        sydney = new LatLng(18.520430, 73.856744);
+        sydney = new LatLng(18.559147, 73.790681);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Home"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
@@ -121,9 +137,9 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                     + "key=" + getResources().getString(R.string.google_directions_key) + "+&sensor=true";
             Log.d(TAG, requestUrl);
 
-            // startDrive();
             if (Connectivity.isConnected(MapsActivity.this)) {
-                getVanType();
+                //   getVanType();
+                loadPreviousStatuses();
             } else {
                 showToast("Please Connect to internet !!");
             }
@@ -251,8 +267,8 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                     Log.d(TAG, error + "");
                 }
             });
-            // RequestQueue requestQueue = Volley.newRequestQueue(this);
-            // requestQueue.add(jsonObjectRequest);
+            //  RequestQueue requestQueue = Volley.newRequestQueue(this);
+            //requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -432,6 +448,46 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         });
     }
 
+    private void loadPreviousStatuses() {
+        String transportId = CommonUtils.getSharedPref(getString(R.string.transport_id), this);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot != null) {
+                    for (DataSnapshot transportStatus : snapshot.getChildren()) {
+                        try {
+                            mTransportStatuses.add(0,
+                                    (Map<String, Object>) transportStatus.getValue());
+
+                            Map<String, Object> status = (Map<String, Object>) transportStatus.getValue();
+                            //LocationModel locationModel = transportStatus.getValue(LocationModel.class);
+                            Location locationForStatus = new Location("");
+                            locationForStatus.setLatitude((double) status.get("lattitude"));
+                            locationForStatus.setLongitude((double) status.get("longitude"));
+                            polyLineList.add(new LatLng(locationForStatus.getLatitude(), locationForStatus.getLongitude()));
+                            // if (driveStarted == false && polyLineList.size() > 10) {
+                            if (driveStarted == false) {
+                                startDrive();
+                                driveStarted = true;
+                            }
+                        } catch (Exception e) {
+                            Log.e("Firebase Error", e.getMessage());
+                        }
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // TODO: Handle gracefully
+            }
+        });
+    }
+
+
     public void getDriveData() {
         DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
         //Query ref2 = ref1.child(Constants.LOCATION_TABLE).orderByKey().limitToLast(20);
@@ -461,4 +517,32 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
 
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent1 = new Intent(this, HomeActivity.class);
+        startActivity(intent1);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_map, menu);
+        // return true so that the menu pop up is opened
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_tracker:
+                Intent intent1 = new Intent(this, TrackerActivity.class);
+                startActivity(intent1);
+                finish();
+                break;
+        }
+        return true;
+    }
 }

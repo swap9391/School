@@ -26,6 +26,7 @@ public class StudentModel implements Serializable {
     private String studentUserName;
     @Required(message = "Please Enter Password")
     private String studentPassword;
+    private String userType;
     private String studentBloodGrp;
 
     public String getVisiblity() {
@@ -114,5 +115,13 @@ public class StudentModel implements Serializable {
 
     public void setStudentUserName(String studentUserName) {
         this.studentUserName = studentUserName;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }

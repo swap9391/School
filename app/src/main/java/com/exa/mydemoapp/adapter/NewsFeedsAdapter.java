@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CirclePageIndicator;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
@@ -67,6 +68,11 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
             txtTimeStamp = (TextView) view.findViewById(R.id.txt_time_stamp);
             rltLayoutDesign = (RelativeLayout) view.findViewById(R.id.rl_layout_design);
             imgEdit = (ImageButton) view.findViewById(R.id.img_edit);
+            if (AppController.isAdmin(context)) {
+                imgEdit.setVisibility(View.VISIBLE);
+            } else {
+                imgEdit.setVisibility(View.GONE);
+            }
             rltLayoutDesign.setOnClickListener(this);
             mContainer = (PagerContainer) view.findViewById(R.id.pager_container);
             mPager = mContainer.getViewPager();

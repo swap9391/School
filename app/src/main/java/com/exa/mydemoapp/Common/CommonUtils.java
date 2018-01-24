@@ -1367,6 +1367,12 @@ public class CommonUtils {
         editor.commit();
 
     }
+    public static void removeAllPref(Context context){
+        SharedPreferences preferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
+    }
 
     public static void showToast(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();

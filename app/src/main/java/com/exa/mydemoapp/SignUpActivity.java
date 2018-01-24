@@ -100,6 +100,7 @@ public class SignUpActivity extends CommonActivity {
         studentModel.setSchoolName(spnSchoolName.getSelectedItem().toString());
         studentModel.setClassName(spnClass.getSelectedItem().toString());
         studentModel.setDivision(spnDivision.getSelectedItem().toString());
+        studentModel.setUserType("STUDENT");
         studentModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
         studentModel.setVisiblity("TRUE");
     }

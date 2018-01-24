@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".tracker.TrackerActivity"
+    tools:showIn="@layout/layout_tracker">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:scaleType="fitEnd"
+            android:src="@drawable/water" />
+
+        <ImageView
+            android:id="@+id/imageCloud1"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginLeft="32dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/cloud" />
+
+
+        <ImageView
+            android:id="@+id/imageCloud2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="32dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/cloud" />
+
+        <ImageView
+            android:id="@+id/imageCloud3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/card_view"
+            android:layout_toLeftOf="@+id/card_view"
+            android:paddingTop="24dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/cloud" />
+
+        <ImageView
+            android:id="@+id/imageCloud4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@+id/card_view"
+            android:layout_toRightOf="@+id/card_view"
+            android:scaleType="fitCenter"
+            android:src="@drawable/cloud" />
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="48dp"
+            android:padding="10dp"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardElevation="4dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:backgroundTint="@color/textcolor"
+                    android:text="@string/app_name"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/textcolor"
+                    android:textColorHighlight="@color/textcolor"
+                    android:textColorHint="@color/textcolor"
+                    android:textColorLink="@color/textcolor" />
+
+                <TextView
+                    android:id="@+id/permissionText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/title"
+                    android:layout_centerHorizontal="true"
+                    android:backgroundTint="@color/textcolor"
+                    android:text="@string/location_permission_required"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/bodyTextColor"
+                    android:textColorHighlight="@color/bodyTextColor"
+                    android:textColorHint="@color/textcolor"
+                    android:textColorLink="@color/textcolor"
+                    android:visibility="invisible" />
+
+                <EditText
+                    android:id="@+id/transport_id"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/permissionText"
+                    android:layout_centerHorizontal="true"
+                    android:backgroundTint="@color/textcolor"
+                    android:hint="Transport Id"
+                    android:maxLines="1"
+                    android:textColor="@color/textcolor"
+                    android:textColorHighlight="@color/textcolor"
+                    android:textColorHint="@color/textcolor" />
+
+                <Button
+                    android:id="@+id/button_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/transport_id"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="40dp"
+                    android:text="Start tracking" />
+
+                <Button
+                    android:id="@+id/button_stop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/transport_id"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="40dp"
+                    android:text="Stop tracking" />
+
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+</RelativeLayout>

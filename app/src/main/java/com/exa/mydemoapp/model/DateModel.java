@@ -9,6 +9,15 @@ import java.util.Date;
 public class DateModel {
     Date date;
     int position;
+    String eventType;
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
 
     public Date getDate() {
         return date;

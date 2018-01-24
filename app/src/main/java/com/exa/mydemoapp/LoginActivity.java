@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
@@ -77,7 +78,7 @@ public class LoginActivity extends CommonActivity {
                     progressDialog.show();
                     bindModel();
                     checkLogin();
-                }else {
+                } else {
                     showToast("Please Connect to internet !!");
                 }
             }
@@ -115,9 +116,18 @@ public class LoginActivity extends CommonActivity {
                     StudentModel studentData = Snapshot.getValue(StudentModel.class);
                     if (studentData.getStudentPassword().equalsIgnoreCase(studentModel.getStudentPassword())) {
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getStudentUserName());
+                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.SCHOOL_NAME, studentData.getSchoolName());
+                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ADDRESS, studentData.getStudentAddress());
+                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_BLOOD, studentData.getStudentBloodGrp());
+                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_DIVISION, studentData.getDivision());
+                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.CLASS_NAME, studentData.getClassName());
+                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_NAME, studentData.getStudentName());
+                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
+                        AppController.isAdmin(LoginActivity.this);
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
                         Toast.makeText(getApplicationContext(), "Login Successfully!!", Toast.LENGTH_SHORT).show();
+
                     } else {
                         Toast.makeText(getApplicationContext(), "Please Check Your Password", Toast.LENGTH_SHORT).show();
                     }

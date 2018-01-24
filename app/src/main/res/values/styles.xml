@@ -19,8 +19,10 @@
         <item name="color">@android:color/white</item>
     </style>
 
-
-
+    <style name="MyMaterialTheme.SwitchStyle">
+        <item name="colorControlActivated">@color/switch_on</item>
+        <item name="colorSwitchThumbNormal">@color/switch_off</item>
+    </style>
 
 
 </resources>

@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
-import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.LoginActivity;
 import com.exa.mydemoapp.R;
@@ -30,7 +30,7 @@ public class DashboardFragment extends CommonFragment {
     @ViewById(R.id.image)
     ImageView imageView;
 
-    public static String[] osNameList = {
+    public static String[] nameForAdmin = {
             "About School",
             "School Facilities",
             "Calender",
@@ -44,7 +44,7 @@ public class DashboardFragment extends CommonFragment {
             "Annual Event",
             "Bus Location"
     };
-    public static int[] osImages = {
+    public static int[] imagesForAdmin = {
             R.drawable.ic_about_school,
             R.drawable.ic_facility,
             R.drawable.ic_annual_calender,
@@ -56,6 +56,31 @@ public class DashboardFragment extends CommonFragment {
             R.drawable.ic_teacher,
             R.drawable.ic_paren_student,
             R.drawable.ic_paren_student,
+            R.drawable.icon_bus_location
+    };
+
+    public static String[] nameForStudent = {
+            "About School",
+            "School Facilities",
+            "Calender",
+            "Image Gallery",
+            "Achievements",
+            "Blog",
+            "News Feed",
+            "Community",
+            "Staff Information",
+            "Bus Location"
+    };
+    public static int[] imagesForStudent = {
+            R.drawable.ic_about_school,
+            R.drawable.ic_facility,
+            R.drawable.ic_annual_calender,
+            R.drawable.ic_gallery,
+            R.drawable.ic_archivement,
+            R.drawable.ic_blog,
+            R.drawable.ic_news_feed,
+            R.drawable.ic_community,
+            R.drawable.ic_teacher,
             R.drawable.icon_bus_location
     };
 
@@ -73,7 +98,12 @@ public class DashboardFragment extends CommonFragment {
         getMyActivity().toolbar.setTitle("Home");
 
         initViewBinding(view);
-        gridview.setAdapter(new HomeGridAdapter(getMyActivity(), osNameList, osImages));
+        if (AppController.isAdmin(getMyActivity())) {
+            gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForAdmin, imagesForAdmin));
+        } else {
+            gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForStudent, imagesForStudent));
+        }
+
 
      /*   ((Button) view.findViewById(R.id.btnUpload)).setOnClickListener(this);
         ((Button) view.findViewById(R.id.btnAlbum)).setOnClickListener(this);
@@ -143,7 +173,7 @@ public class DashboardFragment extends CommonFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                CommonUtils.removeSharePref(Constants.USER_NAME, getMyActivity());
+                CommonUtils.removeAllPref(getMyActivity());
                 Intent intent = new Intent(getMyActivity(), LoginActivity.class);
                 startActivity(intent);
                 break;

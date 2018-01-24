@@ -111,10 +111,10 @@ public class LocationUpdateService extends Service implements
             handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    handler.postDelayed(this, 30000);
+                    handler.postDelayed(this, 3000);
                     updateUI();
                 }
-            }, 30000);
+            }, 3000);
         }
     };
 

@@ -42,7 +42,7 @@ public class CalenderViewFragment extends Fragment {
     private CaldroidFragment dialogCaldroidFragment;
     private TextView textview;
     List<EventModel> listEvent = new ArrayList<>();
-    List<DateModel> listDate ;
+    List<DateModel> listDate;
     ProgressDialog progressDialog;
 
     View view;
@@ -56,11 +56,12 @@ public class CalenderViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_calender, container, false);
-        progressDialog= new ProgressDialog(getMyActivity());;
+        progressDialog = new ProgressDialog(getMyActivity());
+        ;
         getMyActivity().toolbar.setTitle("Calender View");
         getMyActivity().init();
 
-        textview = (TextView) view.findViewById(R.id.textview);
+        textview = (TextView) view.findViewById(R.id.txt_event_name);
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 
         // Setup caldroid fragment
@@ -107,7 +108,7 @@ public class CalenderViewFragment extends Fragment {
         // Attach to the activity
         if (Connectivity.isConnected(getMyActivity())) {
             getData();
-        }else {
+        } else {
             getMyActivity().showToast("Please Connect to internet !!");
         }
         // Setup listener
@@ -130,8 +131,9 @@ public class CalenderViewFragment extends Fragment {
                 String text = "month: " + month + " year: " + year;
                 countWeekendDays(year, month);
                 if (Connectivity.isConnected(getMyActivity())) {
+                    textview.setText("");
                     getData();
-                }else {
+                } else {
                     getMyActivity().showToast("Please Connect to internet !!");
                 }
             }
@@ -196,7 +198,7 @@ public class CalenderViewFragment extends Fragment {
 
 
     private void getData() {
-        listDate= new ArrayList<>();
+        listDate = new ArrayList<>();
         progressDialog.setTitle("Loading...");
         progressDialog.show();
         String userId = getMyActivity().databaseReference.push().getKey();
@@ -213,19 +215,38 @@ public class CalenderViewFragment extends Fragment {
                     DateModel dateModel = new DateModel();
                     dateModel.setPosition(count);
                     dateModel.setDate(date);
+                    dateModel.setEventType(bean.getEventType());
                     listDate.add(dateModel);
                     count++;
                 }
                 ColorDrawable skyblue = new ColorDrawable(getResources().getColor(R.color.caldroid_sky_blue));
-                for (DateModel bean : listDate) {
-                    caldroidFragment.setBackgroundDrawableForDate(skyblue, bean.getDate());
+                ColorDrawable yellow = new ColorDrawable(getResources().getColor(R.color.disable_btn_color));
+                ColorDrawable green = new ColorDrawable(getResources().getColor(R.color.green));
+                ColorDrawable red = new ColorDrawable(getResources().getColor(R.color.caldroid_light_red));
+
+                for (DateModel dateModel : listDate) {
+
+                    switch (dateModel.getEventType()) {
+                        case "Holiday":
+                            caldroidFragment.setBackgroundDrawableForDate(skyblue, dateModel.getDate());
+                            break;
+                        case "Exam":
+                            caldroidFragment.setBackgroundDrawableForDate(yellow, dateModel.getDate());
+                            break;
+                        case "Curricular":
+                            caldroidFragment.setBackgroundDrawableForDate(green, dateModel.getDate());
+                            break;
+                        default:
+                            caldroidFragment.setBackgroundDrawableForDate(red, dateModel.getDate());
+                            break;
+                    }
+
                 }
 
                 FragmentTransaction t = getMyActivity().getSupportFragmentManager().beginTransaction();
                 t.replace(R.id.calendar1, caldroidFragment);
                 t.commit();
                 progressDialog.dismiss();
-
 
 
             }

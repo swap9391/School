@@ -29,6 +29,7 @@ public class AppController extends Application {
     private static AppController mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
+    public static boolean IS_ADMIN = false;
 
     public static synchronized AppController getInstance() {
         return mInstance;
@@ -45,7 +46,6 @@ public class AppController extends Application {
         mMainContext = getApplicationContext();
         mMainHandler = new Handler(getMainLooper());
         mMainLayoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-
     }
 
     @Override
@@ -87,6 +87,18 @@ public class AppController extends Application {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
+    }
+
+    public static boolean isAdmin(Context context) {
+
+        String usertype = CommonUtils.getSharedPref(Constants.USER_TYPE, context);
+        if (usertype != null && usertype.equals("ADMIN")) {
+            IS_ADMIN = true;
+        } else {
+            IS_ADMIN = false;
+        }
+
+        return IS_ADMIN;
     }
 
 

@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.MapsActivity;
 import com.exa.mydemoapp.R;
-import com.exa.mydemoapp.UpdateBusLocation;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
@@ -86,49 +85,48 @@ public class HomeGridAdapter extends BaseAdapter {
 
 
                 Bundle bundle = new Bundle();
-                switch (position) {
-                    case 0:
+                switch (result[position]) {
+                    case "About School":
                         context.showFragment(new AboutSchoolFragment(), null);
                         break;
-                    case 1:
+                    case "School Facilities":
                         bundle.putString("FEED", "School Facilities");
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
-                    case 2:
+                    case "Calender":
                         context.showFragment(new CalenderViewFragment(), null);
                         break;
-                    case 3:
+                    case "Image Gallery":
                         context.showFragment(new AlbumViewFragment(), null);
                         break;
-                    case 4:
+                    case "Achievements":
                         bundle.putString("FEED", "Achievement");
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
-                    case 5:
+                    case "Blog":
                         bundle.putString("FEED", "Blog");
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
-                    case 6:
+                    case "News Feed":
                         bundle.putString("FEED", "News Feed");
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
-                    case 7:
+                    case "Community":
                         context.showFragment(new CommunityFragment(), null);
                         break;
-                    case 8:
-                        //Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_SHORT).show();
-                        Intent intent1 = new Intent(context, MapsActivity.class);
-                        context.startActivity(intent1);
+                    case "Staff Information":
+                        context.showToast("You Clicked " + result[position]);
                         break;
-                    case 9:
+                    case "Upload Image":
                         context.showFragment(new UploadPhotoFragment(), null);
                         break;
-                    case 10:
+                    case "Annual Event":
                         context.showFragment(new AnnualEventFragment(), null);
                         break;
-                    case 11:
-                        Intent intent = new Intent(context, UpdateBusLocation.class);
-                        context.startActivity(intent);
+                    case "Bus Location":
+                        Intent intent1 = new Intent(context, MapsActivity.class);
+                        context.startActivity(intent1);
+                        context.finish();
                         break;
                 }
             }
