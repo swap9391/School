@@ -1,0 +1,8 @@
+command sha1: keytool -list -v -keystore /home/midt-006/AndroidStudioProjects/MyDemoApp/school_key.jks -alias school
+Live sha1 : 3F:CD:CA:50:D7:1E:35:2C:C8:FA:1B:73:C6:D9:FB:82:AC:AF:15:F2
+ SHA256: FD:AD:00:8F:17:C8:FC:CC:60:64:77:5E:42:C9:68:19:29:05:DF:2F:64:6D:CA:5F:1F:88:75:27:FC:60:8D:34
+ <string name="map_api_key">AIzaSyAdS-peuXETXXQE8s9EiV3agEHVmlzVdKo</string>
+    <string name="google_directions_key">AIzaSyDXW9gHZgEoagVgC07qXsisT789glQo1n4</string>
+
+apk password:school123
+apk alias:school
