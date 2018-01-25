@@ -148,7 +148,7 @@ public class TrackerService extends Service implements LocationListener {
     private void loadPreviousStatuses() {
         String transportId = CommonUtils.getSharedPref(getString(R.string.transport_id), this);
         mFirebaseTransportRef = FirebaseDatabase.getInstance().getReference();
-        mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).addListenerForSingleValueEvent(new ValueEventListener() {
+        mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(transportId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot != null) {
@@ -294,7 +294,7 @@ public class TrackerService extends Service implements LocationListener {
         transportStatus.put("longitude", location.getLongitude());
         transportStatus.put("time", new Date().getTime());
         transportStatus.put("power", getBatteryLevel());
-
+        String transportId = CommonUtils.getSharedPref(getString(R.string.transport_id), this);
         if (locationIsAtStatus(location, 1) && locationIsAtStatus(location, 0)) {
             // If the most recent two statuses are approximately at the same
             // location as the new current location, rather than adding the new
@@ -305,7 +305,8 @@ public class TrackerService extends Service implements LocationListener {
             mTransportStatuses.set(0, transportStatus);
             // Only need to update 0th status, so we can save bandwidth.
             String userId = mFirebaseTransportRef.push().getKey();
-            mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child("0").setValue(transportStatus);
+
+            mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(transportId).child("0").setValue(transportStatus);
             //mFirebaseTransportRef.child("0").setValue(transportStatus);
         } else {
             // Maintain a fixed number of previous statuses.
@@ -316,7 +317,7 @@ public class TrackerService extends Service implements LocationListener {
             // We push the entire list at once since each key/index changes, to
             // minimize network requests.
 
-            mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).setValue(mTransportStatuses);
+            mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(transportId).setValue(mTransportStatuses);
         }
 
         if (BuildConfig.DEBUG) {

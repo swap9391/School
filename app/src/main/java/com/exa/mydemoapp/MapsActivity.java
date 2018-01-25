@@ -13,13 +13,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.exa.mydemoapp.Common.CommonActivity;
-import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.model.LocationModel;
@@ -74,8 +77,12 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     private Polyline blackPolyline, greyPolyLine;
     private boolean driveStarted = false;
     private String vanType;
-    private LinkedList<Map<String, Object>> mTransportStatuses = new LinkedList<>();
+
     private Toolbar toolbar;
+    private Spinner spnVehicle;
+    private Button btnSearch;
+    private List<String> vehicleList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +92,10 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        polyLineList = new ArrayList<>();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        spnVehicle = (Spinner) findViewById(R.id.spinner_vehicle);
+        btnSearch = (Button) findViewById(R.id.btn_search);
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setTitle("Bus Location");
         setSupportActionBar(toolbar);
@@ -95,6 +104,30 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         destination = destination.replace(" ", "+");
         Log.d(TAG, destination);
         mapFragment.getMapAsync(MapsActivity.this);
+
+        if (Connectivity.isConnected(MapsActivity.this)) {
+            //   getVanType();
+            getVehicleList();
+        } else {
+            showToast("Please Connect to internet !!");
+        }
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (spnVehicle.getSelectedItem().toString() != null) {
+                    String vehicleNumber = spnVehicle.getSelectedItem().toString();
+                    if (Connectivity.isConnected(MapsActivity.this)) {
+                        //   getVanType();
+                        loadPreviousStatuses(vehicleNumber);
+                    } else {
+                        showToast("Please Connect to internet !!");
+                    }
+
+                } else {
+                    showToast("No vehicle found");
+                }
+            }
+        });
     }
 
 
@@ -137,12 +170,12 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                     + "key=" + getResources().getString(R.string.google_directions_key) + "+&sensor=true";
             Log.d(TAG, requestUrl);
 
-            if (Connectivity.isConnected(MapsActivity.this)) {
+           /* if (Connectivity.isConnected(MapsActivity.this)) {
                 //   getVanType();
                 loadPreviousStatuses();
             } else {
                 showToast("Please Connect to internet !!");
-            }
+            }*/
 
             HashMap<String, String> params = new HashMap<String, String>();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestUrl, new JSONObject(params),
@@ -330,20 +363,11 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                 } else {
                     handler.removeCallbacks(this::run);
                     driveStarted = false;
-                    LatLng newPos = new LatLng(lat, lng);
-                    marker.setPosition(newPos);
-                    marker.setAnchor(0.5f, 0.5f);
-                    mMap.moveCamera(CameraUpdateFactory
-                            .newCameraPosition
-                                    (new CameraPosition.Builder()
-                                            .target(newPos)
-                                            .zoom(15.5f)
-                                            .build()));
-
+                    setFixMarker();
                     return;
                 }
                 ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-                valueAnimator.setDuration(3000);
+                valueAnimator.setDuration(30000);
                 valueAnimator.setInterpolator(new LinearInterpolator());
                 valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
@@ -369,6 +393,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                 handler.postDelayed(this, 3000);
             }
         }, 3000);
+
 
     }
 
@@ -420,6 +445,17 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         return -1;
     }
 
+    private void setFixMarker(){
+        LatLng newPos = new LatLng(lat, lng);
+        marker.setPosition(newPos);
+        marker.setAnchor(0.5f, 0.5f);
+        mMap.moveCamera(CameraUpdateFactory
+                .newCameraPosition
+                        (new CameraPosition.Builder()
+                                .target(newPos)
+                                .zoom(15.5f)
+                                .build()));
+    }
 
     public void getVanType() {
         DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
@@ -448,10 +484,11 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         });
     }
 
-    private void loadPreviousStatuses() {
-        String transportId = CommonUtils.getSharedPref(getString(R.string.transport_id), this);
+    private void loadPreviousStatuses(String vehicleNumber) {
+        LinkedList<Map<String, Object>> mTransportStatuses = new LinkedList<>();
+        polyLineList = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(vehicleNumber).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot != null) {
@@ -487,6 +524,33 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         });
     }
 
+
+    public void getVehicleList() {
+        LinkedList<Map<String, Object>> linkedList = new LinkedList<>();
+        DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
+        //Query ref2 = ref1.child(Constants.LOCATION_TABLE).orderByKey().limitToLast(20);
+        DatabaseReference ref2 = ref1.child(Constants.LOCATION_TABLE);
+        vehicleList = new ArrayList<>();
+        ref2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
+                    String key = Snapshot.getKey();
+                    vehicleList.add(key);
+                }
+                ArrayAdapter<String> vehicleAdapter = new ArrayAdapter<String>(MapsActivity.this, android.R.layout.simple_spinner_item, vehicleList);
+                vehicleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spnVehicle.setAdapter(vehicleAdapter);
+                vehicleAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Exception", "onCancelled", databaseError.toException());
+            }
+        });
+
+    }
 
     public void getDriveData() {
         DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);

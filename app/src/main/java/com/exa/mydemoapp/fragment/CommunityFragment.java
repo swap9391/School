@@ -250,7 +250,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
 
     }
 
-    private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
+    public static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageText;
         TextView messageUser;
         TextView messageTime;
