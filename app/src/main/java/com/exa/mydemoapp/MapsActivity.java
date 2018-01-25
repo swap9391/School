@@ -53,9 +53,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
@@ -445,7 +447,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         return -1;
     }
 
-    private void setFixMarker(){
+    private void setFixMarker() {
         LatLng newPos = new LatLng(lat, lng);
         marker.setPosition(newPos);
         marker.setAnchor(0.5f, 0.5f);
@@ -538,7 +540,10 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                     String key = Snapshot.getKey();
                     vehicleList.add(key);
                 }
-                ArrayAdapter<String> vehicleAdapter = new ArrayAdapter<String>(MapsActivity.this, android.R.layout.simple_spinner_item, vehicleList);
+                Set<String> set = new HashSet<String>(vehicleList);
+                List<String> sortedList = new ArrayList<>();
+                sortedList.addAll(set);
+                ArrayAdapter<String> vehicleAdapter = new ArrayAdapter<String>(MapsActivity.this, android.R.layout.simple_spinner_item, sortedList);
                 vehicleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spnVehicle.setAdapter(vehicleAdapter);
                 vehicleAdapter.notifyDataSetChanged();

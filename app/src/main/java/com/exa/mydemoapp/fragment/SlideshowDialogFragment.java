@@ -228,7 +228,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         AndroidNetworking.initialize(getMyActivity());
 
         //Folder Creating Into Phone Storage
-        dirPath = Environment.getExternalStorageDirectory() + "/Image";
+        dirPath = Environment.getExternalStorageDirectory() + "/School Downloads";
 
         fileName = "image" + Calendar.getInstance().getTime() + ".jpeg";
 
@@ -244,7 +244,7 @@ public class SlideshowDialogFragment extends DialogFragment {
                     @Override
                     public void onDownloadComplete() {
                         pd.dismiss();
-                        Toast.makeText(getMyActivity(), "DownLoad Complete", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getMyActivity(), "Image Downloaded to sd card folder School Downloads", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
