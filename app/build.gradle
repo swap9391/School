@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
+    flavorDimensions "default"
     defaultConfig {
         applicationId "com.exa.mydemoapp"
         minSdkVersion 16
@@ -14,11 +15,33 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     productFlavors {
+        /* Prod Facebook App id
+        <string name="facebook_app_id">519168014827117</string>*/
+        /*Lisanash Facebook app
+        <string name="facebook_app_id">418540128496128</string>*/
+        schoolFlavour {
+            applicationId
+            "com.exa.mydemoapp"
+            versionName "1.0.0"
+            versionCode 1000
+            resValue "string", "app_name", "CoolSchool"
+            buildConfigField "String", "MAIN_TABLE_NAME", "\"SCHOOLDATA\""
+        }
+        kalpataruFlavour {
+            applicationId
+            "com.exa.mydemoapp"
+            applicationIdSuffix ".viewer"
+            versionName "1.0.0"
+            versionCode 1000
+            resValue "string", "app_name", "Kalpataru School"
+            buildConfigField "String", "MAIN_TABLE_NAME", "\"KALPATARU_SCHOOL\""
+        }
+
     }
     compileOptions {
         sourceCompatibility 1.8
@@ -27,7 +50,7 @@ android {
 }
 
 dependencies {
-       compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

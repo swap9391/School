@@ -135,6 +135,7 @@ public class LoginActivity extends CommonActivity {
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.CLASS_NAME, studentData.getClassName());
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_NAME, studentData.getStudentName());
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
+                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getUniqKey());
                         AppController.isAdmin(LoginActivity.this);
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);

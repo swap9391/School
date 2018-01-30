@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "145759363931",
+    "firebase_url": "https://prawas-9af67.firebaseio.com",
+    "project_id": "prawas-9af67",
+    "storage_bucket": "prawas-9af67.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145759363931:android:cc4b5e93b38c39b4",
+        "android_client_info": {
+          "package_name": "com.exa.mydemoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145759363931-f6pbsnbo25bbudvomkvvu0sm1hl8ddom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.exa.mydemoapp",
+            "certificate_hash": "2c54101151b274d2815e3d939e394d9521bef82f"
+          }
+        },
+        {
+          "client_id": "145759363931-9rfsce8tnqneug72t2rvh550imjfh4it.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.exa.mydemoapp",
+            "certificate_hash": "c37def920ead9fbd77d7e5f8ad183ce4777da3dd"
+          }
+        },
+        {
+          "client_id": "145759363931-nqjv45iudurujrvikkifumda0m6qitgl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCihvAA5S1Zzhu0BFL-U8qeXLKezSLpCOo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145759363931-nqjv45iudurujrvikkifumda0m6qitgl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -22,6 +22,8 @@ public class ImageRequest implements Serializable {
     private Integer image_like;
     private String imageType;
     private String dateStamp;
+    private String className;
+    private String studentId;
     private List<String> imageUrl = new ArrayList<>();
 
     public String getImg() {
@@ -110,5 +112,21 @@ public class ImageRequest implements Serializable {
 
     public void setDateStamp(String dateStamp) {
         this.dateStamp = dateStamp;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 }

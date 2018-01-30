@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "698483368395",
+    "firebase_url": "https://kalpataru-school.firebaseio.com",
+    "project_id": "kalpataru-school",
+    "storage_bucket": "kalpataru-school.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:698483368395:android:8f427f0872a5d409",
+        "android_client_info": {
+          "package_name": "com.exa.mydemoapp.viewer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "698483368395-0hl4nn74ingvrg58mn1e997n7c9f9t39.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.exa.mydemoapp.viewer",
+            "certificate_hash": "c37def920ead9fbd77d7e5f8ad183ce4777da3dd"
+          }
+        },
+        {
+          "client_id": "698483368395-mn4utve0kat3m27lmbhk8js22siqqv9o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy0NapLtH9XOfePeLPbgyeBp6F2CTiKrs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "698483368395-mn4utve0kat3m27lmbhk8js22siqqv9o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

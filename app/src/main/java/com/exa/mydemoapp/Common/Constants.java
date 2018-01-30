@@ -1,12 +1,14 @@
 package com.exa.mydemoapp.Common;
 
+import com.exa.mydemoapp.BuildConfig;
+
 /**
  * Created by midt-006 on 10/10/17.
  */
 
 public interface Constants {
 
-    public static String MAIN_TABLE = "SCHOOLDATA";
+    public static String MAIN_TABLE = BuildConfig.MAIN_TABLE_NAME;
     public static String IMAGE_TABLE = "IMAGETABLE";
     public static String EVENT_TABLE = "EVENTTABLE";
     public static String STUDENT = "STUDENT";
@@ -14,6 +16,7 @@ public interface Constants {
     public static String COMMUNITY_TABLE = "COMMUNITY_TABLE";
     public static String DATE_FORMAT = "dd-MM-yyyy hh:mm";
     public static String USER_NAME = "USER_NAME";
+    public static String STUDENT_ID = "STUDENT_ID";
     public static String LAST_VAN_TYPE = "LAST_VAN_TYPE";
     public static int UPDATE_INTERVAL = 3000; // 3 sec
     public static int FATEST_INTERVAL = 3000; // 5 sec

@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,12 +44,15 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.LocationModel;
+import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.service.LocationUpdateService;
 import com.exa.mydemoapp.service.ServiceCallbacks;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -92,6 +96,18 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private EditText edt_user;
     @ViewById(R.id.spinner_image_type)
     private Spinner spinnerType;
+    @ViewById(R.id.spinner_class_name)
+    private Spinner spnClass;
+    @ViewById(R.id.spinner_student_name)
+    private Spinner spinnerStudentName;
+    @ViewById(R.id.txt_student_spinner)
+    private TextView txtStudentSpinnerTitle;
+
+
+    private List<String> listClass;
+    private List<StudentModel> listStudents;
+    private List<String> listStudentName;
+    ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +128,39 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         eventAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(eventAdapter);
         eventAdapter.notifyDataSetChanged();
+
+
+        listClass = Arrays.asList(getResources().getStringArray(R.array.class_type));
+        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
+        classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnClass.setAdapter(classAdapter);
+        classAdapter.notifyDataSetChanged();
+
+        spnClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (!listClass.get(position).equals("All")) {
+
+                    if (Connectivity.isConnected(getMyActivity())) {
+                        progressDialog = new ProgressDialog(getMyActivity());
+                        progressDialog.setTitle("Loading Student List...");
+                        progressDialog.show();
+                        getStudents(listClass.get(position));
+                    } else {
+                        getMyActivity().showToast("Please Connect to internet !!");
+                    }
+                } else {
+                    spinnerStudentName.setVisibility(View.GONE);
+                    txtStudentSpinnerTitle.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
+
 
         Bundle bundle = getArguments();
         imageRequestArrayList = new ArrayList<>();
@@ -170,6 +219,14 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         imageRequest.setDescription(edt_description.getText().toString().trim());
         imageRequest.setUserName(edt_user.getText().toString().trim());
         imageRequest.setImageType(spinnerType.getSelectedItem().toString());
+        imageRequest.setClassName(spnClass.getSelectedItem().toString());
+        if (listStudentName != null && listStudentName.size() > 0) {
+            String studentId = listStudents.get(spinnerStudentName.getSelectedItemPosition()).getUniqKey();
+            if (studentId != null) {
+                imageRequest.setStudentId(studentId);
+            }
+        }
+
         imageRequest.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
         imageRequest.setVisiblity("TRUE");
     }
@@ -186,38 +243,22 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     }
 
     private void saveUserInformation() {
-        try {
-            AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.logout_title), getString(R.string.save_msg));
-            builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    final String userId = getMyActivity().databaseReference.push().getKey();
-                    if (!isEdit) {
-                        imageRequest.setUniqKey(userId);
-                        getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(userId).setValue(imageRequest);
-                        Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-                    } else {
-                        bindModel();
-                        for (ImageRequest imageRequest1 : imageRequestArrayList) {
-                            imageRequest.setUniqKey(imageRequest1.getUniqKey());
-                            getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
-                            Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-                        }
-                        isEdit = false;
-                        if (imglist.size() > 0) {
-                            uploadImage();
-                        }
-                    }
-                }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-
-                }
-            }).show();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
+        final String userId = getMyActivity().databaseReference.push().getKey();
+        if (!isEdit) {
+            imageRequest.setUniqKey(userId);
+            getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(userId).setValue(imageRequest);
+            Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+        } else {
+            bindModel();
+            for (ImageRequest imageRequest1 : imageRequestArrayList) {
+                imageRequest.setUniqKey(imageRequest1.getUniqKey());
+                getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
+                Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+            }
+            isEdit = false;
+            if (imglist.size() > 0) {
+                uploadImage();
+            }
         }
     }
 
@@ -456,6 +497,16 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     }
 
     private boolean check() {
+        if (imageRequest.getClassName() == null || imageRequest.getClassName().equals("")) {
+            getMyActivity().showToast("Please Select Class Name");
+            return false;
+        }
+        if (!imageRequest.getClassName().equalsIgnoreCase("All")) {
+            if (imageRequest.getStudentId() == null || imageRequest.getStudentId().equals("")) {
+                getMyActivity().showToast("Please Select Student Name");
+                return false;
+            }
+        }
         if (imageRequest.getUserName() == null || imageRequest.getUserName().equals("")) {
             getMyActivity().showToast("Please Enter User Name");
             return false;
@@ -483,16 +534,34 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+                try {
+                    AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.logout_title), getString(R.string.save_msg));
+                    builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (check()) {
+                                if (Connectivity.isConnected(getMyActivity())) {
+                                    if (!isEdit && imglist.size() > 0) {
+                                        uploadImage();
+                                    } else {
+                                        saveUserInformation();
+                                    }
+                                } else {
+                                    getMyActivity().showToast("Please Connect to internet !!");
+                                }
+                            }
+                        }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
 
-                if (Connectivity.isConnected(getMyActivity())) {
-                    if (!isEdit && imglist.size() > 0) {
-                        uploadImage();
-                    } else {
-                        saveUserInformation();
-                    }
-                } else {
-                    getMyActivity().showToast("Please Connect to internet !!");
+                        }
+                    }).show();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                 }
+
                 break;
             case R.id.action_gallery:
                 getMyActivity().showFragment(new NewsFeedFragment(), null);
@@ -583,6 +652,39 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         getData();
     }
 
+    public void getStudents(String className) {
+        listStudents = new ArrayList<>();
+        listStudentName = new ArrayList<>();
+        DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
+        DatabaseReference ref2 = ref1.child(Constants.STUDENT);
+        Query query = ref2.orderByChild("className").equalTo(className);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                progressDialog.dismiss();
+                for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
+                    StudentModel studentData = Snapshot.getValue(StudentModel.class);
+                    listStudents.add(studentData);
+                    listStudentName.add(studentData.getStudentName());
+                }
+                if (listStudents != null && listStudents.size() > 0) {
+                    spinnerStudentName.setVisibility(View.VISIBLE);
+                    txtStudentSpinnerTitle.setVisibility(View.VISIBLE);
+                    ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listStudentName);
+                    classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerStudentName.setAdapter(classAdapter);
+                    classAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Exception", "onCancelled", databaseError.toException());
+                progressDialog.dismiss();
+            }
+        });
+
+    }
     /* public void getMyValues() {
          HashMap<String, String> hashMap = new HashMap<>();
          // hashMap.put(IJson.userId, "" + CommonUtils.getSharedPref(getMyActivity(),IConstants.USER_ID));
@@ -599,4 +701,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();
     }
+
+
 }

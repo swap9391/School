@@ -123,21 +123,27 @@ public class HomeActivity extends CommonActivity {
         if (dashboardFragment != null && dashboardFragment == currentFragment) {
             exitDialog();
         } else if (newsFeedFragment != null && newsFeedFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else if (uploadPhotoFragment != null && uploadPhotoFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else if (albumViewFragment != null && albumViewFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else if (calenderViewFragment != null && calenderViewFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else if (annualEventFragment != null && annualEventFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else if (galleryViewFragment != null && galleryViewFragment.getClass() == currentFragment.getClass()) {
             showFragment(albumViewFragment, null);
         } else if (aboutSchoolFragment != null && aboutSchoolFragment.getClass() == currentFragment.getClass()) {
-            toolbar.setVisibility(View.VISIBLE);
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else if (profileFragment != null && profileFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else if (slideshowDialogFragment != null && slideshowDialogFragment.getClass() == currentFragment.getClass()) {
             Bundle bundle = new Bundle();
@@ -148,11 +154,16 @@ public class HomeActivity extends CommonActivity {
                 showFragment(communityFragment, null);
             }
         } else if (communityFragment != null && communityFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else {
             exitDialog();
         }
 
+    }
+
+    private void showToolbar() {
+        toolbar.setVisibility(View.VISIBLE);
     }
 
     public void showFragment(Fragment fragmentClass, Bundle bundle) {
