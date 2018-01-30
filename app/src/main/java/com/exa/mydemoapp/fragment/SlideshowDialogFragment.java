@@ -1,7 +1,9 @@
 package com.exa.mydemoapp.fragment;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.DownloadListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
@@ -97,7 +100,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     };
 
     private void displayMetaInfo(int position) {
-        if (position > 0) {
+        if (position >= 0) {
             lblCount.setText((position + 1) + " of " + images.size());
         }
         ImageRequest image = images.get(position);
@@ -133,6 +136,18 @@ public class SlideshowDialogFragment extends DialogFragment {
             btnDownload = (ImageButton) view.findViewById(R.id.btn_download);
             btnDelete = (ImageButton) view.findViewById(R.id.btn_delete);
 
+            if (AppController.isAdmin(getMyActivity())) {
+                btnDelete.setVisibility(View.VISIBLE);
+            } else {
+                btnDelete.setVisibility(View.GONE);
+            }
+            if (getMyActivity().isGuest) {
+                btnDownload.setVisibility(View.GONE);
+                btnShare.setVisibility(View.GONE);
+                btnDelete.setVisibility(View.GONE);
+            }
+
+
             final ImageRequest image = images.get(position);
 
             Glide.with(getActivity()).load(image.getImg())
@@ -158,7 +173,7 @@ public class SlideshowDialogFragment extends DialogFragment {
             });
             if (fragmentFrom.equals("community")) {
                 btnDelete.setVisibility(View.GONE);
-            } else {
+            } else if (!getMyActivity().isGuest && !fragmentFrom.equals("community")) {
                 btnDelete.setVisibility(View.VISIBLE);
                 btnDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -257,12 +272,29 @@ public class SlideshowDialogFragment extends DialogFragment {
     }
 
     private void deleteImage(ImageRequest imageRequest) {
-        imageRequest.setVisiblity("FALSE");
-        getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
-        CommonUtils.showToast(getMyActivity(), "Photo deleted successfully!");
-        images.remove(imageRequest);
-        getMyActivity().setListAlbumChild(images);
-        getMyActivity().performBackForDesign();
+
+        try {
+            AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.app_name), getString(R.string.delete_msg));
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    imageRequest.setVisiblity("FALSE");
+                    getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
+                    CommonUtils.showToast(getMyActivity(), "Photo deleted successfully!");
+                    images.remove(imageRequest);
+                    getMyActivity().setListAlbumChild(images);
+                    getMyActivity().performBackForDesign();
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+
+                }
+            }).show();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
 }

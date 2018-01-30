@@ -1,5 +1,8 @@
 package com.exa.mydemoapp;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -139,10 +142,37 @@ public class SignUpActivity extends CommonActivity {
     }
 
     private void saveUserInformation() {
-        final String userId = databaseReference.push().getKey();
-        studentModel.setUniqKey(userId);
-        databaseReference.child(Constants.MAIN_TABLE).child(Constants.STUDENT).child(studentModel.getUniqKey()).setValue(studentModel);
-        Toast.makeText(this, "Information Saved...", Toast.LENGTH_LONG).show();
+
+        try {
+            AlertDialog.Builder builder = showAlertDialog(this, getString(R.string.logout_title), getString(R.string.save_msg));
+            builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    final String userId = databaseReference.push().getKey();
+                    studentModel.setUniqKey(userId);
+                    databaseReference.child(Constants.MAIN_TABLE).child(Constants.STUDENT).child(studentModel.getUniqKey()).setValue(studentModel);
+                    Toast.makeText(SignUpActivity.this, "Information Saved...", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+
+                }
+            }).show();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+    }
+
+    public static AlertDialog.Builder showAlertDialog(Context context, String title, String msg) {
+        AlertDialog.Builder alertDialog = null;
+        alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(msg);
+        return alertDialog;
     }
 
 }

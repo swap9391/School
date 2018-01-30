@@ -1,5 +1,9 @@
 package com.exa.mydemoapp;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,8 +13,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.exa.mydemoapp.Common.CommonActivity;
+import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
@@ -47,13 +54,28 @@ public class HomeActivity extends CommonActivity {
     public ProfileFragment profileFragment;
     public List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
     public boolean isGallery = true;
+    public boolean isGuest = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_home);
+        Intent intent = getIntent();
+        if (intent != null && intent.getStringExtra(Constants.USER_TYPE) != null && intent.getStringExtra(Constants.USER_TYPE).equals("GUEST")) {
+            isGuest = true;
+        } else {
+            isGuest = false;
+        }
+        if (isGuest) {
+            setContentView(R.layout.layout_home_guest);
+        } else {
+            setContentView(R.layout.layout_home);
+        }
+
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
+
+
         setSupportActionBar(toolbar);
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.navigation);
@@ -99,7 +121,7 @@ public class HomeActivity extends CommonActivity {
 
 
         if (dashboardFragment != null && dashboardFragment == currentFragment) {
-            super.onBackPressed();
+            exitDialog();
         } else if (newsFeedFragment != null && newsFeedFragment.getClass() == currentFragment.getClass()) {
             showFragment(dashboardFragment, null);
         } else if (uploadPhotoFragment != null && uploadPhotoFragment.getClass() == currentFragment.getClass()) {
@@ -113,6 +135,7 @@ public class HomeActivity extends CommonActivity {
         } else if (galleryViewFragment != null && galleryViewFragment.getClass() == currentFragment.getClass()) {
             showFragment(albumViewFragment, null);
         } else if (aboutSchoolFragment != null && aboutSchoolFragment.getClass() == currentFragment.getClass()) {
+            toolbar.setVisibility(View.VISIBLE);
             showFragment(dashboardFragment, null);
         } else if (profileFragment != null && profileFragment.getClass() == currentFragment.getClass()) {
             showFragment(dashboardFragment, null);
@@ -127,7 +150,7 @@ public class HomeActivity extends CommonActivity {
         } else if (communityFragment != null && communityFragment.getClass() == currentFragment.getClass()) {
             showFragment(dashboardFragment, null);
         } else {
-            super.onBackPressed();
+            exitDialog();
         }
 
     }
@@ -189,5 +212,61 @@ public class HomeActivity extends CommonActivity {
         return true;
 
     }*/
+
+    private void exitFromApp() {
+        super.onBackPressed();
+    }
+
+    private void exitDialog() {
+        try {
+            AlertDialog.Builder builder = showAlertDialog(this, getString(R.string.app_name), getString(R.string.exit_msg));
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    exitFromApp();
+                }
+            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+    }
+
+    public void logoOut() {
+        try {
+            AlertDialog.Builder builder = showAlertDialog(this, getString(R.string.logout_title), getString(R.string.logout_msg));
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    CommonUtils.removeAllPref(HomeActivity.this);
+                    Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+
+                }
+            }).show();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+    }
+
+    public static AlertDialog.Builder showAlertDialog(Context context, String title, String msg) {
+        AlertDialog.Builder alertDialog = null;
+        alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(msg);
+        return alertDialog;
+    }
 }
 

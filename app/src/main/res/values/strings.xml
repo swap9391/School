@@ -37,6 +37,7 @@
         <item>New English school</item>
         <item>Ideal School</item>
         <item>Indira School</item>
+        <item>Kalptaru School</item>
     </string-array>
 
     <string-array name="division_name">
@@ -60,4 +61,9 @@
     <string name="connecting">Connecting &#8230;</string>
     <string name="transport_id" translatable="false">transport_id</string>
     <string name="missing_inputs">Please enter a transport ID</string>
+    <string name="logout_title">Logout</string>
+    <string name="logout_msg">Do you want to sign out?</string>
+    <string name="exit_msg">Do you want to exit from application?</string>
+    <string name="save_msg">Do you want to save?</string>
+    <string name="delete_msg">Do you want to delete?</string>
 </resources>

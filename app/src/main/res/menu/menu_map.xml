@@ -1,8 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menu_map_demo"
+        android:icon="@drawable/ic_map_white"
+        android:title="Map Demo"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menu_tracker"
         android:icon="@drawable/ic_menu_bus"
-        android:title=""
+        android:title="Bus Tracker"
         app:showAsAction="always" />
 </menu>

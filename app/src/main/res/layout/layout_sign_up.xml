@@ -85,8 +85,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Student Blood Group"
-                    android:maxLines="2"
-                    android:minLines="2" />
+                    android:maxLines="1"
+                    android:maxLength="5"
+                     />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -99,7 +100,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Student User Name"
-                    android:maxLength="10"
+                    android:maxLength="25"
                     android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
@@ -114,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Enter Student Password"
                     android:inputType="textPassword"
-                    android:maxLength="10"
+                    android:maxLength="20"
                     android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 

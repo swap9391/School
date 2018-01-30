@@ -1,6 +1,5 @@
 package com.exa.mydemoapp.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,9 +11,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.exa.mydemoapp.Common.AppController;
-import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.HomeActivity;
-import com.exa.mydemoapp.LoginActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.HomeGridAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
@@ -84,6 +81,26 @@ public class DashboardFragment extends CommonFragment {
             R.drawable.icon_bus_location
     };
 
+
+    public static String[] nameForGuest = {
+            "About School",
+            "School Facilities",
+            "Calender",
+            "Image Gallery",
+            "Achievements",
+            "Blog",
+            "Staff Information"
+    };
+    public static int[] imagesForGuest = {
+            R.drawable.ic_about_school,
+            R.drawable.ic_facility,
+            R.drawable.ic_annual_calender,
+            R.drawable.ic_gallery,
+            R.drawable.ic_archivement,
+            R.drawable.ic_blog,
+            R.drawable.ic_teacher
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -98,10 +115,14 @@ public class DashboardFragment extends CommonFragment {
         getMyActivity().toolbar.setTitle("Home");
 
         initViewBinding(view);
-        if (AppController.isAdmin(getMyActivity())) {
-            gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForAdmin, imagesForAdmin));
+        if (getMyActivity().isGuest) {
+            gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForGuest, imagesForGuest));
         } else {
-            gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForStudent, imagesForStudent));
+            if (AppController.isAdmin(getMyActivity())) {
+                gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForAdmin, imagesForAdmin));
+            } else {
+                gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForStudent, imagesForStudent));
+            }
         }
 
 
@@ -165,17 +186,19 @@ public class DashboardFragment extends CommonFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_logout, menu);
+        if (getMyActivity().isGuest) {
+            menu.findItem(R.id.action_logout).setVisible(false);
+        }
         //menu.findItem(R.id.action_gallery).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                CommonUtils.removeAllPref(getMyActivity());
-                Intent intent = new Intent(getMyActivity(), LoginActivity.class);
-                startActivity(intent);
+                getMyActivity().logoOut();
                 break;
         }
         return true;

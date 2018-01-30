@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.exa.mydemoapp.Common.CommonUtils;
@@ -24,6 +25,8 @@ public class ProfileFragment extends CommonFragment {
     TextView txtAddress;
     @ViewById(R.id.txt_class_name)
     TextView txtClassName;
+    @ViewById(R.id.lay_logout)
+    LinearLayout layLogout;
 
 
     @Override
@@ -39,6 +42,14 @@ public class ProfileFragment extends CommonFragment {
         getMyActivity().init();
         getMyActivity().toolbar.setTitle("My Profile");
         setData();
+
+        layLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getMyActivity().logoOut();
+            }
+        });
+
         return view;
     }
 

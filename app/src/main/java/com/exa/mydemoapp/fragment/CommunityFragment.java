@@ -1,17 +1,15 @@
 package com.exa.mydemoapp.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -72,6 +70,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
     List<Uri> imglist = new ArrayList<>();
     int PICK_IMAGE = 102;
     int count = 0;
+    String studentName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,7 +98,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
+        studentName = CommonUtils.getSharedPref(Constants.STUDENT_NAME, getMyActivity());
         telephonyManager = (TelephonyManager) getMyActivity().getSystemService(Context.TELEPHONY_SERVICE);
         showList();
         return view;
@@ -139,7 +138,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
     private void bindModel() {
         communityModel.setMessageText(txtMsg.getText().toString().isEmpty() ? "NA" : txtMsg.getText().toString().trim());
         communityModel.setMessageTime(CommonUtils.formatTime(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
-        communityModel.setMessageUser("" + telephonyManager.getDeviceId());
+        communityModel.setMessageUser("" + studentName);
         communityModel.setVisible("TRUE");
     }
 
@@ -179,10 +178,10 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
                     viewHolder.messageText.setText(model.getMessageText());
                     viewHolder.messageTime.setText(model.getMessageTime());
 
-                    if (telephonyManager.getDeviceId().toString().equals(model.getMessageUser())) {
-                        viewHolder.messageUser.setTextColor(getMyActivity().getResources().getColor(R.color.colorPrimary));
+                    if (studentName.equals(model.getMessageUser())) {
+                        viewHolder.messageUser.setTextColor(ContextCompat.getColor(getMyActivity(), R.color.colorPrimary));
                     } else {
-                        viewHolder.messageUser.setTextColor(getMyActivity().getResources().getColor(R.color.blue));
+                        viewHolder.messageUser.setTextColor(ContextCompat.getColor(getMyActivity(), R.color.blue));
                     }
 
 

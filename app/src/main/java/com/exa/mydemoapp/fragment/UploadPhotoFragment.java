@@ -2,9 +2,11 @@ package com.exa.mydemoapp.fragment;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
@@ -184,25 +186,39 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     }
 
     private void saveUserInformation() {
-        final String userId = getMyActivity().databaseReference.push().getKey();
-        if (!isEdit) {
-            imageRequest.setUniqKey(userId);
-            getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(userId).setValue(imageRequest);
-            Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-        } else {
-            bindModel();
-            for (ImageRequest imageRequest1 : imageRequestArrayList) {
-                imageRequest.setUniqKey(imageRequest1.getUniqKey());
-                getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
-                Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-            }
-            isEdit = false;
-            if (imglist.size() > 0) {
-                uploadImage();
-            }
+        try {
+            AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.logout_title), getString(R.string.save_msg));
+            builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    final String userId = getMyActivity().databaseReference.push().getKey();
+                    if (!isEdit) {
+                        imageRequest.setUniqKey(userId);
+                        getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(userId).setValue(imageRequest);
+                        Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+                    } else {
+                        bindModel();
+                        for (ImageRequest imageRequest1 : imageRequestArrayList) {
+                            imageRequest.setUniqKey(imageRequest1.getUniqKey());
+                            getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
+                            Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+                        }
+                        isEdit = false;
+                        if (imglist.size() > 0) {
+                            uploadImage();
+                        }
+                    }
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
 
+                }
+            }).show();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
-
     }
 
     @SuppressWarnings("VisibleForTests")
@@ -467,6 +483,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+
                 if (Connectivity.isConnected(getMyActivity())) {
                     if (!isEdit && imglist.size() > 0) {
                         uploadImage();
@@ -577,6 +594,8 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
          String url = "http://reportcard.ae/rest/api/v1/login";
          CallWebService.getWebservice(url, hashMap);
      }*/
+
+
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();
     }

@@ -66,7 +66,7 @@ public class SlidingImageAdapter extends PagerAdapter {
 
         progressBar = (ProgressBar) imageLayout.findViewById(R.id.progress_slider);
         imgDelete = (ImageButton) imageLayout.findViewById(R.id.img_delete);
-        if (AppController.isAdmin(context)) {
+        if (!context.isGuest && AppController.isAdmin(context)) {
             imgDelete.setVisibility(View.VISIBLE);
         } else {
             imgDelete.setVisibility(View.GONE);

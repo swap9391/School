@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.exa.mydemoapp.Common.CommonUtils;
@@ -40,6 +41,7 @@ import java.util.List;
 
 public class AnnualEventFragment extends Fragment implements View.OnClickListener {
     private Button datePicker;
+    private TextView txtSelectedDate;
     private Spinner spinnerType;
     private Spinner spinnerClass;
     private EditText edtEventName;
@@ -64,6 +66,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
 
         eventModel = new EventModel();
         datePicker = (Button) view.findViewById(R.id.date_picker_event);
+        txtSelectedDate = (Button) view.findViewById(R.id.txt_selected_date);
         spinnerType = (Spinner) view.findViewById(R.id.spinner_event_type);
         spinnerClass = (Spinner) view.findViewById(R.id.spinner_class);
         edtEventName = (EditText) view.findViewById(R.id.edt_event_name);
@@ -107,7 +110,6 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
         Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
         getData();
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -219,7 +221,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
             String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT);
             eventModel.setEventDate(formatedDate);
-
+            txtSelectedDate.setText(formatedDate);
         }
     };
 

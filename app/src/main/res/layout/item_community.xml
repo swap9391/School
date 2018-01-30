@@ -45,11 +45,13 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_below="@+id/horizontal_line"
-            android:visibility="gone">
+            android:layout_centerInParent="true"
+            android:visibility="visible">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
                 <ImageView
                     android:id="@+id/img_chat"
@@ -57,8 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_margin="5dp"
-                    android:adjustViewBounds="true"
-                     />
+                    android:adjustViewBounds="true" />
 
                 <ProgressBar
                     android:id="@+id/progress_slider"
@@ -66,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:indeterminate="false"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
             </RelativeLayout>
         </FrameLayout>

@@ -35,12 +35,15 @@ public class LoginActivity extends CommonActivity {
     View view;
     @ViewById(R.id.btn_sign_up)
     Button btnSignUp;
+    @ViewById(R.id.btn_guest_login)
+    Button btnGuest;
     @ViewById(R.id.edt_user_name)
     EditText edtUserName;
     @ViewById(R.id.edt_password)
     EditText edtPassword;
     @ViewById(R.id.floating_login)
     LinearLayout yourframelayout;
+
 
     StudentModel studentModel;
     ProgressDialog progressDialog;
@@ -60,6 +63,15 @@ public class LoginActivity extends CommonActivity {
         init();
         studentModel = new StudentModel();
         btnSignUp.setOnClickListener(new onBtnSignUp());
+        btnGuest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                intent.putExtra(Constants.USER_TYPE, "GUEST");
+                startActivity(intent);
+
+            }
+        });
 
         FloatingActionButton fabButton = new FloatingActionButton.Builder(this, yourframelayout)
                 .withDrawable(getResources().getDrawable(R.drawable.ic_login_check))
