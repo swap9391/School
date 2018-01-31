@@ -108,6 +108,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private List<StudentModel> listStudents;
     private List<String> listStudentName;
     ProgressDialog progressDialog;
+    int totalImages;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -225,6 +226,8 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             if (studentId != null) {
                 imageRequest.setStudentId(studentId);
             }
+        } else {
+            imageRequest.setStudentId("NA");
         }
 
         imageRequest.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
@@ -266,7 +269,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     public void uploadImage() {
         // Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
         final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
-        progressDialog.setTitle("Uploading");
+        progressDialog.setTitle("Uploading " + imglist.size() + "/" + totalImages);
         progressDialog.show();
         StorageReference riversRef = getMyActivity().mStorageRef.child("images/image" + Calendar.getInstance().getTime() + ".jpg");
         riversRef.putFile(imglist.get(0))
@@ -285,6 +288,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                             uploadImage();
                         } else {
                             ClearView();
+                            getMyActivity().performBackForDesign();
                         }
                     }
                 })
@@ -430,7 +434,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     }
 
     private void setImage(List<Uri> listOfUri) {
-
+        totalImages = listOfUri.size();
         //        Uri selectedImage1 = data.getData();
         for (Uri selectedImage : listOfUri) {
             try {
@@ -469,7 +473,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         Glide.with(this)
                 .load(uri)
                 .asBitmap()
-                .override(600, 600)
+                .override(300, 300)
                 .fitCenter()
                 .into(imageView);
         if (flag) {
@@ -535,7 +539,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         switch (item.getItemId()) {
             case R.id.action_save:
                 try {
-                    AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.logout_title), getString(R.string.save_msg));
+                    AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.app_name), getString(R.string.save_msg));
                     builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

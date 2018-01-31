@@ -128,7 +128,7 @@
                     android:id="@+id/horizontalLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="200dp">
+                    android:minHeight="150dp">
 
                     <LinearLayout
                         android:id="@+id/lay1"

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,6 +33,8 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.ImageRequest;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -121,6 +124,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         private ImageButton btnShare;
         private ImageButton btnDownload;
         private ImageButton btnDelete;
+        private ImageButton btnRotate;
 
         public MyViewPagerAdapter() {
         }
@@ -135,7 +139,7 @@ public class SlideshowDialogFragment extends DialogFragment {
             btnShare = (ImageButton) view.findViewById(R.id.btn_share);
             btnDownload = (ImageButton) view.findViewById(R.id.btn_download);
             btnDelete = (ImageButton) view.findViewById(R.id.btn_delete);
-
+            btnRotate = (ImageButton) view.findViewById(R.id.btn_rotate);
             if (AppController.isAdmin(getMyActivity())) {
                 btnDelete.setVisibility(View.VISIBLE);
             } else {
@@ -157,12 +161,17 @@ public class SlideshowDialogFragment extends DialogFragment {
                     .into(imageViewPreview);
 
             container.addView(view);
-
+            btnRotate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imageViewPreview.setRotation(90);
+                }
+            });
 
             btnShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    shareImage(image);
+                    shareImage(imageViewPreview, image.getUniqKey());
                 }
             });
             btnDownload.setOnClickListener(new View.OnClickListener() {
@@ -204,33 +213,6 @@ public class SlideshowDialogFragment extends DialogFragment {
         }
     }
 
-    private void shareImage(ImageRequest imageRequest) {
-
-        Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("image/*");
-        share.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageRequest.getImg()));
-        share.putExtra(Intent.EXTRA_TEXT, imageRequest.getPlaceName());
-        startActivity(Intent.createChooser(share, "Share via"));
-
-       /* Uri imageUri = Uri.parse(imageRequest.getImg());
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        //Target whatsapp:
-        // shareIntent.setPackage("com.whatsapp");
-        //Add text and then Image URI
-        shareIntent.putExtra(Intent.EXTRA_TEXT, imageRequest.getPlaceName());
-        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        shareIntent.setType("image/jpeg");
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        try {
-            startActivity(shareIntent);
-        } catch (Exception ex) {
-            Toast.makeText(getActivity(), "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
-        }*/
-    }
-
-
     private HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();
     }
@@ -269,6 +251,32 @@ public class SlideshowDialogFragment extends DialogFragment {
                     }
                 });
 
+    }
+
+    public Bitmap capture(View view) {
+        view.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.setDrawingCacheEnabled(false);
+        return bitmap;
+    }
+
+    public void shareImage(View view, String filename) {
+        Context context = view.getContext();
+        Bitmap bitmap = capture(view);
+        try {
+            File file = new File(context.getExternalCacheDir(), filename + ".png");
+            FileOutputStream fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("image/png");
+            Uri uri = Uri.fromFile(file);
+            i.putExtra(Intent.EXTRA_STREAM, uri);
+            context.startActivity(Intent.createChooser(i, "Share"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void deleteImage(ImageRequest imageRequest) {

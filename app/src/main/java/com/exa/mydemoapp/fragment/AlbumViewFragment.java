@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
@@ -41,7 +42,6 @@ public class AlbumViewFragment extends CommonFragment {
     View view;
     ProgressDialog progressDialog;
     List<ImageRequest> listAlbumChild;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,12 +55,13 @@ public class AlbumViewFragment extends CommonFragment {
         getMyActivity().init();
         initViewBinding(view);
         images = new ArrayList<>();
+
         if (Connectivity.isConnected(getMyActivity())) {
             progressDialog = new ProgressDialog(getMyActivity());
             progressDialog.setTitle("Loading...");
             progressDialog.show();
             getImageData();
-        }else {
+        } else {
             getMyActivity().showToast("Please Connect to internet !!");
         }
         return view;
@@ -68,6 +69,7 @@ public class AlbumViewFragment extends CommonFragment {
 
     private void getImageData() {
         String userId = getMyActivity().databaseReference.push().getKey();
+        String studentId = CommonUtils.getStudentId(getMyActivity()) == null ? "NA" : CommonUtils.getStudentId(getMyActivity());
         DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
         Query query = ref2.orderByChild("imageType").equalTo("Gallery");
@@ -79,8 +81,13 @@ public class AlbumViewFragment extends CommonFragment {
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
                     ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
                     if (imageRequest.getVisiblity().equalsIgnoreCase("TRUE")) {
-                        mapAlbum.put(imageRequest.getPlaceName(), imageRequest);
-                        td.put(Snapshot.getKey(), imageRequest);
+                          if (!imageRequest.getStudentId().equals("NA") && !imageRequest.getStudentId().equals(studentId)) {
+
+                        } else {
+                            mapAlbum.put(imageRequest.getPlaceName(), imageRequest);
+                            td.put(Snapshot.getKey(), imageRequest);
+                        }
+
                     }
                 }
 

@@ -15,14 +15,20 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.model.ImageRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -138,7 +144,6 @@ public class CommonActivity extends AppCompatActivity {
     }
 
 
-
     public void deleteFirebaseFile(String url) {
         StringBuilder builder = new StringBuilder();
         builder.append("images/");
@@ -181,4 +186,65 @@ public class CommonActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void updateAlbumInfo() {
+        try {
+            init();
+
+            DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
+            DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
+            Query query = ref2.orderByChild("placeName").equalTo("Aah");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
+                        ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
+                        imageRequest.setPlaceName("Raksha Bandhan 2017");
+                        databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
+                        //Toast.makeText(CommonActivity.this, "Information Updated...", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("Exception", "onCancelled", databaseError.toException());
+                }
+            });
+
+        } catch (Exception e) {
+            showToast(e.getMessage());
+        }
+
+    }
+
+    public void updateStudentInfo() {
+        try {
+            init();
+
+            DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
+            DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
+            Query query = ref2.orderByChild("imageType").equalTo("Gallery");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
+                        ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
+                        imageRequest.setStudentId("NA");
+                        databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
+                        //Toast.makeText(CommonActivity.this, "Information Updated...", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("Exception", "onCancelled", databaseError.toException());
+                }
+            });
+
+        } catch (Exception e) {
+            showToast(e.getMessage());
+        }
+
+    }
+
 }
