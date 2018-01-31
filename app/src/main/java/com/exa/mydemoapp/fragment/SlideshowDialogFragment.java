@@ -50,6 +50,14 @@ public class SlideshowDialogFragment extends DialogFragment {
     private TextView lblCount, lblTitle;
     private int selectedPosition = 0;
     private String fragmentFrom;
+    private boolean isGuest;
+
+    private LayoutInflater layoutInflater;
+    private ImageButton btnShare;
+    private ImageButton btnDownload;
+    private ImageButton btnDelete;
+
+    private ImageView currentImage;
 
     static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
@@ -60,12 +68,57 @@ public class SlideshowDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
+
+        selectedPosition = getArguments().getInt("position");
+        fragmentFrom = getArguments().getString("frag");
+        isGuest = getArguments().getBoolean("Guest");
+        images = (ArrayList<ImageRequest>) getArguments().getSerializable("images");
+
+
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
         lblCount = (TextView) v.findViewById(R.id.lblCount);
         lblTitle = (TextView) v.findViewById(R.id.lblTitle);
-        selectedPosition = getArguments().getInt("position");
-        fragmentFrom = getArguments().getString("frag");
-        images = (ArrayList<ImageRequest>) getArguments().getSerializable("images");
+
+        btnShare = (ImageButton) v.findViewById(R.id.btn_share);
+        btnDownload = (ImageButton) v.findViewById(R.id.btn_download);
+        btnDelete = (ImageButton) v.findViewById(R.id.btn_delete);
+
+        if (AppController.isAdmin(getMyActivity())) {
+            btnDelete.setVisibility(View.VISIBLE);
+        } else {
+            btnDelete.setVisibility(View.GONE);
+        }
+        if (isGuest) {
+            btnDownload.setVisibility(View.GONE);
+            btnShare.setVisibility(View.GONE);
+        }
+
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImageRequest image = images.get(selectedPosition);
+                shareImage(currentImage, image.getUniqKey());
+            }
+        });
+        btnDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImageRequest image = images.get(selectedPosition);
+                downloadImage(image.getImg());
+            }
+        });
+        if (fragmentFrom.equals("community")) {
+            btnDelete.setVisibility(View.GONE);
+        } else if (!isGuest && !fragmentFrom.equals("community")) {
+            btnDelete.setVisibility(View.VISIBLE);
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ImageRequest image = images.get(selectedPosition);
+                    deleteImage(image);
+                }
+            });
+        }
 
         getMyActivity().setListAlbumChild(images);
 
@@ -120,11 +173,6 @@ public class SlideshowDialogFragment extends DialogFragment {
     //  adapter
     public class MyViewPagerAdapter extends PagerAdapter {
 
-        private LayoutInflater layoutInflater;
-        private ImageButton btnShare;
-        private ImageButton btnDownload;
-        private ImageButton btnDelete;
-        private ImageButton btnRotate;
 
         public MyViewPagerAdapter() {
         }
@@ -136,23 +184,17 @@ public class SlideshowDialogFragment extends DialogFragment {
             View view = layoutInflater.inflate(R.layout.image_fullscreen_preview, container, false);
 
             ImageView imageViewPreview = (ImageView) view.findViewById(R.id.image_preview);
-            btnShare = (ImageButton) view.findViewById(R.id.btn_share);
-            btnDownload = (ImageButton) view.findViewById(R.id.btn_download);
-            btnDelete = (ImageButton) view.findViewById(R.id.btn_delete);
+            ImageButton btnRotate;
             btnRotate = (ImageButton) view.findViewById(R.id.btn_rotate);
-            if (AppController.isAdmin(getMyActivity())) {
-                btnDelete.setVisibility(View.VISIBLE);
-            } else {
-                btnDelete.setVisibility(View.GONE);
-            }
-            if (getMyActivity().isGuest) {
-                btnDownload.setVisibility(View.GONE);
-                btnShare.setVisibility(View.GONE);
-                btnDelete.setVisibility(View.GONE);
-            }
-
-
+            btnRotate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imageViewPreview.setRotation(90);
+                }
+            });
+            currentImage = imageViewPreview;
             final ImageRequest image = images.get(position);
+
 
             Glide.with(getActivity()).load(image.getImg())
                     .thumbnail(0.5f)
@@ -161,37 +203,6 @@ public class SlideshowDialogFragment extends DialogFragment {
                     .into(imageViewPreview);
 
             container.addView(view);
-            btnRotate.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    imageViewPreview.setRotation(90);
-                }
-            });
-
-            btnShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    shareImage(imageViewPreview, image.getUniqKey());
-                }
-            });
-            btnDownload.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    downloadImage(image.getImg());
-                }
-            });
-            if (fragmentFrom.equals("community")) {
-                btnDelete.setVisibility(View.GONE);
-            } else if (!getMyActivity().isGuest && !fragmentFrom.equals("community")) {
-                btnDelete.setVisibility(View.VISIBLE);
-                btnDelete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        deleteImage(image);
-                    }
-                });
-            }
-
 
             return view;
         }

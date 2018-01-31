@@ -67,6 +67,7 @@ public class GalleryViewFragment extends CommonFragment {
                 bundle.putSerializable("images", (Serializable) imageRequestList);
                 bundle.putInt("position", position);
                 bundle.putString("frag", "gallery");
+                bundle.putBoolean("Guest", getMyActivity().isGuest);
            /*     FragmentTransaction ft = getMyActivity().getSupportFragmentManager().beginTransaction();
                 SlideshowDialogFragment newFragment = new SlideshowDialogFragment();
                 newFragment.setArguments(bundle);
