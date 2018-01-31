@@ -105,8 +105,8 @@ public class HomeActivity extends CommonActivity {
                 });
 
         showFragment(new DashboardFragment(), null);
-//        updateAlbumInfo();
-       // updateStudentInfo();
+        // updateAlbumInfo();
+        // updateStudentInfo();
 
     }
 

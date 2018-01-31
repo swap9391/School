@@ -248,6 +248,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private void saveUserInformation() {
         final String userId = getMyActivity().databaseReference.push().getKey();
         if (!isEdit) {
+            bindModel();
             imageRequest.setUniqKey(userId);
             getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(userId).setValue(imageRequest);
             Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();

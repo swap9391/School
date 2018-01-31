@@ -193,13 +193,13 @@ public class CommonActivity extends AppCompatActivity {
 
             DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
             DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
-            Query query = ref2.orderByChild("placeName").equalTo("Aah");
+            Query query = ref2.orderByChild("placeName").equalTo("Sports Day");
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
                         ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
-                        imageRequest.setPlaceName("Raksha Bandhan 2017");
+                        imageRequest.setPlaceName("Sports Day 2017");
                         databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
                         //Toast.makeText(CommonActivity.this, "Information Updated...", Toast.LENGTH_LONG).show();
                     }
