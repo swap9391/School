@@ -90,7 +90,8 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new AboutSchoolFragment(), null);
                         break;
                     case "School Facilities":
-                        bundle.putString("FEED", "School Facilities");
+                        context.setNewsFeedType("School Facilities");
+                        bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Calender":
@@ -100,15 +101,18 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new AlbumViewFragment(), null);
                         break;
                     case "Achievements":
-                        bundle.putString("FEED", "Achievement");
+                        context.setNewsFeedType("Achievement");
+                        bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Blog":
-                        bundle.putString("FEED", "Blog");
+                        context.setNewsFeedType("Blog");
+                        bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "News Feed":
-                        bundle.putString("FEED", "News Feed");
+                        context.setNewsFeedType("News Feed");
+                        bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Community":

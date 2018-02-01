@@ -544,6 +544,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                     builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            bindModel();
                             if (check()) {
                                 if (Connectivity.isConnected(getMyActivity())) {
                                     if (!isEdit && imglist.size() > 0) {

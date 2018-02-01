@@ -24,8 +24,11 @@ import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
 import com.exa.mydemoapp.model.ImageRequest;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -96,6 +99,24 @@ public class SlidingImageAdapter extends PagerAdapter {
                 })
                 .into(imageView);
         view.addView(imageLayout, 0);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageRequest imageRequest = listImages.get(position);
+                List<ImageRequest> imageRequestList = new ArrayList<>();
+                imageRequest.setImg(imageRequest.getImg());
+                imageRequestList.add(imageRequest);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("images", (Serializable) imageRequestList);
+                bundle.putInt("position", 0);
+                bundle.putString("frag", "community");
+                context.setGallery(false);
+                context.setFromFragment(context.newsFeedFragment);
+                context.showFragment(new SlideshowDialogFragment(), bundle);
+            }
+        });
+
         imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

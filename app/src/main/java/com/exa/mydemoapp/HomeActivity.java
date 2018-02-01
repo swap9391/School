@@ -1,16 +1,23 @@
 package com.exa.mydemoapp;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +37,8 @@ import com.exa.mydemoapp.fragment.ProfileFragment;
 import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.notification.NotifyService;
+import com.exa.mydemoapp.tracker.TrackerService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,6 +64,8 @@ public class HomeActivity extends CommonActivity {
     public List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
     public boolean isGallery = true;
     public boolean isGuest = false;
+    private Fragment fromFragment;
+    private String newsFeedType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +80,7 @@ public class HomeActivity extends CommonActivity {
             setContentView(R.layout.layout_home_guest);
         } else {
             setContentView(R.layout.layout_home);
+         //   startNotificationService();
         }
 
 
@@ -108,6 +120,15 @@ public class HomeActivity extends CommonActivity {
         // updateAlbumInfo();
         // updateStudentInfo();
 
+    }
+
+    private void startNotificationService() {
+        // Before we start the service, confirm that we have extra power usage privileges.
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        intent.setData(Uri.parse("package:" + getPackageName()));
+        startActivity(intent);
+        startService(new Intent(this, NotifyService.class));
     }
 
     @Override
@@ -152,6 +173,9 @@ public class HomeActivity extends CommonActivity {
             bundle.putSerializable("mylist", (Serializable) getListAlbumChild());
             if (isGallery) {
                 showFragment(galleryViewFragment, bundle);
+            } else if (fromFragment == newsFeedFragment) {
+                bundle.putString("FEED", getNewsFeedType());
+                showFragment(newsFeedFragment, bundle);
             } else {
                 showFragment(communityFragment, null);
             }
@@ -250,7 +274,45 @@ public class HomeActivity extends CommonActivity {
 
     }
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
+    };
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(TrackerService.STATUS_INTENT));
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onPause();
+    }
+
+    private void stopLocationService() {
+        if (isServiceRunning(TrackerService.class)) {
+            stopService(new Intent(this, TrackerService.class));
+        }
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void logoOut() {
+        stopLocationService();
         try {
             AlertDialog.Builder builder = showAlertDialog(this, getString(R.string.logout_title), getString(R.string.logout_msg));
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -281,5 +343,18 @@ public class HomeActivity extends CommonActivity {
         alertDialog.setMessage(msg);
         return alertDialog;
     }
+
+    public void setFromFragment(Fragment fromFragment) {
+        this.fromFragment = fromFragment;
+    }
+
+    public String getNewsFeedType() {
+        return newsFeedType;
+    }
+
+    public void setNewsFeedType(String newsFeedType) {
+        this.newsFeedType = newsFeedType;
+    }
+
 }
 

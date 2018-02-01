@@ -69,6 +69,37 @@
             android:name=".tracker.TrackerService"
             android:enabled="true"
             android:exported="true"></service>
+
+
+        <receiver
+            android:name=".notification.NotifyBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name=".TrackerActivity.ALARM_ACTION_START" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name=".TrackerActivity.ALARM_ACTION_END" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".notification.NotifyTaskService"
+            android:exported="true"
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+            <intent-filter>
+                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".notification.NotifyService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+
     </application>
 
 </manifest>

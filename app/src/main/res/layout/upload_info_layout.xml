@@ -79,7 +79,8 @@
                         android:id="@+id/edt_user_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Your Name" />
+                        android:hint="Enter Your Name"
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -91,7 +92,8 @@
                         android:id="@+id/edt_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Title" />
+                        android:hint="Enter Title"
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
 

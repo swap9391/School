@@ -87,7 +87,6 @@ public class AlbumViewFragment extends CommonFragment {
                             mapAlbum.put(imageRequest.getPlaceName(), imageRequest);
                             td.put(Snapshot.getKey(), imageRequest);
                         }
-
                     }
                 }
 
