@@ -27,7 +27,6 @@ import com.exa.mydemoapp.annotation.Validator;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.fragment.CommonFragment;
 import com.exa.mydemoapp.model.StudentModel;
-import com.exa.mydemoapp.viewer.*;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -106,8 +105,9 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setStudentUserName(edtUsername.getText().toString().trim());
         studentModel.setStudentPassword(edtPassword.getText().toString().trim());
         studentModel.setSchoolName(spnSchoolName.getSelectedItem().toString());
-        studentModel.setClassName(spnClass.getSelectedItem().toString());
-        studentModel.setDivision(spnDivision.getSelectedItem().toString());
+        studentModel.setClassName(spnClass.getSelectedItem().toString().trim());
+        studentModel.setDivision(spnDivision.getSelectedItem().toString().trim());
+        studentModel.setRegistrationId(edtRegistrationId.getText().toString().trim());
         studentModel.setUserType("STUDENT");
         studentModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
         studentModel.setVisiblity("TRUE");
@@ -152,7 +152,7 @@ public class SignUpFragment extends CommonFragment {
                     studentModel.setUniqKey(userId);
                     getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.STUDENT).child(studentModel.getUniqKey()).setValue(studentModel);
                     Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-                    getMyActivity().finish();
+                    getMyActivity().showFragment(getMyActivity().profileFragment, null);
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
@@ -175,7 +175,7 @@ public class SignUpFragment extends CommonFragment {
         return alertDialog;
     }
 
-    public com.exa.mydemoapp.viewer.HomeActivity getMyActivity() {
-        return (com.exa.mydemoapp.viewer.HomeActivity) getActivity();
+    public HomeActivity getMyActivity() {
+        return (HomeActivity) getActivity();
     }
 }

@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
-import com.exa.mydemoapp.viewer.HomeActivity;
+import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.EventModel;
 import com.google.firebase.database.DataSnapshot;

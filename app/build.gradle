@@ -40,7 +40,7 @@ android {
             applicationIdSuffix ".viewer"
             versionName "1.0.0"
             versionCode 1000
-            resValue "string", "app_name", "Kalpataru School"
+            resValue "string", "app_name", "Kalpataru Kids"
             buildConfigField "String", "MAIN_TABLE_NAME", "\"KALPATARU_SCHOOL\""
             buildConfigField "String", "map_api_key", "\"AIzaSyA-2OJ_dYLKEZ8V8XOmN2UqFSzUl79hoCY\""
             buildConfigField "String", "google_directions_key", "\"AIzaSyABqf3JePqGL_7vRByYzCYtEb9Ys7VPupI\""

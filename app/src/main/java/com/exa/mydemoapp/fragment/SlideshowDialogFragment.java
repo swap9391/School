@@ -27,8 +27,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
-import com.exa.mydemoapp.viewer.HomeActivity;
+import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.ImageRequest;
 
@@ -103,13 +104,17 @@ public class SlideshowDialogFragment extends DialogFragment {
         btnDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageRequest image = images.get(selectedPosition);
-                downloadImage(image.getImg());
+                if (Connectivity.isConnected(getMyActivity())) {
+                    ImageRequest image = images.get(selectedPosition);
+                    downloadImage(image.getImg());
+                } else {
+                    getMyActivity().showToast("Please connect to internet !");
+                }
             }
         });
         if (fragmentFrom.equals("community")) {
             btnDelete.setVisibility(View.GONE);
-        } else if (!isGuest && !fragmentFrom.equals("community")) {
+        } else if (AppController.isAdmin(getMyActivity()) && !isGuest && !fragmentFrom.equals("community")) {
             btnDelete.setVisibility(View.VISIBLE);
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override

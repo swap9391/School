@@ -52,7 +52,7 @@ public class LoginActivity extends CommonActivity {
         setContentView(R.layout.layout_login);
         view = getWindow().getDecorView();
         if (CommonUtils.getSharedPref(Constants.USER_NAME, this) != null && !CommonUtils.getSharedPref(Constants.USER_NAME, this).isEmpty()) {
-            Intent intent = new Intent(this, com.exa.mydemoapp.viewer.HomeActivity.class);
+            Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             finish();
         }
@@ -63,7 +63,7 @@ public class LoginActivity extends CommonActivity {
         btnGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, com.exa.mydemoapp.viewer.HomeActivity.class);
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 intent.putExtra(Constants.USER_TYPE, "GUEST");
                 startActivity(intent);
 
@@ -126,8 +126,9 @@ public class LoginActivity extends CommonActivity {
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getUniqKey());
                         AppController.isAdmin(LoginActivity.this);
-                        Intent intent = new Intent(LoginActivity.this, com.exa.mydemoapp.viewer.HomeActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
+                        finish();
                         Toast.makeText(getApplicationContext(), "Login Successfully!!", Toast.LENGTH_SHORT).show();
 
                     } else {

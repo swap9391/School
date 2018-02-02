@@ -8,9 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.exa.mydemoapp.viewer.HomeActivity;
+import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 
@@ -30,7 +28,7 @@ public class AboutSchoolFragment extends CommonFragment {
     TextView txtSchoolContent;
     @ViewById(R.id.img_school_logo)
     CircleImageView circleImageView;
-    private String path = "https://firebasestorage.googleapis.com/v0/b/prawas-9af67.appspot.com/o/images%2FimageMon+Oct+30+20%3A49%3A17+GMT%2B05%3A30+2017.jpg?alt=media&token=e9243a74-ef83-42dc-b3e6-2147f3e647ee";
+    // private String path = "https://firebasestorage.googleapis.com/v0/b/prawas-9af67.appspot.com/o/images%2FimageMon+Oct+30+20%3A49%3A17+GMT%2B05%3A30+2017.jpg?alt=media&token=e9243a74-ef83-42dc-b3e6-2147f3e647ee";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,24 +39,23 @@ public class AboutSchoolFragment extends CommonFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_about_school, container, false);
-        getMyActivity().toolbar.setVisibility(View.GONE);
+        getMyActivity().getToolbar().setVisibility(View.GONE);
         getMyActivity().init();
         initViewBinding(view);
 
-        txtSchoolTitle.setText("Idol School");
+        txtSchoolTitle.setText("Kalpatru Kids");
         txtSchoolAddress.setText("Pune");
         txtSchoolContent.setText(getMyActivity().getResources().getString(R.string.school_content));
 
-        Glide.with(getMyActivity()).load(path)
+      /*  Glide.with(getMyActivity()).load(R.mipmap.ic_launcher)
                 .thumbnail(0.5f)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.defualt_album_icon)
-                .into(circleImageView);
+                .into(circleImageView);*/
 
         return view;
     }
-
 
 
     private HomeActivity getMyActivity() {

@@ -20,7 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.exa.mydemoapp.viewer.HomeActivity;
+import com.exa.mydemoapp.HomeActivity;
 
 public class NotifyBroadcastReceiver extends BroadcastReceiver {
     public NotifyBroadcastReceiver() {

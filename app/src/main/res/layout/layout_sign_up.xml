@@ -54,6 +54,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Enter Registration Id"
                     android:maxLines="1"
+                    android:minLines="1"
                     />
             </android.support.design.widget.TextInputLayout>
 
@@ -69,6 +70,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Enter Student Name"
                     android:maxLines="1"
+                    android:minLines="1"
                     />
             </android.support.design.widget.TextInputLayout>
 
@@ -97,6 +99,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Enter Student Blood Group"
                     android:maxLines="1"
+                    android:minLines="1"
                     android:maxLength="5"
                      />
             </android.support.design.widget.TextInputLayout>
@@ -112,7 +115,9 @@
                     android:layout_height="wrap_content"
                     android:hint="Enter Student User Name"
                     android:maxLength="25"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:minLines="1"
+                    />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -127,7 +132,9 @@
                     android:hint="Enter Student Password"
                     android:inputType="textPassword"
                     android:maxLength="20"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:minLines="1"
+                    />
             </android.support.design.widget.TextInputLayout>
 
 

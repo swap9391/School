@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.SignUpFragment;
-import com.exa.mydemoapp.viewer.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 
@@ -46,6 +47,9 @@ public class ProfileFragment extends CommonFragment {
         getMyActivity().init();
         getMyActivity().toolbar.setTitle("My Profile");
         setData();
+        if (!AppController.isAdmin(getMyActivity())) {
+            layManageUser.setVisibility(View.GONE);
+        }
         layManageUser.setOnClickListener(new onManageUserClick());
         layLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +74,7 @@ public class ProfileFragment extends CommonFragment {
     private class onManageUserClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            Intent intent1 = new Intent(getMyActivity(), SignUpFragment.class);
-            getMyActivity().startActivity(intent1);
+            getMyActivity().showFragment(getMyActivity().signUpFragment, null);
         }
     }
 

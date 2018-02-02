@@ -24,6 +24,8 @@ import android.view.View;
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.LoginActivity;
+import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
@@ -46,7 +48,6 @@ import java.util.List;
 /**
  * Created by midt-006 on 12/10/17.
  */
-
 public class HomeActivity extends CommonActivity {
     public Toolbar toolbar;
     public AlbumViewFragment albumViewFragment;
@@ -97,29 +98,27 @@ public class HomeActivity extends CommonActivity {
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Fragment selectedFragment = null;
                         Bundle bundle = new Bundle();
                         switch (item.getItemId()) {
                             case R.id.action_item1:
                                 showToolbar();
-                                selectedFragment = new DashboardFragment();
+                                showFragment(dashboardFragment, null);
                                 break;
                             case R.id.action_item2:
                                 showToolbar();
-                                selectedFragment = new NewsFeedFragment();
                                 bundle.putString("FEED", "News Feed");
+                                showFragment(newsFeedFragment, bundle);
                                 break;
                             case R.id.action_item3:
                                 showToolbar();
-                                selectedFragment = new ProfileFragment();
+                                showFragment(profileFragment, null);
                                 break;
                         }
-                        showFragment(selectedFragment, bundle);
                         return true;
                     }
                 });
 
-        showFragment(new DashboardFragment(), null);
+        showFragment(dashboardFragment, null);
         // updateAlbumInfo();
         // updateStudentInfo();
 
@@ -171,9 +170,6 @@ public class HomeActivity extends CommonActivity {
         } else if (profileFragment != null && profileFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
-        } else if (signUpFragment != null && signUpFragment.getClass() == currentFragment.getClass()) {
-            showToolbar();
-            showFragment(profileFragment, null);
         } else if (slideshowDialogFragment != null && slideshowDialogFragment.getClass() == currentFragment.getClass()) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("mylist", (Serializable) getListAlbumChild());
@@ -195,7 +191,7 @@ public class HomeActivity extends CommonActivity {
     }
 
     private void showToolbar() {
-        toolbar.setVisibility(View.VISIBLE);
+        getToolbar().setVisibility(View.VISIBLE);
     }
 
     public void showFragment(Fragment fragmentClass, Bundle bundle) {
@@ -363,5 +359,8 @@ public class HomeActivity extends CommonActivity {
         this.newsFeedType = newsFeedType;
     }
 
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
 }
 

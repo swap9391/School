@@ -24,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
@@ -445,7 +446,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent1 = new Intent(this, com.exa.mydemoapp.viewer.HomeActivity.class);
+        Intent intent1 = new Intent(this, HomeActivity.class);
         startActivity(intent1);
         finish();
     }
@@ -454,6 +455,9 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_map, menu);
+        if (!AppController.isAdmin(MapsActivity.this)) {
+            menu.findItem(R.id.menu_tracker).setVisible(false);
+        }
         // return true so that the menu pop up is opened
         return true;
     }

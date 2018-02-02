@@ -19,7 +19,7 @@ package com.exa.mydemoapp.notification;
 import android.content.Intent;
 import android.util.Log;
 
-import com.exa.mydemoapp.viewer.HomeActivity;
+import com.exa.mydemoapp.HomeActivity;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;

@@ -11,7 +11,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.exa.mydemoapp.Common.AppController;
-import com.exa.mydemoapp.viewer.HomeActivity;
+import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.HomeGridAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
