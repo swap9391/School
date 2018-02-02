@@ -445,7 +445,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent1 = new Intent(this, HomeActivity.class);
+        Intent intent1 = new Intent(this, com.exa.mydemoapp.viewer.HomeActivity.class);
         startActivity(intent1);
         finish();
     }
@@ -483,7 +483,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                     + "transit_routing_preference=less_driving&"
                     + "origin=" + latitude + "," + longitude + "&"
                     + "destination=" + destination + "&"
-                    + "key=" + getResources().getString(R.string.google_directions_key) + "+&sensor=true";
+                    + "key=" + BuildConfig.google_directions_key + "+&sensor=true";
             Log.d(TAG, requestUrl);
 
            /* if (Connectivity.isConnected(MapsActivity.this)) {

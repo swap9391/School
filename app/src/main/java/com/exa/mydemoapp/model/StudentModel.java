@@ -18,6 +18,8 @@ public class StudentModel implements Serializable {
     private String className;
     @Required(message = "Please Select Division Name")
     private String division;
+    @Required(message = "Please Registration Id")
+    private String registrationId;
     @Required(message = "Please Enter Student Name")
     private String studentName;
     @Required(message = "Please Enter Student Address")
@@ -123,5 +125,13 @@ public class StudentModel implements Serializable {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public String getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(String registrationId) {
+        this.registrationId = registrationId;
     }
 }

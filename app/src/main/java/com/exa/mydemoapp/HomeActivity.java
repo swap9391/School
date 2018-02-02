@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -61,6 +60,7 @@ public class HomeActivity extends CommonActivity {
     public CommunityFragment communityFragment;
     public AboutSchoolFragment aboutSchoolFragment;
     public ProfileFragment profileFragment;
+    public SignUpFragment signUpFragment;
     public List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
     public boolean isGallery = true;
     public boolean isGuest = false;
@@ -80,7 +80,7 @@ public class HomeActivity extends CommonActivity {
             setContentView(R.layout.layout_home_guest);
         } else {
             setContentView(R.layout.layout_home);
-         //   startNotificationService();
+            //   startNotificationService();
         }
 
 
@@ -101,13 +101,16 @@ public class HomeActivity extends CommonActivity {
                         Bundle bundle = new Bundle();
                         switch (item.getItemId()) {
                             case R.id.action_item1:
+                                showToolbar();
                                 selectedFragment = new DashboardFragment();
                                 break;
                             case R.id.action_item2:
+                                showToolbar();
                                 selectedFragment = new NewsFeedFragment();
                                 bundle.putString("FEED", "News Feed");
                                 break;
                             case R.id.action_item3:
+                                showToolbar();
                                 selectedFragment = new ProfileFragment();
                                 break;
                         }
@@ -168,6 +171,9 @@ public class HomeActivity extends CommonActivity {
         } else if (profileFragment != null && profileFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
+        } else if (signUpFragment != null && signUpFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(profileFragment, null);
         } else if (slideshowDialogFragment != null && slideshowDialogFragment.getClass() == currentFragment.getClass()) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("mylist", (Serializable) getListAlbumChild());
@@ -212,6 +218,7 @@ public class HomeActivity extends CommonActivity {
         communityFragment = new CommunityFragment();
         aboutSchoolFragment = new AboutSchoolFragment();
         profileFragment = new ProfileFragment();
+        signUpFragment = new SignUpFragment();
     }
 
     public List<ImageRequest> getListAlbumChild() {

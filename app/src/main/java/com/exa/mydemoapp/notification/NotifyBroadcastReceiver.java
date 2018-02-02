@@ -20,8 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.exa.mydemoapp.HomeActivity;
-import com.exa.mydemoapp.tracker.TrackerActivity;
+import com.exa.mydemoapp.viewer.HomeActivity;
 
 public class NotifyBroadcastReceiver extends BroadcastReceiver {
     public NotifyBroadcastReceiver() {

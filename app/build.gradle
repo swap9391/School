@@ -15,7 +15,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -31,6 +31,8 @@ android {
             versionCode 1000
             resValue "string", "app_name", "CoolSchool"
             buildConfigField "String", "MAIN_TABLE_NAME", "\"SCHOOLDATA\""
+            buildConfigField "String", "map_api_key", "\"AIzaSyAdS-peuXETXXQE8s9EiV3agEHVmlzVdKo\""
+            buildConfigField "String", "google_directions_key", "\"AIzaSyDXW9gHZgEoagVgC07qXsisT789glQo1n4\""
         }
         kalpataruFlavour {
             applicationId
@@ -40,6 +42,8 @@ android {
             versionCode 1000
             resValue "string", "app_name", "Kalpataru School"
             buildConfigField "String", "MAIN_TABLE_NAME", "\"KALPATARU_SCHOOL\""
+            buildConfigField "String", "map_api_key", "\"AIzaSyA-2OJ_dYLKEZ8V8XOmN2UqFSzUl79hoCY\""
+            buildConfigField "String", "google_directions_key", "\"AIzaSyABqf3JePqGL_7vRByYzCYtEb9Ys7VPupI\""
         }
 
     }

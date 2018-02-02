@@ -1,0 +1,68 @@
+<resources>
+
+    <string name="description">Indian captain Sunil Chettri said that the entire team was jumping when Jeakson Singh scored a goal against Colombia in the FIFA U-17 World Cup. Jeaksons goal took the Indian under 17 side on level terms with Colombia momentarily before conceding just a minute late. I was jumping, man! We all were jumping! said Chettri.</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+
+    <string-array name="event_type">
+        <item>Holiday</item>
+        <item>Exam</item>
+        <item>Curricular</item>
+    </string-array>
+
+    <string-array name="class_type">
+        <item>All</item>
+        <item>1st</item>
+        <item>2nd</item>
+        <item>4th</item>
+        <item>5th</item>
+        <item>6th</item>
+        <item>7th</item>
+        <item>8th</item>
+        <item>9th</item>
+        <item>10th</item>
+    </string-array>
+
+    <string-array name="image_type">
+        <item>News Feed</item>
+        <item>Blog</item>
+        <item>Achievement</item>
+        <item>Gallery</item>
+        <item>Staff Information</item>
+        <item>School Facilities</item>
+    </string-array>
+
+    <string-array name="school_name">
+        <item>New English school</item>
+        <item>Ideal School</item>
+        <item>Indira School</item>
+        <item>Kalptaru School</item>
+    </string-array>
+
+    <string-array name="division_name">
+        <item>A Division</item>
+        <item>B Division</item>
+        <item>C Division</item>
+        <item>D Division</item>
+    </string-array>
+
+    <string name="school_content">The XYZ was established in February 1994, under the visionary leadership of XYZ person, with the aim of providing top quality pre-primary, primary, secondary, graduation and post-graduate education. At a time when India was struggling to put its economy back on its feet, after the nation having pawned the “family jewels” just to keep afloat, XYZ Person sensed that education too would have to become more broad based and more vocational in nature if India was to stand up to the world competition in quality and price for its products, as indeed the then Finance Minister had prescribed for the economy and so, in 1994, began a saga of growth and quality in education; a story that is just reaching its zenith with 14 full fledged Institutes registering a strong presence on Pune’s educational horizon. Since inception, the Institutes managed by SCES, have maintained high academic standards and have successfully provided trained manpower to the industrial and services sector of the country. With a modest strength of 60 students pursuing a single course, SCES has grown steadily and today boasts of 10 Institutes, having more than 8000 students from all over India pursuing multi-disciplinary, graduate and post-graduate programmes. The objective of the institute is providing ‘Management education in a corporate environment’, has been possible due to the sincere and dedicated efforts of the members of SCES, who have invaluable experience in varied areas like academics, industry, service and social-work.</string>
+    <string name="map_api_key">AIzaSyA-2OJ_dYLKEZ8V8XOmN2UqFSzUl79hoCY</string>
+    <string name="tracking">Tracking &#x2713;</string>
+    <string name="status">status</string>
+    <string name="location_permission_required">Location permissions are required for tracking
+        location. Please grant these permissions to continue.</string>
+    <string name="gps_required">Gps not enabled.</string>
+    <string name="enable">Enable</string>
+    <string name="confirm_stop">Do you really want to disable location tracking?</string>
+    <string name="not_tracking">Not tracking &#x2718;</string>
+    <string name="connecting">Connecting &#8230;</string>
+    <string name="transport_id" translatable="false">transport_id</string>
+    <string name="missing_inputs">Please enter a transport ID</string>
+    <string name="logout_title">Logout</string>
+    <string name="logout_msg">Do you want to sign out?</string>
+    <string name="exit_msg">Do you want to exit from application?</string>
+    <string name="save_msg">Do you want to save?</string>
+    <string name="delete_msg">Do you want to delete?</string>
+</resources>

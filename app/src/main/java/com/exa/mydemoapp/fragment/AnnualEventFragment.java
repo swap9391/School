@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
-import com.exa.mydemoapp.HomeActivity;
+import com.exa.mydemoapp.viewer.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.EventModel;
 import com.google.firebase.database.DataSnapshot;
@@ -66,7 +66,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
 
         eventModel = new EventModel();
         datePicker = (Button) view.findViewById(R.id.date_picker_event);
-        txtSelectedDate = (Button) view.findViewById(R.id.txt_selected_date);
+        txtSelectedDate = (TextView) view.findViewById(R.id.txt_selected_date);
         spinnerType = (Spinner) view.findViewById(R.id.spinner_event_type);
         spinnerClass = (Spinner) view.findViewById(R.id.spinner_class);
         edtEventName = (EditText) view.findViewById(R.id.edt_event_name);
@@ -221,7 +221,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
             String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT);
             eventModel.setEventDate(formatedDate);
-            txtSelectedDate.setText(formatedDate);
+            txtSelectedDate.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
         }
     };
 

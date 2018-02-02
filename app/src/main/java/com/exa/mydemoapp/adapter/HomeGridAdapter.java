@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.exa.mydemoapp.HomeActivity;
+import com.exa.mydemoapp.viewer.HomeActivity;
 import com.exa.mydemoapp.MapsActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;

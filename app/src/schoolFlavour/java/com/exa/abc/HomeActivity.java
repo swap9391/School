@@ -1,4 +1,4 @@
-package com.exa.abc;
+package com.exa.mydemoapp;
 
 import android.app.AlertDialog;
 import android.content.Context;

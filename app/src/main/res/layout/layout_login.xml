@@ -25,29 +25,11 @@
             android:id="@+id/lay_reg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
             android:layout_below="@+id/toolbar"
+            android:layout_centerInParent="true"
             android:layout_marginTop="10dp"
+            android:gravity="center"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/lbl_reg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="Dont Have Account?"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btn_sign_up"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                android:background="@color/colorPrimary"
-                android:text="Sign Up"
-                android:textColor="@color/white" />
 
             <android.support.v7.widget.CardView
                 android:id="@+id/layCard"
@@ -87,7 +69,9 @@
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="7dp">
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginRight="7dp"
+                        android:layout_marginTop="25dp">
 
                         <EditText
                             android:id="@+id/edt_user_name"
@@ -118,6 +102,15 @@
 
 
     </RelativeLayout>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="horizontal"
+        android:src="@mipmap/ic_launcher"
+        app:layout_anchor="@+id/layCard"
+        app:layout_anchorGravity="top|center|center_horizontal"></ImageView>
 
 
     <LinearLayout
