@@ -159,6 +159,24 @@
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
 
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp">
+
+                <EditText
+                    android:id="@+id/edt_total_fees"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Total Fees"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:maxLines="1"
+                    android:minLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -186,8 +204,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter first installment"
-                    android:inputType="textPassword"
-                    android:maxLength="20"
+                    android:inputType="number"
+                    android:maxLength="6"
                     android:maxLines="1"
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
@@ -202,8 +220,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter second installment"
-                    android:inputType="textPassword"
-                    android:maxLength="20"
+                    android:inputType="number"
+                    android:maxLength="6"
                     android:maxLines="1"
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
@@ -218,8 +236,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter third installment"
-                    android:inputType="textPassword"
-                    android:maxLength="20"
+                    android:inputType="number"
+                    android:maxLength="6"
                     android:maxLines="1"
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>

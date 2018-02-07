@@ -34,6 +34,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.CommunityModel;
@@ -98,7 +99,8 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        studentName = CommonUtils.getSharedPref(Constants.STUDENT_NAME, getMyActivity());
+        StudentInfoSingleton studentInfoSingleton = StudentInfoSingleton.getInstance(getMyActivity());
+        studentName = studentInfoSingleton.getStudentModel().getStudentName();
         telephonyManager = (TelephonyManager) getMyActivity().getSystemService(Context.TELEPHONY_SERVICE);
         showList();
         return view;

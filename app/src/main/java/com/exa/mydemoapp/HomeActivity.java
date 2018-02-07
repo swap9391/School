@@ -24,6 +24,7 @@ import android.view.View;
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.LoginActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
@@ -36,7 +37,9 @@ import com.exa.mydemoapp.fragment.GalleryViewFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.ProfileFragment;
 import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
+import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
+import com.exa.mydemoapp.fragment.UsersListFragment;
 import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.notification.NotifyService;
 import com.exa.mydemoapp.tracker.TrackerService;
@@ -62,11 +65,14 @@ public class HomeActivity extends CommonActivity {
     public AboutSchoolFragment aboutSchoolFragment;
     public ProfileFragment profileFragment;
     public SignUpFragment signUpFragment;
+    public StaffInfoFragment staffInfoFragment;
+    public UsersListFragment usersListFragment;
     public List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
     public boolean isGallery = true;
     public boolean isGuest = false;
     private Fragment fromFragment;
     private String newsFeedType;
+    private StudentInfoSingleton studentInfoSingleton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +88,11 @@ public class HomeActivity extends CommonActivity {
         } else {
             setContentView(R.layout.layout_home);
             //   startNotificationService();
+            studentInfoSingleton = StudentInfoSingleton.getInstance(this);
+            if (studentInfoSingleton.getStudentModel() == null) {
+                studentInfoSingleton.checkLogin();
+            }
         }
-
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
@@ -110,8 +119,12 @@ public class HomeActivity extends CommonActivity {
                                 showFragment(newsFeedFragment, bundle);
                                 break;
                             case R.id.action_item3:
-                                showToolbar();
-                                showFragment(profileFragment, null);
+                                if (studentInfoSingleton.getStudentModel() != null) {
+                                    showToolbar();
+                                    showFragment(profileFragment, null);
+                                } else {
+                                    studentInfoSingleton.checkLogin();
+                                }
                                 break;
                         }
                         return true;
@@ -179,11 +192,24 @@ public class HomeActivity extends CommonActivity {
                 bundle.putString("FEED", getNewsFeedType());
                 showFragment(newsFeedFragment, bundle);
             } else {
-                showFragment(communityFragment, null);
+                if (studentInfoSingleton.getStudentModel() != null) {
+                    showFragment(communityFragment, null);
+                } else {
+                    studentInfoSingleton.checkLogin();
+                }
             }
         } else if (communityFragment != null && communityFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
+        } else if (staffInfoFragment != null && staffInfoFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
+        } else if (signUpFragment != null && signUpFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(usersListFragment, null);
+        } else if (usersListFragment != null && usersListFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(profileFragment, null);
         } else {
             exitDialog();
         }
@@ -215,6 +241,8 @@ public class HomeActivity extends CommonActivity {
         aboutSchoolFragment = new AboutSchoolFragment();
         profileFragment = new ProfileFragment();
         signUpFragment = new SignUpFragment();
+        staffInfoFragment = new StaffInfoFragment();
+        usersListFragment = new UsersListFragment();
     }
 
     public List<ImageRequest> getListAlbumChild() {

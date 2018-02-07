@@ -31,6 +31,7 @@ public class StudentModel implements Serializable {
     private String userType;
     private String studentBloodGrp;
     private String gender;
+    private int totalFees;
     private String installmentType;
     private String installment1;
     private String installment2;
@@ -178,5 +179,13 @@ public class StudentModel implements Serializable {
 
     public void setInstallment3(String installment3) {
         this.installment3 = installment3;
+    }
+
+    public int getTotalFees() {
+        return totalFees;
+    }
+
+    public void setTotalFees(int totalFees) {
+        this.totalFees = totalFees;
     }
 }

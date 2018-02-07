@@ -42,6 +42,7 @@ public class AlbumViewFragment extends CommonFragment {
     View view;
     ProgressDialog progressDialog;
     List<ImageRequest> listAlbumChild;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +82,7 @@ public class AlbumViewFragment extends CommonFragment {
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
                     ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
                     if (imageRequest.getVisiblity().equalsIgnoreCase("TRUE")) {
-                          if (!imageRequest.getStudentId().equals("NA") && !imageRequest.getStudentId().equals(studentId)) {
+                        if (!imageRequest.getStudentId().equals("NA") && !imageRequest.getStudentId().equals(studentId)) {
 
                         } else {
                             mapAlbum.put(imageRequest.getPlaceName(), imageRequest);
@@ -111,7 +112,7 @@ public class AlbumViewFragment extends CommonFragment {
 
 
     private void ShowList(final List<ImageRequest> imageRequestList) {
-        mAdapter = new GalleryAdapter(getMyActivity(), imageRequestList, imageRequestList.size());
+        mAdapter = new GalleryAdapter(getMyActivity(), imageRequestList, imageRequestList.size(), null);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getMyActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);

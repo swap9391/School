@@ -52,7 +52,7 @@ public class GalleryViewFragment extends CommonFragment {
 
 
     private void ShowList(final List<ImageRequest> imageRequestList) {
-        mAdapter = new GalleryAdapter(getMyActivity(), imageRequestList, 0);
+        mAdapter = new GalleryAdapter(getMyActivity(), imageRequestList, 0,null);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getMyActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);

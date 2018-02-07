@@ -19,6 +19,7 @@ import com.exa.mydemoapp.fragment.AnnualEventFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
+import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 
 /**
@@ -119,7 +120,7 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new CommunityFragment(), null);
                         break;
                     case "Staff Information":
-                        context.showToast("You Clicked " + result[position]);
+                        context.showFragment(new StaffInfoFragment(), null);
                         break;
                     case "Upload Image":
                         context.showFragment(new UploadPhotoFragment(), null);

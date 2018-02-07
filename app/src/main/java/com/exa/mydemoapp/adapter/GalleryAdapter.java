@@ -5,6 +5,7 @@ package com.exa.mydemoapp.adapter;
  */
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -31,30 +32,46 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
     private List<ImageRequest> images;
     private Context mContext;
     private int count;
+    private String fragment;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public ImageView thumbnail;
-        public TextView txtImageFooter;
+        private ImageView thumbnail;
+        private TextView txtImageFooter;
+        private CardView cardView;
+        private TextView txtName;
+        private TextView txtDescription;
 
         public MyViewHolder(View view) {
             super(view);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
             txtImageFooter = (TextView) view.findViewById(R.id.txt_album_name);
+            if (fragment != null && fragment.equalsIgnoreCase("Staff")) {
+                cardView = (CardView) view.findViewById(R.id.layCard);
+                txtName = (TextView) view.findViewById(R.id.txt_staff_name);
+                txtDescription = (TextView) view.findViewById(R.id.txt_description);
+            }
+
         }
     }
 
 
-    public GalleryAdapter(Context context, List<ImageRequest> images, int count) {
+    public GalleryAdapter(Context context, List<ImageRequest> images, int count, String fragment) {
         mContext = context;
         this.images = images;
         this.count = count;
+        this.fragment = fragment;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.gallery_thumbnail, parent, false);
-
+        View itemView;
+        if (fragment != null && fragment.equalsIgnoreCase("Staff")) {
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.staff_gallery_thumbnail, parent, false);
+        } else {
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.gallery_thumbnail, parent, false);
+        }
         return new MyViewHolder(itemView);
     }
 
@@ -75,6 +92,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
                 .placeholder(R.drawable.defualt_album_icon)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.thumbnail);
+
+        if (fragment != null && fragment.equalsIgnoreCase("Staff")) {
+            holder.cardView.setVisibility(View.VISIBLE);
+            holder.txtImageFooter.setVisibility(View.GONE);
+            holder.txtName.setText(image.getPlaceName());
+            holder.txtDescription.setText(image.getDescription());
+        }
     }
 
     @Override

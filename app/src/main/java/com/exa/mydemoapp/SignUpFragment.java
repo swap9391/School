@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,6 +30,8 @@ import com.exa.mydemoapp.annotation.RequiredFieldException;
 import com.exa.mydemoapp.annotation.Validator;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.fragment.CommonFragment;
+import com.exa.mydemoapp.fragment.UsersListFragment;
+import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.StudentModel;
 
 import java.util.Arrays;
@@ -76,7 +79,13 @@ public class SignUpFragment extends CommonFragment {
     private EditText edtInstallment2;
     @ViewById(R.id.edt_installment_3)
     private EditText edtInstallment3;
-
+    @ViewById(R.id.edt_total_fees)
+    private EditText edtTotalFees;
+    @ViewById(R.id.rd_girl)
+    RadioButton rdGirl;
+    @ViewById(R.id.rd_boy)
+    RadioButton rdBoy;
+    boolean isEdit = false;
 
     private View view;
 
@@ -100,14 +109,11 @@ public class SignUpFragment extends CommonFragment {
         spnClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
 
-
         listDivision = Arrays.asList(getResources().getStringArray(R.array.division_name));
         ArrayAdapter<String> divisionAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
         divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnDivision.setAdapter(divisionAdapter);
         divisionAdapter.notifyDataSetChanged();
-
-        studentModel = new StudentModel();
 
         edtInstallment2.setVisibility(View.GONE);
         edtInstallment3.setVisibility(View.GONE);
@@ -120,20 +126,20 @@ public class SignUpFragment extends CommonFragment {
         spnFeesType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (!listClass.get(position).equals("All")) {
-
-                }
-                switch (listClass.get(position)) {
+                switch (listFees.get(position)) {
                     case "First Installment":
                         edtInstallment1.setVisibility(View.VISIBLE);
                         edtInstallment2.setVisibility(View.GONE);
                         edtInstallment3.setVisibility(View.GONE);
                         break;
                     case "Second Installment":
+                        edtInstallment1.setVisibility(View.VISIBLE);
                         edtInstallment2.setVisibility(View.VISIBLE);
                         edtInstallment3.setVisibility(View.GONE);
                         break;
                     case "Third Installment":
+                        edtInstallment1.setVisibility(View.VISIBLE);
+                        edtInstallment2.setVisibility(View.VISIBLE);
                         edtInstallment3.setVisibility(View.VISIBLE);
                         break;
                 }
@@ -146,7 +152,68 @@ public class SignUpFragment extends CommonFragment {
             }
         });
 
+        Bundle bundle = getArguments();
+        studentModel = (StudentModel) bundle.getSerializable("studentData");
+        if (bundle != null && studentModel != null) {
+            bindView();
+            isEdit = true;
+        } else {
+            studentModel = new StudentModel();
+            isEdit = false;
+        }
+
         return view;
+    }
+
+    private void bindView() {
+        int schoolPostion = 0;
+        int classPostion = 0;
+        int divisionPosition = 0;
+        int installmentPosition = 0;
+        for (int i = 0; i < listSchool.size(); i++) {
+            if (listSchool.get(i).equals(studentModel.getSchoolName())) {
+                schoolPostion = i;
+                break;
+            }
+        }
+        for (int i = 0; i < listClass.size(); i++) {
+            if (listClass.get(i).equals(studentModel.getClassName())) {
+                classPostion = i;
+                break;
+            }
+        }
+        for (int i = 0; i < listDivision.size(); i++) {
+            if (listDivision.get(i).equals(studentModel.getDivision())) {
+                divisionPosition = i;
+                break;
+            }
+        }
+        for (int i = 0; i < listFees.size(); i++) {
+            if (listFees.get(i).equals(studentModel.getInstallmentType())) {
+                installmentPosition = i;
+                break;
+            }
+        }
+        spnClass.setSelection(classPostion);
+        spnSchoolName.setSelection(schoolPostion);
+        spnDivision.setSelection(divisionPosition);
+        spnFeesType.setSelection(installmentPosition);
+        edtRegistrationId.setText(studentModel.getRegistrationId());
+        edtStudentName.setText(studentModel.getStudentName());
+        edtAddress.setText(studentModel.getStudentAddress());
+        edtBloodGrp.setText(studentModel.getStudentBloodGrp());
+        edtUsername.setText(studentModel.getUserType());
+        edtPassword.setText(studentModel.getStudentPassword());
+        edtTotalFees.setText("" + studentModel.getTotalFees());
+        edtInstallment1.setText(studentModel.getInstallment1());
+        edtInstallment2.setText(studentModel.getInstallment2());
+        edtInstallment3.setText(studentModel.getInstallment3());
+        if (studentModel.getGender().equals("Boy")) {
+            rdBoy.setChecked(true);
+        } else {
+            rdGirl.setChecked(true);
+        }
+
     }
 
     private void bindModel() {
@@ -162,6 +229,16 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setUserType("STUDENT");
         studentModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
         studentModel.setVisiblity("TRUE");
+        if (rdGirl.isChecked()) {
+            studentModel.setGender("Girl");
+        } else if (rdBoy.isChecked()) {
+            studentModel.setGender("Boy");
+        }
+        studentModel.setInstallmentType(spnFeesType.getSelectedItem().toString());
+        studentModel.setInstallment1(edtInstallment1.getText().toString().trim());
+        studentModel.setInstallment2(edtInstallment2.getText().toString().trim());
+        studentModel.setInstallment3(edtInstallment3.getText().toString().trim());
+        studentModel.setTotalFees(CommonUtils.asInt(edtTotalFees.getText().toString().trim(), 0));
     }
 
     @Override
@@ -180,8 +257,10 @@ public class SignUpFragment extends CommonFragment {
                 bindModel();
                 try {
                     if (Validator.validateForNulls(studentModel, getMyActivity())) {
-                        saveUserInformation();
-                        Log.d(TAG, "Validations Successful");
+                        if (check()) {
+                            saveUserInformation();
+                            Log.d(TAG, "Validations Successful");
+                        }
                     }
                 } catch (RequiredFieldException | ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
                     // Inform user about his SINS
@@ -199,11 +278,18 @@ public class SignUpFragment extends CommonFragment {
             builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    final String userId = getMyActivity().databaseReference.push().getKey();
-                    studentModel.setUniqKey(userId);
-                    getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.STUDENT).child(studentModel.getUniqKey()).setValue(studentModel);
-                    Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-                    getMyActivity().showFragment(getMyActivity().profileFragment, null);
+                    if (!isEdit) {
+                        final String userId = getMyActivity().databaseReference.push().getKey();
+                        studentModel.setUniqKey(userId);
+                        getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.STUDENT).child(studentModel.getUniqKey()).setValue(studentModel);
+                        Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+                        getMyActivity().showFragment(getMyActivity().profileFragment, null);
+                    } else {
+                        getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.STUDENT).child(studentModel.getUniqKey()).setValue(studentModel);
+                        Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+                        getMyActivity().showFragment(new UsersListFragment(), null);
+                    }
+
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
@@ -216,6 +302,37 @@ public class SignUpFragment extends CommonFragment {
             throwable.printStackTrace();
         }
 
+    }
+
+    private boolean check() {
+        if (studentModel.getGender() == null || studentModel.getGender().isEmpty()) {
+            getMyActivity().showToast("Please Select Gender");
+            return false;
+        }
+        if (studentModel.getTotalFees() <= 0) {
+            getMyActivity().showToast("Please Enter Total Fees");
+            return false;
+        }
+        if (studentModel.getInstallmentType() == null || studentModel.getInstallmentType().isEmpty()) {
+            getMyActivity().showToast("Please Select Fees Installment");
+            return false;
+        }
+        if (studentModel.getInstallmentType().equalsIgnoreCase("First Installment") && (studentModel.getInstallment1() == null || studentModel.getInstallment1().isEmpty())) {
+            getMyActivity().showToast("Please Enter First Installment");
+            return false;
+        }
+
+        if (studentModel.getInstallmentType().equalsIgnoreCase("Second Installment") && (studentModel.getInstallment2() == null || studentModel.getInstallment2().isEmpty())) {
+            getMyActivity().showToast("Please Enter Second Installment");
+            return false;
+        }
+
+        if (studentModel.getInstallmentType().equalsIgnoreCase("Third Installment") && (studentModel.getInstallment3() == null || studentModel.getInstallment3().isEmpty())) {
+            getMyActivity().showToast("Please Enter Third Installment");
+            return false;
+        }
+
+        return true;
     }
 
     public static AlertDialog.Builder showAlertDialog(Context context, String title, String msg) {

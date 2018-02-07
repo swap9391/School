@@ -19,6 +19,7 @@ import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.FloatingActionButton;
+import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.StudentModel;
 import com.google.firebase.database.DataSnapshot;
@@ -41,10 +42,9 @@ public class LoginActivity extends CommonActivity {
     EditText edtPassword;
     @ViewById(R.id.floating_login)
     LinearLayout yourframelayout;
-
-
     StudentModel studentModel;
     ProgressDialog progressDialog;
+    StudentInfoSingleton studentInfoSingleton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +52,8 @@ public class LoginActivity extends CommonActivity {
         setContentView(R.layout.layout_login);
         view = getWindow().getDecorView();
         if (CommonUtils.getSharedPref(Constants.USER_NAME, this) != null && !CommonUtils.getSharedPref(Constants.USER_NAME, this).isEmpty()) {
+            studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
+
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             finish();
@@ -117,14 +119,9 @@ public class LoginActivity extends CommonActivity {
                     StudentModel studentData = Snapshot.getValue(StudentModel.class);
                     if (studentData.getStudentPassword().equalsIgnoreCase(studentModel.getStudentPassword())) {
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getStudentUserName());
-                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.SCHOOL_NAME, studentData.getSchoolName());
-                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ADDRESS, studentData.getStudentAddress());
-                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_BLOOD, studentData.getStudentBloodGrp());
-                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_DIVISION, studentData.getDivision());
-                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.CLASS_NAME, studentData.getClassName());
-                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_NAME, studentData.getStudentName());
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
-                        CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getUniqKey());
+                        studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
+                        studentInfoSingleton.setStudentModel(studentData);
                         AppController.isAdmin(LoginActivity.this);
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);

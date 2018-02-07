@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.SignUpFragment;
 import com.exa.mydemoapp.R;
@@ -28,14 +29,25 @@ public class ProfileFragment extends CommonFragment {
     TextView txtName;
     @ViewById(R.id.txt_student_address)
     TextView txtAddress;
-    @ViewById(R.id.txt_class_name)
-    TextView txtClassName;
     @ViewById(R.id.lay_logout)
     LinearLayout layLogout;
     @ViewById(R.id.lay_manage_user)
     LinearLayout layManageUser;
     @ViewById(R.id.circularImageView1)
     CircleImageView circleImageView;
+    @ViewById(R.id.txt_class_name)
+    TextView txtClassName;
+    @ViewById(R.id.txt_division)
+    TextView txtDivision;
+    @ViewById(R.id.txt_blood_group)
+    TextView txtBloodGroup;
+    @ViewById(R.id.txt_total_fees)
+    TextView txtTotalFees;
+    @ViewById(R.id.txt_paid_fees)
+    TextView txtPaidFees;
+    @ViewById(R.id.txt_total_dues)
+    TextView txtTotalDues;
+    StudentInfoSingleton studentInfoSingleton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,24 +72,43 @@ public class ProfileFragment extends CommonFragment {
                 getMyActivity().logoOut();
             }
         });
-
         return view;
     }
 
     private void setData() {
-        String name = CommonUtils.getSharedPref(Constants.STUDENT_NAME, getMyActivity());
-        String address = CommonUtils.getSharedPref(Constants.STUDENT_ADDRESS, getMyActivity());
-        String className = CommonUtils.getSharedPref(Constants.CLASS_NAME, getMyActivity());
-        circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
+        studentInfoSingleton = StudentInfoSingleton.getInstance(getMyActivity());
+        String name = studentInfoSingleton.getStudentModel().getStudentName();
+        String address = studentInfoSingleton.getStudentModel().getStudentAddress();
+        String className = "Class " + studentInfoSingleton.getStudentModel().getClassName();
+        String division = "Division " + studentInfoSingleton.getStudentModel().getDivision();
+        String bloodGrp = "Blood Group " + studentInfoSingleton.getStudentModel().getStudentBloodGrp();
+        String totalFees = "Total Fees :" + studentInfoSingleton.getStudentModel().getTotalFees();
+        int paid = CommonUtils.asInt(studentInfoSingleton.getStudentModel().getInstallment1(), 0)
+                + CommonUtils.asInt(studentInfoSingleton.getStudentModel().getInstallment2(), 0)
+                + CommonUtils.asInt(studentInfoSingleton.getStudentModel().getInstallment3(), 0);
+        String paidFees = "Paid :" + paid;
+        int dues = studentInfoSingleton.getStudentModel().getTotalFees() - paid;
+        String duesPayable = "Total Dues :" + dues;
+
+        if (studentInfoSingleton.getStudentModel().getGender().equalsIgnoreCase("Boy")) {
+            circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
+        } else {
+            circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_girl));
+        }
         txtName.setText(name != null ? name : "");
         txtAddress.setText(address != null ? address : "");
         txtClassName.setText(className != null ? className : "");
+        txtDivision.setText(division != null ? division : "");
+        txtBloodGroup.setText(bloodGrp != null ? bloodGrp : "");
+        txtTotalFees.setText(totalFees != null ? totalFees : "");
+        txtPaidFees.setText(paid > 0 ? paidFees : "");
+        txtTotalDues.setText(dues > 0 ? duesPayable : "");
     }
 
     private class onManageUserClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            getMyActivity().showFragment(getMyActivity().signUpFragment, null);
+            getMyActivity().showFragment(getMyActivity().usersListFragment, null);
         }
     }
 

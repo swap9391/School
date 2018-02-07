@@ -21,12 +21,5 @@ public interface Constants {
     public static int UPDATE_INTERVAL = 3000; // 3 sec
     public static int FATEST_INTERVAL = 3000; // 5 sec
     public static int DISPLACEMENT = 10; // 10 meters
-
-    public static String STUDENT_NAME = "STUDENT_NAME";
-    public static String SCHOOL_NAME = "SCHOOL_NAME";
-    public static String STUDENT_ADDRESS = "STUDENT_ADDRESS";
-    public static String STUDENT_BLOOD = "STUDENT_BLOOD";
-    public static String STUDENT_DIVISION = "STUDENT_DIVISION";
-    public static String CLASS_NAME = "CLASS_NAME";
     public static String USER_TYPE = "USER_TYPE";
 }

@@ -163,6 +163,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         });
 
 
+
         Bundle bundle = getArguments();
         imageRequestArrayList = new ArrayList<>();
 
