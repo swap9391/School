@@ -16,6 +16,8 @@ import com.exa.mydemoapp.SignUpFragment;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by midt-006 on 16/11/17.
  */
@@ -32,7 +34,8 @@ public class ProfileFragment extends CommonFragment {
     LinearLayout layLogout;
     @ViewById(R.id.lay_manage_user)
     LinearLayout layManageUser;
-
+    @ViewById(R.id.circularImageView1)
+    CircleImageView circleImageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,7 @@ public class ProfileFragment extends CommonFragment {
         String name = CommonUtils.getSharedPref(Constants.STUDENT_NAME, getMyActivity());
         String address = CommonUtils.getSharedPref(Constants.STUDENT_ADDRESS, getMyActivity());
         String className = CommonUtils.getSharedPref(Constants.CLASS_NAME, getMyActivity());
-
+        circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
         txtName.setText(name != null ? name : "");
         txtAddress.setText(address != null ? address : "");
         txtClassName.setText(className != null ? className : "");

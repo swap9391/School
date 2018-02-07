@@ -1,6 +1,7 @@
 package com.exa.mydemoapp;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.annotation.RequiredFieldException;
 import com.exa.mydemoapp.annotation.Validator;
@@ -44,6 +47,7 @@ public class SignUpFragment extends CommonFragment {
     private List<String> listSchool;
     private List<String> listClass;
     private List<String> listDivision;
+    private List<String> listFees;
     @ViewById(R.id.toolbar)
     public Toolbar toolbar;
     @ViewById(R.id.spinner_school_name)
@@ -60,10 +64,20 @@ public class SignUpFragment extends CommonFragment {
     private EditText edtBloodGrp;
     @ViewById(R.id.edt_student_username)
     private EditText edtUsername;
-    @ViewById(R.id.edt_student_password)
-    private EditText edtRegistrationId;
     @ViewById(R.id.edt_registration_id)
+    private EditText edtRegistrationId;
+    @ViewById(R.id.edt_student_password)
     private EditText edtPassword;
+    @ViewById(R.id.spinner_fees_type)
+    private Spinner spnFeesType;
+    @ViewById(R.id.edt_installment_1)
+    private EditText edtInstallment1;
+    @ViewById(R.id.edt_installment_2)
+    private EditText edtInstallment2;
+    @ViewById(R.id.edt_installment_3)
+    private EditText edtInstallment3;
+
+
     private View view;
 
     @Override
@@ -94,6 +108,43 @@ public class SignUpFragment extends CommonFragment {
         divisionAdapter.notifyDataSetChanged();
 
         studentModel = new StudentModel();
+
+        edtInstallment2.setVisibility(View.GONE);
+        edtInstallment3.setVisibility(View.GONE);
+
+        listFees = Arrays.asList(getResources().getStringArray(R.array.fees_type));
+        ArrayAdapter<String> feesAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listFees);
+        feesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnFeesType.setAdapter(feesAdapter);
+        feesAdapter.notifyDataSetChanged();
+        spnFeesType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (!listClass.get(position).equals("All")) {
+
+                }
+                switch (listClass.get(position)) {
+                    case "First Installment":
+                        edtInstallment1.setVisibility(View.VISIBLE);
+                        edtInstallment2.setVisibility(View.GONE);
+                        edtInstallment3.setVisibility(View.GONE);
+                        break;
+                    case "Second Installment":
+                        edtInstallment2.setVisibility(View.VISIBLE);
+                        edtInstallment3.setVisibility(View.GONE);
+                        break;
+                    case "Third Installment":
+                        edtInstallment3.setVisibility(View.VISIBLE);
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
 
         return view;
     }

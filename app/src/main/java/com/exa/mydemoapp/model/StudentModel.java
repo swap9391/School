@@ -30,6 +30,11 @@ public class StudentModel implements Serializable {
     private String studentPassword;
     private String userType;
     private String studentBloodGrp;
+    private String gender;
+    private String installmentType;
+    private String installment1;
+    private String installment2;
+    private String installment3;
 
     public String getVisiblity() {
         return visiblity;
@@ -133,5 +138,45 @@ public class StudentModel implements Serializable {
 
     public void setRegistrationId(String registrationId) {
         this.registrationId = registrationId;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getInstallmentType() {
+        return installmentType;
+    }
+
+    public void setInstallmentType(String installmentType) {
+        this.installmentType = installmentType;
+    }
+
+    public String getInstallment1() {
+        return installment1;
+    }
+
+    public void setInstallment1(String installment1) {
+        this.installment1 = installment1;
+    }
+
+    public String getInstallment2() {
+        return installment2;
+    }
+
+    public void setInstallment2(String installment2) {
+        this.installment2 = installment2;
+    }
+
+    public String getInstallment3() {
+        return installment3;
+    }
+
+    public void setInstallment3(String installment3) {
+        this.installment3 = installment3;
     }
 }

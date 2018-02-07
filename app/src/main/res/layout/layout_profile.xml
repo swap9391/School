@@ -25,7 +25,6 @@
                 android:layout_height="80dp"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="centerCrop"
-                android:src="@drawable/my_profile"
                 app:civ_border_color="@color/white"
                 app:civ_border_width="1dp" />
         </LinearLayout>
