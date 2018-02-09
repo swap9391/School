@@ -66,7 +66,7 @@ public class LoginActivity extends CommonActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                intent.putExtra(Constants.USER_TYPE, "GUEST");
+                intent.putExtra(Constants.USER_TYPE, Constants.USER_TYPE_GUEST);
                 startActivity(intent);
 
             }
@@ -85,12 +85,12 @@ public class LoginActivity extends CommonActivity {
             public void onClick(View v) {
                 if (Connectivity.isConnected(LoginActivity.this)) {
                     progressDialog = new ProgressDialog(LoginActivity.this);
-                    progressDialog.setTitle("Loading...");
+                    progressDialog.setTitle(getStringById(R.string.loading));
                     progressDialog.show();
                     bindModel();
                     checkLogin();
                 } else {
-                    showToast("Please Connect to internet !!");
+                    showToast(getStringById(R.string.no_internet));
                 }
             }
         });
@@ -103,21 +103,28 @@ public class LoginActivity extends CommonActivity {
     }
 
     public void checkLogin() {
-        String userId = databaseReference.push().getKey();
+        String encryptedText = null;
+        try {
+            encryptedText = CommonUtils.encrypt(edtPassword.getText().toString().trim());
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
         DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.STUDENT);
         Query query = ref2.orderByChild("studentUserName").equalTo(studentModel.getStudentUserName());
+        String finalEncryptedText = encryptedText.substring(0, 10);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progressDialog.dismiss();
                 if (dataSnapshot.getValue() == null) {
-                    Toast.makeText(getApplicationContext(), "Please Check Your User Name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getStringById(R.string.valid_user_name), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
                     StudentModel studentData = Snapshot.getValue(StudentModel.class);
-                    if (studentData.getStudentPassword().equalsIgnoreCase(studentModel.getStudentPassword())) {
+                    String password = studentData.getStudentPassword().substring(0, 10);
+                    if (password.equals(finalEncryptedText)) {
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getStudentUserName());
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
                         studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
@@ -126,14 +133,12 @@ public class LoginActivity extends CommonActivity {
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
                         finish();
-                        Toast.makeText(getApplicationContext(), "Login Successfully!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getStringById(R.string.login_success), Toast.LENGTH_SHORT).show();
 
                     } else {
-                        Toast.makeText(getApplicationContext(), "Please Check Your Password", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getStringById(R.string.valid_password), Toast.LENGTH_SHORT).show();
                     }
-
                 }
-
             }
 
             @Override

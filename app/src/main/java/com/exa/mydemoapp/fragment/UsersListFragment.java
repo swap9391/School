@@ -18,12 +18,8 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
-import com.exa.mydemoapp.adapter.NewsFeedsAdapter;
 import com.exa.mydemoapp.adapter.UserAdapter;
-import com.exa.mydemoapp.annotation.RequiredFieldException;
-import com.exa.mydemoapp.annotation.Validator;
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.StudentModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,11 +28,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static android.content.ContentValues.TAG;
 
 
 /**

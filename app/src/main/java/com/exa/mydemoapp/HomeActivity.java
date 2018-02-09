@@ -25,8 +25,6 @@ import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
-import com.exa.mydemoapp.LoginActivity;
-import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
@@ -78,7 +76,7 @@ public class HomeActivity extends CommonActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        if (intent != null && intent.getStringExtra(Constants.USER_TYPE) != null && intent.getStringExtra(Constants.USER_TYPE).equals("GUEST")) {
+        if (intent != null && intent.getStringExtra(Constants.USER_TYPE) != null && intent.getStringExtra(Constants.USER_TYPE).equals(Constants.USER_TYPE_GUEST)) {
             isGuest = true;
         } else {
             isGuest = false;
@@ -288,12 +286,12 @@ public class HomeActivity extends CommonActivity {
     private void exitDialog() {
         try {
             AlertDialog.Builder builder = showAlertDialog(this, getString(R.string.app_name), getString(R.string.exit_msg));
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getStringById(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     exitFromApp();
                 }
-            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            }).setNegativeButton(getStringById(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -346,7 +344,7 @@ public class HomeActivity extends CommonActivity {
         stopLocationService();
         try {
             AlertDialog.Builder builder = showAlertDialog(this, getString(R.string.logout_title), getString(R.string.logout_msg));
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getStringById(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     CommonUtils.removeAllPref(HomeActivity.this);
@@ -354,7 +352,7 @@ public class HomeActivity extends CommonActivity {
                     startActivity(intent);
                     finish();
                 }
-            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            }).setNegativeButton(getStringById(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();

@@ -1,5 +1,6 @@
 package com.exa.mydemoapp.fragment;
 
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +17,9 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.HomeGridAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by midt-006 on 4/10/17.
  */
@@ -27,79 +31,16 @@ public class DashboardFragment extends CommonFragment {
     @ViewById(R.id.image)
     ImageView imageView;
 
-    public static String[] nameForAdmin = {
-            "About School",
-            "School Facilities",
-            "Calender",
-            "Image Gallery",
-            "Achievements",
-            "Blog",
-            "News Feed",
-            "Community",
-            "Staff Information",
-            "Upload Image",
-            "Annual Event",
-            "Bus Location"
-    };
-    public static int[] imagesForAdmin = {
-            R.drawable.ic_about_school,
-            R.drawable.ic_facility,
-            R.drawable.ic_annual_calender,
-            R.drawable.ic_gallery,
-            R.drawable.ic_archivement,
-            R.drawable.ic_blog,
-            R.drawable.ic_news_feed,
-            R.drawable.ic_community,
-            R.drawable.ic_teacher,
-            R.drawable.ic_paren_student,
-            R.drawable.ic_paren_student,
-            R.drawable.icon_bus_location
-    };
+    public String[] nameForAdmin;
+    public TypedArray imagesForAdmin;
 
-    public static String[] nameForStudent = {
-            "About School",
-            "School Facilities",
-            "Calender",
-            "Image Gallery",
-            "Achievements",
-            "Blog",
-            "News Feed",
-            "Community",
-            "Staff Information",
-            "Bus Location"
-    };
-    public static int[] imagesForStudent = {
-            R.drawable.ic_about_school,
-            R.drawable.ic_facility,
-            R.drawable.ic_annual_calender,
-            R.drawable.ic_gallery,
-            R.drawable.ic_archivement,
-            R.drawable.ic_blog,
-            R.drawable.ic_news_feed,
-            R.drawable.ic_community,
-            R.drawable.ic_teacher,
-            R.drawable.icon_bus_location
-    };
+    public String[] nameForStudent;
+
+    public TypedArray imagesForStudent;
 
 
-    public static String[] nameForGuest = {
-            "About School",
-            "School Facilities",
-            "Calender",
-            "Image Gallery",
-            "Achievements",
-            "Blog",
-            "Staff Information"
-    };
-    public static int[] imagesForGuest = {
-            R.drawable.ic_about_school,
-            R.drawable.ic_facility,
-            R.drawable.ic_annual_calender,
-            R.drawable.ic_gallery,
-            R.drawable.ic_archivement,
-            R.drawable.ic_blog,
-            R.drawable.ic_teacher
-    };
+    public String[] nameForGuest;
+    public TypedArray imagesForGuest;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,6 +55,16 @@ public class DashboardFragment extends CommonFragment {
         view = inflater.inflate(R.layout.layout_dashboard, container, false);
         getMyActivity().toolbar.setTitle("Home");
 
+        nameForAdmin = getResources().getStringArray(R.array.nameForAdmin);
+        imagesForAdmin = getResources().obtainTypedArray(R.array.imagesForAdmin);
+
+        nameForStudent = getMyActivity().getResources().getStringArray(R.array.nameForSudent);
+        imagesForStudent = getResources().obtainTypedArray(R.array.imagesForStudent);
+
+        nameForGuest = getMyActivity().getResources().getStringArray(R.array.nameForGuest);
+        imagesForGuest = getResources().obtainTypedArray(R.array.imagesForGuest);
+
+
         initViewBinding(view);
         if (getMyActivity().isGuest) {
             gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForGuest, imagesForGuest));
@@ -124,6 +75,8 @@ public class DashboardFragment extends CommonFragment {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForStudent, imagesForStudent));
             }
         }
+
+
 
 
      /*   ((Button) view.findViewById(R.id.btnUpload)).setOnClickListener(this);
@@ -178,6 +131,15 @@ public class DashboardFragment extends CommonFragment {
          }
 
      }*/
+    public static String[] removeElements(String[] input, String deleteMe) {
+        List result = new LinkedList();
+
+        for (String item : input)
+            if (!deleteMe.equals(item))
+                result.add(item);
+
+        return (String[]) result.toArray(input);
+    }
 
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();

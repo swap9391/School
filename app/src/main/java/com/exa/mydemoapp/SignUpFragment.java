@@ -1,12 +1,9 @@
 package com.exa.mydemoapp;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,16 +19,13 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
-import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.annotation.RequiredFieldException;
 import com.exa.mydemoapp.annotation.Validator;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.fragment.CommonFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
-import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.StudentModel;
 
 import java.util.Arrays;
@@ -194,6 +188,12 @@ public class SignUpFragment extends CommonFragment {
                 break;
             }
         }
+        String decryptPassword = "";
+        try {
+            decryptPassword = CommonUtils.decrypt(studentModel.getStudentPassword());
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
         spnClass.setSelection(classPostion);
         spnSchoolName.setSelection(schoolPostion);
         spnDivision.setSelection(divisionPosition);
@@ -202,8 +202,8 @@ public class SignUpFragment extends CommonFragment {
         edtStudentName.setText(studentModel.getStudentName());
         edtAddress.setText(studentModel.getStudentAddress());
         edtBloodGrp.setText(studentModel.getStudentBloodGrp());
-        edtUsername.setText(studentModel.getUserType());
-        edtPassword.setText(studentModel.getStudentPassword());
+        edtUsername.setText(studentModel.getStudentUserName());
+        edtPassword.setText(decryptPassword);
         edtTotalFees.setText("" + studentModel.getTotalFees());
         edtInstallment1.setText(studentModel.getInstallment1());
         edtInstallment2.setText(studentModel.getInstallment2());
@@ -221,12 +221,18 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setStudentAddress(edtAddress.getText().toString().trim());
         studentModel.setStudentBloodGrp(edtBloodGrp.getText().toString().trim());
         studentModel.setStudentUserName(edtUsername.getText().toString().trim());
-        studentModel.setStudentPassword(edtPassword.getText().toString().trim());
+        try {
+            studentModel.setStudentPassword(CommonUtils.encrypt(edtPassword.getText().toString().trim()));
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
         studentModel.setSchoolName(spnSchoolName.getSelectedItem().toString());
         studentModel.setClassName(spnClass.getSelectedItem().toString().trim());
         studentModel.setDivision(spnDivision.getSelectedItem().toString().trim());
         studentModel.setRegistrationId(edtRegistrationId.getText().toString().trim());
-        studentModel.setUserType("STUDENT");
+        if (!isEdit) {
+            studentModel.setUserType("STUDENT");
+        }
         studentModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
         studentModel.setVisiblity("TRUE");
         if (rdGirl.isChecked()) {

@@ -163,7 +163,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         });
 
 
-
         Bundle bundle = getArguments();
         imageRequestArrayList = new ArrayList<>();
 
@@ -181,7 +180,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
         LinearLayout yourframelayout = (LinearLayout) view.findViewById(R.id.btnFloat);
         FloatingActionButton fabButton = new FloatingActionButton.Builder(getMyActivity(), yourframelayout)
-                .withDrawable(getResources().getDrawable(R.drawable.ic_plus))
+                .withDrawable(getResources().getDrawable(R.drawable.ic_add_white))
                 .withButtonColor(Color.parseColor("#F43F68"))
                 .withGravity(Gravity.BOTTOM | Gravity.RIGHT)
                 .withMargins(0, 0, 2, 2)

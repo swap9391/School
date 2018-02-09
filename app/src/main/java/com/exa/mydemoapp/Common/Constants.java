@@ -22,4 +22,6 @@ public interface Constants {
     public static int FATEST_INTERVAL = 3000; // 5 sec
     public static int DISPLACEMENT = 10; // 10 meters
     public static String USER_TYPE = "USER_TYPE";
+    public static String USER_TYPE_GUEST = "GUEST";
+    public static String USER_TYPE_STUDENT = "STUDENT";
 }

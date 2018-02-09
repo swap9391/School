@@ -1,6 +1,5 @@
 package com.exa.mydemoapp.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +9,8 @@ import android.widget.TextView;
 
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
-import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
-import com.exa.mydemoapp.SignUpFragment;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 

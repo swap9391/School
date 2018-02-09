@@ -1,7 +1,6 @@
 package com.exa.mydemoapp.adapter;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,20 +9,13 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.exa.mydemoapp.Common.AppController;
-import com.exa.mydemoapp.Common.CirclePageIndicator;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
-import com.exa.mydemoapp.Common.PagerContainer;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.SignUpFragment;
-import com.exa.mydemoapp.fragment.UploadPhotoFragment;
-import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.StudentModel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

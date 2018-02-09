@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.crypto.spec.SecretKeySpec;
+
 /*
   Created by Swapnil Jadhav on 22/6/17.
  */
@@ -110,7 +112,6 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         ImageRequest selectedItem = coverImages.get(position);
-
 
         holder.txtDesignTitle.setText(selectedItem.getPlaceName());
         holder.txtDiscription.setText(selectedItem.getDescription());

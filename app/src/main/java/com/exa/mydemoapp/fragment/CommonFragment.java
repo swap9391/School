@@ -36,6 +36,9 @@ public class CommonFragment extends Fragment {
         }
     }
 
+    protected String getStringById(int id) {
+        return getResources().getString(id);
+    }
  /*   protected <T> boolean readDataAndValidate(T model) {
         if (model != null) {
             boolean isValid = true;

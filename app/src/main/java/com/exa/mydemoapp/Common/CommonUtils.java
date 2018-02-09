@@ -51,6 +51,8 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.Key;
+import java.security.Security;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -61,6 +63,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 
 public class CommonUtils {
@@ -80,6 +86,8 @@ public class CommonUtils {
     private static String extension;
     //public static String URL = Config.DOC_UPLOAD;
     private static String filePath = null;
+    private static final String ALGORITHM = "AES";
+    private static final String KEY = "1Hbfh667adfDEJ78";
 
     public static String getString(TextView editText) {
         if (editText.getText() != null
@@ -1414,6 +1422,92 @@ public class CommonUtils {
             e.printStackTrace();
         }
         return uri;
+    }
+
+   /* public static String encyptPassword(String input1) {
+        String encyptedText = null;
+        try {
+            //  Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+            byte[] input = input1.getBytes();
+            byte[] keyBytes = new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
+                    0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
+            SecretKeySpec key = new SecretKeySpec(keyBytes, "AES");
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS7Padding", "BC");
+            System.out.println(new String(input));
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+
+            byte[] cipherText = new byte[cipher.getOutputSize(input.length)];
+            int ctLength = cipher.update(input, 0, input.length, cipherText, 0);
+            ctLength += cipher.doFinal(cipherText, ctLength);
+            System.out.println(new String(cipherText));
+            System.out.println(ctLength);
+            encyptedText = new String(cipherText);
+        } catch (Exception e) {
+
+        }
+        return encyptedText;
+    }
+
+    public static String decryptPassword(String input1) {
+        String decryptedText = null;
+        try {
+            byte[] input = input1.getBytes();
+            byte[] keyBytes = new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
+                    0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
+
+            SecretKeySpec key = new SecretKeySpec(keyBytes, "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS7Padding", "BC");
+
+            System.out.println(new String(input));
+
+            // decryption pass
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            byte[] plainText = new byte[cipher.getOutputSize(input.length)];
+            int ptLength = cipher.update(input, 0, input.length, plainText, 0);
+            ptLength += cipher.doFinal(plainText, ptLength);
+            decryptedText = new String(plainText);
+            System.out.println(new String(plainText));
+            System.out.println(ptLength);
+
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+        return decryptedText;
+    }*/
+
+    public static String encrypt(String value) throws Exception {
+        String encryptedValue64 = null;
+        try {
+            Key key = generateKey();
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
+            encryptedValue64 = Base64.encodeToString(encryptedByteValue, Base64.NO_PADDING);
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+        return encryptedValue64;
+    }
+
+    public static String decrypt(String value) throws Exception {
+        String decryptedValue = null;
+        try {
+            Key key = generateKey();
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            byte[] decryptedValue64 = Base64.decode(value, Base64.NO_PADDING);
+            byte[] decryptedByteValue = cipher.doFinal(decryptedValue64);
+            decryptedValue = new String(decryptedByteValue, "utf-8");
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+        return decryptedValue;
+    }
+
+    private static Key generateKey() throws Exception {
+        Key key = new SecretKeySpec(KEY.getBytes(), ALGORITHM);
+        return key;
     }
 
 }

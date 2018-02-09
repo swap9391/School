@@ -2,6 +2,7 @@ package com.exa.mydemoapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +30,10 @@ public class HomeGridAdapter extends BaseAdapter {
 
     String[] result;
     HomeActivity context;
-    int[] imageId;
+    TypedArray imageId;
     private static LayoutInflater inflater = null;
 
-    public HomeGridAdapter(HomeActivity mainActivity, String[] osNameList, int[] osImages) {
+    public HomeGridAdapter(HomeActivity mainActivity, String[] osNameList, TypedArray osImages) {
         // TODO Auto-generated constructor stub
         result = osNameList;
         context = mainActivity;
@@ -76,7 +77,7 @@ public class HomeGridAdapter extends BaseAdapter {
         holder.os_img = (ImageView) rowView.findViewById(R.id.os_images);
 
         holder.os_text.setText(result[position]);
-        holder.os_img.setImageResource(imageId[position]);
+        holder.os_img.setImageResource(imageId.getResourceId(position, -1));
 
         rowView.setOnClickListener(new View.OnClickListener() {
 
@@ -95,10 +96,10 @@ public class HomeGridAdapter extends BaseAdapter {
                         bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
-                    case "Calender":
+                    case "Calendar":
                         context.showFragment(new CalenderViewFragment(), null);
                         break;
-                    case "Image Gallery":
+                    case "Photo Gallery":
                         context.showFragment(new AlbumViewFragment(), null);
                         break;
                     case "Achievements":
@@ -111,18 +112,18 @@ public class HomeGridAdapter extends BaseAdapter {
                         bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
-                    case "News Feed":
+                    case "News":
                         context.setNewsFeedType("News Feed");
                         bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
-                    case "Community":
+                    case "Parent Chatting":
                         context.showFragment(new CommunityFragment(), null);
                         break;
                     case "Staff Information":
                         context.showFragment(new StaffInfoFragment(), null);
                         break;
-                    case "Upload Image":
+                    case "Upload Photo":
                         context.showFragment(new UploadPhotoFragment(), null);
                         break;
                     case "Annual Event":

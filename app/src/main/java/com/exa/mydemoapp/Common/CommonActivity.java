@@ -247,4 +247,7 @@ public class CommonActivity extends AppCompatActivity {
 
     }
 
+    public String getStringById(int id) {
+        return getResources().getString(id);
+    }
 }

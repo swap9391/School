@@ -153,7 +153,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         mMap.setBuildingsEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         // Add a marker in Home and move the camera
-        sydney = new LatLng(18.559147, 73.790681);
+        sydney = new LatLng(18.572897, 73.880653);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Home"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
@@ -457,6 +457,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         inflater.inflate(R.menu.menu_map, menu);
         if (!AppController.isAdmin(MapsActivity.this)) {
             menu.findItem(R.id.menu_tracker).setVisible(false);
+            menu.findItem(R.id.menu_map_demo).setVisible(false);
         }
         // return true so that the menu pop up is opened
         return true;
