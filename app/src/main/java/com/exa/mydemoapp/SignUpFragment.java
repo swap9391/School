@@ -75,6 +75,8 @@ public class SignUpFragment extends CommonFragment {
     private EditText edtInstallment3;
     @ViewById(R.id.edt_total_fees)
     private EditText edtTotalFees;
+    @ViewById(R.id.edt_roll_number)
+    private EditText edtRollNumber;
     @ViewById(R.id.rd_girl)
     RadioButton rdGirl;
     @ViewById(R.id.rd_boy)
@@ -205,6 +207,7 @@ public class SignUpFragment extends CommonFragment {
         edtUsername.setText(studentModel.getStudentUserName());
         edtPassword.setText(decryptPassword);
         edtTotalFees.setText("" + studentModel.getTotalFees());
+        edtRollNumber.setText(studentModel.getRollNumber());
         edtInstallment1.setText(studentModel.getInstallment1());
         edtInstallment2.setText(studentModel.getInstallment2());
         edtInstallment3.setText(studentModel.getInstallment3());
@@ -213,7 +216,6 @@ public class SignUpFragment extends CommonFragment {
         } else {
             rdGirl.setChecked(true);
         }
-
     }
 
     private void bindModel() {
@@ -221,6 +223,7 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setStudentAddress(edtAddress.getText().toString().trim());
         studentModel.setStudentBloodGrp(edtBloodGrp.getText().toString().trim());
         studentModel.setStudentUserName(edtUsername.getText().toString().trim());
+        studentModel.setRollNumber(edtRollNumber.getText().toString().trim());
         try {
             studentModel.setStudentPassword(CommonUtils.encrypt(edtPassword.getText().toString().trim()));
         } catch (Exception e) {

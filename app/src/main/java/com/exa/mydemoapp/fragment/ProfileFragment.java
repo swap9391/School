@@ -1,18 +1,30 @@
 package com.exa.mydemoapp.fragment;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.RewardModel;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -44,7 +56,14 @@ public class ProfileFragment extends CommonFragment {
     TextView txtPaidFees;
     @ViewById(R.id.txt_total_dues)
     TextView txtTotalDues;
+    @ViewById(R.id.txt_rewards)
+    TextView txtRewards;
     StudentInfoSingleton studentInfoSingleton;
+    @ViewById(R.id.view_reward)
+    View viewReward;
+    @ViewById(R.id.lay_reward)
+    LinearLayout layReward;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +88,14 @@ public class ProfileFragment extends CommonFragment {
                 getMyActivity().logoOut();
             }
         });
+        if (!AppController.isAdmin(getMyActivity())) {
+            getRewardsPoints();
+        } else {
+            viewReward.setVisibility(View.GONE);
+            layReward.setVisibility(View.GONE);
+        }
+
+
         return view;
     }
 
@@ -107,6 +134,35 @@ public class ProfileFragment extends CommonFragment {
         public void onClick(View v) {
             getMyActivity().showFragment(getMyActivity().usersListFragment, null);
         }
+    }
+
+    public void getRewardsPoints() {
+        try {
+
+            DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
+            DatabaseReference ref2 = ref1.child(Constants.REWARD_TABLE);
+            Query query = ref2.orderByChild("studentId").equalTo(studentInfoSingleton.getStudentModel().getUniqKey());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    int points = 0;
+                    for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
+                        RewardModel rewardModel = Snapshot.getValue(RewardModel.class);
+                        points = points + rewardModel.getPoints();
+
+                    }
+                    txtRewards.setText("Reward Points " + points);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("Exception", "onCancelled", databaseError.toException());
+                }
+            });
+
+        } catch (Exception e) {
+        }
+
     }
 
     public HomeActivity getMyActivity() {

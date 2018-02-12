@@ -47,9 +47,104 @@
         <item>D Division</item>
     </string-array>
 
+    <string-array name="fees_type">
+        <item>First Installment</item>
+        <item>Second Installment</item>
+        <item>Third Installment</item>
+    </string-array>
+
+    <string-array name="nameForAdmin">
+        <item>@string/dashboard_about_school</item>
+        <item>@string/dashboard_facilities</item>
+        <item>@string/dashboard_calender</item>
+        <item>@string/dashboard_image_gallery</item>
+        <item>@string/dashboard_archiv</item>
+        <item>@string/dashboard_blog</item>
+        <item>@string/dashboard_news</item>
+        <item>@string/dashboard_community</item>
+        <item>@string/dashboard_staff</item>
+        <item>@string/dashboard_upload</item>
+        <item>@string/dashboard_annual</item>
+        <item>@string/dashboard_bus_loc</item>
+    </string-array>
+
+    <integer-array name="imagesForAdmin">
+        <item>@drawable/ic_about_school</item>
+        <item>@drawable/ic_facility</item>
+        <item>@drawable/ic_annual_calender</item>
+        <item>@drawable/ic_gallery</item>
+        <item>@drawable/ic_archivement</item>
+        <item>@drawable/ic_blog</item>
+        <item>@drawable/ic_news_feed</item>
+        <item>@drawable/ic_community</item>
+        <item>@drawable/ic_teacher</item>
+        <item>@drawable/ic_paren_student</item>
+        <item>@drawable/ic_paren_student</item>
+        <item>@drawable/icon_bus_location</item>
+    </integer-array>
+
+
+    <string-array name="nameForSudent">
+        <item>@string/dashboard_about_school</item>
+        <item>@string/dashboard_facilities</item>
+        <item>@string/dashboard_calender</item>
+        <item>@string/dashboard_image_gallery</item>
+        <item>@string/dashboard_archiv</item>
+        <item>@string/dashboard_blog</item>
+        <item>@string/dashboard_news</item>
+        <item>@string/dashboard_community</item>
+        <item>@string/dashboard_staff</item>
+        <item>@string/dashboard_bus_loc</item>
+    </string-array>
+
+    <integer-array name="imagesForStudent">
+        <item>@drawable/ic_about_school</item>
+        <item>@drawable/ic_facility</item>
+        <item>@drawable/ic_annual_calender</item>
+        <item>@drawable/ic_gallery</item>
+        <item>@drawable/ic_archivement</item>
+        <item>@drawable/ic_blog</item>
+        <item>@drawable/ic_news_feed</item>
+        <item>@drawable/ic_community</item>
+        <item>@drawable/ic_teacher</item>
+        <item>@drawable/icon_bus_location</item>
+    </integer-array>
+
+
+    <string-array name="nameForGuest">
+        <item>@string/dashboard_about_school</item>
+        <item>@string/dashboard_facilities</item>
+        <item>@string/dashboard_calender</item>
+        <item>@string/dashboard_image_gallery</item>
+        <item>@string/dashboard_archiv</item>
+        <item>@string/dashboard_blog</item>
+    </string-array>
+
+    <integer-array name="imagesForGuest">
+        <item>@drawable/ic_about_school</item>
+        <item>@drawable/ic_facility</item>
+        <item>@drawable/ic_annual_calender</item>
+        <item>@drawable/ic_gallery</item>
+        <item>@drawable/ic_archivement</item>
+        <item>@drawable/ic_blog</item>
+    </integer-array>
+
+    <string name="dashboard_about_school">About School</string>
+    <string name="dashboard_facilities">School Facilities</string>
+    <string name="dashboard_calender">Calendar</string>
+    <string name="dashboard_image_gallery">Photo Gallery</string>
+    <string name="dashboard_archiv">Achievements</string>
+    <string name="dashboard_blog">Blog</string>
+    <string name="dashboard_news">News</string>
+    <string name="dashboard_community">Parent Chatting</string>
+    <string name="dashboard_staff">Staff Information</string>
+    <string name="dashboard_upload">Upload Photo</string>
+    <string name="dashboard_annual">Annual Event</string>
+    <string name="dashboard_bus_loc">Bus Location</string>
+
+
     <string name="school_content">The XYZ was established in February 1994, under the visionary leadership of XYZ person, with the aim of providing top quality pre-primary, primary, secondary, graduation and post-graduate education. At a time when India was struggling to put its economy back on its feet, after the nation having pawned the “family jewels” just to keep afloat, XYZ Person sensed that education too would have to become more broad based and more vocational in nature if India was to stand up to the world competition in quality and price for its products, as indeed the then Finance Minister had prescribed for the economy and so, in 1994, began a saga of growth and quality in education; a story that is just reaching its zenith with 14 full fledged Institutes registering a strong presence on Pune’s educational horizon. Since inception, the Institutes managed by SCES, have maintained high academic standards and have successfully provided trained manpower to the industrial and services sector of the country. With a modest strength of 60 students pursuing a single course, SCES has grown steadily and today boasts of 10 Institutes, having more than 8000 students from all over India pursuing multi-disciplinary, graduate and post-graduate programmes. The objective of the institute is providing ‘Management education in a corporate environment’, has been possible due to the sincere and dedicated efforts of the members of SCES, who have invaluable experience in varied areas like academics, industry, service and social-work.</string>
-    <string name="map_api_key">AIzaSyAdS-peuXETXXQE8s9EiV3agEHVmlzVdKo</string>
-    <string name="google_directions_key">AIzaSyDXW9gHZgEoagVgC07qXsisT789glQo1n4</string>
+    <string name="map_api_key">AIzaSyA-2OJ_dYLKEZ8V8XOmN2UqFSzUl79hoCY</string>
     <string name="tracking">Tracking &#x2713;</string>
     <string name="status">status</string>
     <string name="location_permission_required">Location permissions are required for tracking
@@ -66,4 +161,11 @@
     <string name="exit_msg">Do you want to exit from application?</string>
     <string name="save_msg">Do you want to save?</string>
     <string name="delete_msg">Do you want to delete?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="loading">Loading...</string>
+    <string name="no_internet">Please connect to internet</string>
+    <string name="valid_user_name">Please Enter Valid User Name</string>
+    <string name="valid_password">Please Enter Valid Password</string>
+    <string name="login_success">Login Successful!!</string>
 </resources>

@@ -14,6 +14,7 @@ public interface Constants {
     public static String STUDENT = "STUDENT";
     public static String LOCATION_TABLE = "LOCATION_TABLE";
     public static String COMMUNITY_TABLE = "COMMUNITY_TABLE";
+    public static String REWARD_TABLE = "REWARDTABLE";
     public static String DATE_FORMAT = "dd-MM-yyyy hh:mm";
     public static String USER_NAME = "USER_NAME";
     public static String STUDENT_ID = "STUDENT_ID";
@@ -24,4 +25,10 @@ public interface Constants {
     public static String USER_TYPE = "USER_TYPE";
     public static String USER_TYPE_GUEST = "GUEST";
     public static String USER_TYPE_STUDENT = "STUDENT";
+
+    public static int REWARD_SPORT = 10;
+    public static int REWARD_CULTURAL = 10;
+    public static int REWARD_INTERSCHOOL = 20;
+    public static int REWARD_ACADEMICS = 20;
+    public static int REWARD_OTHER = 10;
 }

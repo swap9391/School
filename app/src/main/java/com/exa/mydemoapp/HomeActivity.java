@@ -34,6 +34,7 @@ import com.exa.mydemoapp.fragment.DashboardFragment;
 import com.exa.mydemoapp.fragment.GalleryViewFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.ProfileFragment;
+import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
@@ -65,6 +66,7 @@ public class HomeActivity extends CommonActivity {
     public SignUpFragment signUpFragment;
     public StaffInfoFragment staffInfoFragment;
     public UsersListFragment usersListFragment;
+    public RewardsPointsFragment rewardsPointsFragment;
     public List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
     public boolean isGallery = true;
     public boolean isGuest = false;
@@ -151,11 +153,8 @@ public class HomeActivity extends CommonActivity {
     }
 
     public void performBackForDesign() {
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.frame_layout);
-
-
         if (dashboardFragment != null && dashboardFragment == currentFragment) {
             exitDialog();
         } else if (newsFeedFragment != null && newsFeedFragment.getClass() == currentFragment.getClass()) {
@@ -208,6 +207,9 @@ public class HomeActivity extends CommonActivity {
         } else if (usersListFragment != null && usersListFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(profileFragment, null);
+        } else if (rewardsPointsFragment != null && rewardsPointsFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
         } else {
             exitDialog();
         }
@@ -241,6 +243,7 @@ public class HomeActivity extends CommonActivity {
         signUpFragment = new SignUpFragment();
         staffInfoFragment = new StaffInfoFragment();
         usersListFragment = new UsersListFragment();
+        rewardsPointsFragment = new RewardsPointsFragment();
     }
 
     public List<ImageRequest> getListAlbumChild() {

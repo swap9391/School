@@ -195,6 +195,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
                         Glide.with(getMyActivity()).load(model.getImg())
                                 .thumbnail(0.5f)
                                 .crossFade()
+                                .override(400, 200)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .listener(new RequestListener<String, GlideDrawable>() {
                                     @Override

@@ -36,6 +36,7 @@ public class StudentModel implements Serializable {
     private String installment1;
     private String installment2;
     private String installment3;
+    private String rollNumber;
 
     public String getVisiblity() {
         return visiblity;
@@ -187,5 +188,13 @@ public class StudentModel implements Serializable {
 
     public void setTotalFees(int totalFees) {
         this.totalFees = totalFees;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
     }
 }

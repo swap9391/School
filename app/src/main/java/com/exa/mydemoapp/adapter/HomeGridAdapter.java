@@ -20,6 +20,7 @@ import com.exa.mydemoapp.fragment.AnnualEventFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
+import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 
@@ -128,6 +129,9 @@ public class HomeGridAdapter extends BaseAdapter {
                         break;
                     case "Annual Event":
                         context.showFragment(new AnnualEventFragment(), null);
+                        break;
+                    case "Add Reward Points":
+                        context.showFragment(new RewardsPointsFragment(), null);
                         break;
                     case "Bus Location":
                         Intent intent1 = new Intent(context, MapsActivity.class);

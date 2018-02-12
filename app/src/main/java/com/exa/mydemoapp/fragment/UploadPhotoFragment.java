@@ -671,7 +671,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
                     StudentModel studentData = Snapshot.getValue(StudentModel.class);
                     listStudents.add(studentData);
-                    listStudentName.add(studentData.getStudentName());
+                    listStudentName.add(studentData.getStudentName() + " " + studentData.getRollNumber());
                 }
                 if (listStudents != null && listStudents.size() > 0) {
                     spinnerStudentName.setVisibility(View.VISIBLE);
@@ -680,6 +680,9 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                     classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerStudentName.setAdapter(classAdapter);
                     classAdapter.notifyDataSetChanged();
+                } else {
+                    spinnerStudentName.setVisibility(View.GONE);
+                    txtStudentSpinnerTitle.setVisibility(View.GONE);
                 }
             }
 

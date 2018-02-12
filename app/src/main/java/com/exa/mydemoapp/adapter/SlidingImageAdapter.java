@@ -82,6 +82,7 @@ public class SlidingImageAdapter extends PagerAdapter {
         Glide.with(context).load(path)
                 .thumbnail(0.5f)
                 .crossFade()
+                .override(400, 400)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.defualt_album_icon)
                 .listener(new RequestListener<String, GlideDrawable>() {

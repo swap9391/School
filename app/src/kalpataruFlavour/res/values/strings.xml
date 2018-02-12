@@ -53,6 +53,14 @@
         <item>Third Installment</item>
     </string-array>
 
+    <string-array name="reward_type">
+        <item>@string/reward_sports</item>
+        <item>@string/reward_cultural</item>
+        <item>@string/reward_inter_school</item>
+        <item>@string/reward_academics</item>
+        <item>@string/reward_other</item>
+    </string-array>
+
     <string-array name="nameForAdmin">
         <item>@string/dashboard_about_school</item>
         <item>@string/dashboard_facilities</item>
@@ -65,6 +73,7 @@
         <item>@string/dashboard_staff</item>
         <item>@string/dashboard_upload</item>
         <item>@string/dashboard_annual</item>
+        <item>@string/dashboard_reward</item>
         <item>@string/dashboard_bus_loc</item>
     </string-array>
 
@@ -80,6 +89,7 @@
         <item>@drawable/ic_teacher</item>
         <item>@drawable/ic_paren_student</item>
         <item>@drawable/ic_paren_student</item>
+        <item>@drawable/ic_rewards</item>
         <item>@drawable/icon_bus_location</item>
     </integer-array>
 
@@ -141,7 +151,13 @@
     <string name="dashboard_upload">Upload Photo</string>
     <string name="dashboard_annual">Annual Event</string>
     <string name="dashboard_bus_loc">Bus Location</string>
+    <string name="dashboard_reward">Add Reward Points</string>
 
+    <string name="reward_sports">Sports</string>
+    <string name="reward_cultural">Cultural</string>
+    <string name="reward_inter_school">Inter school competition</string>
+    <string name="reward_academics">Academics</string>
+    <string name="reward_other">Other</string>
 
     <string name="school_content">The XYZ was established in February 1994, under the visionary leadership of XYZ person, with the aim of providing top quality pre-primary, primary, secondary, graduation and post-graduate education. At a time when India was struggling to put its economy back on its feet, after the nation having pawned the “family jewels” just to keep afloat, XYZ Person sensed that education too would have to become more broad based and more vocational in nature if India was to stand up to the world competition in quality and price for its products, as indeed the then Finance Minister had prescribed for the economy and so, in 1994, began a saga of growth and quality in education; a story that is just reaching its zenith with 14 full fledged Institutes registering a strong presence on Pune’s educational horizon. Since inception, the Institutes managed by SCES, have maintained high academic standards and have successfully provided trained manpower to the industrial and services sector of the country. With a modest strength of 60 students pursuing a single course, SCES has grown steadily and today boasts of 10 Institutes, having more than 8000 students from all over India pursuing multi-disciplinary, graduate and post-graduate programmes. The objective of the institute is providing ‘Management education in a corporate environment’, has been possible due to the sincere and dedicated efforts of the members of SCES, who have invaluable experience in varied areas like academics, industry, service and social-work.</string>
     <string name="map_api_key">AIzaSyA-2OJ_dYLKEZ8V8XOmN2UqFSzUl79hoCY</string>
