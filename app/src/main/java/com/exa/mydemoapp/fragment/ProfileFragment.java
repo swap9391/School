@@ -26,6 +26,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -63,7 +67,7 @@ public class ProfileFragment extends CommonFragment {
     View viewReward;
     @ViewById(R.id.lay_reward)
     LinearLayout layReward;
-
+    List<RewardModel> rewardModelList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,6 +94,17 @@ public class ProfileFragment extends CommonFragment {
         });
         if (!AppController.isAdmin(getMyActivity())) {
             getRewardsPoints();
+            layReward.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (rewardModelList.size() > 0) {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("mylist", (Serializable) rewardModelList);
+                        getMyActivity().showFragment(getMyActivity().rewardGraphFragment, bundle);
+                    }
+
+                }
+            });
         } else {
             viewReward.setVisibility(View.GONE);
             layReward.setVisibility(View.GONE);
@@ -112,7 +127,15 @@ public class ProfileFragment extends CommonFragment {
                 + CommonUtils.asInt(studentInfoSingleton.getStudentModel().getInstallment3(), 0);
         String paidFees = "Paid :" + paid;
         int dues = studentInfoSingleton.getStudentModel().getTotalFees() - paid;
-        String duesPayable = "Total Dues :" + dues;
+
+        String dueDate = "";
+        if (studentInfoSingleton.getStudentModel().getDateInsvestment2() != null) {
+            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentInfoSingleton.getStudentModel().getDateInsvestment2(),"dd-MM-yyyy hh:mm"),"dd/MM/yyy" ) ;
+        } else if (studentInfoSingleton.getStudentModel().getDateInsvestment3() != null) {
+            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentInfoSingleton.getStudentModel().getDateInsvestment3(),"dd-MM-yyyy hh:mm"),"dd/MM/yyy" ) ;
+        }
+
+        String duesPayable = "Total Dues :" + dues + " " + dueDate;
 
         if (studentInfoSingleton.getStudentModel().getGender().equalsIgnoreCase("Boy")) {
             circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
@@ -138,7 +161,7 @@ public class ProfileFragment extends CommonFragment {
 
     public void getRewardsPoints() {
         try {
-
+            rewardModelList = new ArrayList<>();
             DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
             DatabaseReference ref2 = ref1.child(Constants.REWARD_TABLE);
             Query query = ref2.orderByChild("studentId").equalTo(studentInfoSingleton.getStudentModel().getUniqKey());
@@ -149,7 +172,7 @@ public class ProfileFragment extends CommonFragment {
                     for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
                         RewardModel rewardModel = Snapshot.getValue(RewardModel.class);
                         points = points + rewardModel.getPoints();
-
+                        rewardModelList.add(rewardModel);
                     }
                     txtRewards.setText("Reward Points " + points);
                 }

@@ -34,6 +34,7 @@ import com.exa.mydemoapp.fragment.DashboardFragment;
 import com.exa.mydemoapp.fragment.GalleryViewFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.ProfileFragment;
+import com.exa.mydemoapp.fragment.RewardGraphFragment;
 import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
@@ -67,6 +68,7 @@ public class HomeActivity extends CommonActivity {
     public StaffInfoFragment staffInfoFragment;
     public UsersListFragment usersListFragment;
     public RewardsPointsFragment rewardsPointsFragment;
+    public RewardGraphFragment rewardGraphFragment;
     public List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
     public boolean isGallery = true;
     public boolean isGuest = false;
@@ -210,6 +212,9 @@ public class HomeActivity extends CommonActivity {
         } else if (rewardsPointsFragment != null && rewardsPointsFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
+        } else if (rewardGraphFragment != null && rewardGraphFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(rewardsPointsFragment, null);
         } else {
             exitDialog();
         }
@@ -244,6 +249,7 @@ public class HomeActivity extends CommonActivity {
         staffInfoFragment = new StaffInfoFragment();
         usersListFragment = new UsersListFragment();
         rewardsPointsFragment = new RewardsPointsFragment();
+        rewardGraphFragment = new RewardGraphFragment();
     }
 
     public List<ImageRequest> getListAlbumChild() {
@@ -391,5 +397,10 @@ public class HomeActivity extends CommonActivity {
     public Toolbar getToolbar() {
         return toolbar;
     }
+
+    public StudentInfoSingleton getStudentInfoSingleton() {
+        return studentInfoSingleton;
+    }
+
 }
 

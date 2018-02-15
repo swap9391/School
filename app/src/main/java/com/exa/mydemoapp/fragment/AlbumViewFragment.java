@@ -70,7 +70,7 @@ public class AlbumViewFragment extends CommonFragment {
 
     private void getImageData() {
         String userId = getMyActivity().databaseReference.push().getKey();
-        String studentId = CommonUtils.getStudentId(getMyActivity()) == null ? "NA" : CommonUtils.getStudentId(getMyActivity());
+        String studentId = getMyActivity().getStudentInfoSingleton().getStudentModel().getUniqKey();
         DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
         Query query = ref2.orderByChild("imageType").equalTo("Gallery");

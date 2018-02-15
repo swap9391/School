@@ -35,7 +35,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -62,13 +61,11 @@ public class BusLocationActivity extends FragmentActivity implements OnMapReadyC
     double lng;
     public DatabaseReference databaseReference;
     public StorageReference mStorageRef;
-    public FirebaseFirestore db;
 
     public void init() {
         // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        db = FirebaseFirestore.getInstance();
 
     }
 

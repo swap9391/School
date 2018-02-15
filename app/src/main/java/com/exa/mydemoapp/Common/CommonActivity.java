@@ -29,7 +29,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -45,13 +44,11 @@ import java.util.List;
 public class CommonActivity extends AppCompatActivity {
     public DatabaseReference databaseReference;
     public StorageReference mStorageRef;
-    public FirebaseFirestore db;
 
     public void init() {
         // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        db = FirebaseFirestore.getInstance();
 
     }
 

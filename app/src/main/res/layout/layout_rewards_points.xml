@@ -66,6 +66,21 @@
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp"></Spinner>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp">
+
+                <EditText
+                    android:id="@+id/edt_point"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Points"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
             <EditText
                 android:id="@+id/edt_description"
                 android:layout_width="match_parent"

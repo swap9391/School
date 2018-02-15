@@ -37,6 +37,9 @@ public class StudentModel implements Serializable {
     private String installment2;
     private String installment3;
     private String rollNumber;
+    private String contactNumber;
+    private String dateInsvestment2;
+    private String dateInsvestment3;
 
     public String getVisiblity() {
         return visiblity;
@@ -196,5 +199,29 @@ public class StudentModel implements Serializable {
 
     public void setRollNumber(String rollNumber) {
         this.rollNumber = rollNumber;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getDateInsvestment2() {
+        return dateInsvestment2;
+    }
+
+    public void setDateInsvestment2(String dateInsvestment2) {
+        this.dateInsvestment2 = dateInsvestment2;
+    }
+
+    public String getDateInsvestment3() {
+        return dateInsvestment3;
+    }
+
+    public void setDateInsvestment3(String dateInsvestment3) {
+        this.dateInsvestment3 = dateInsvestment3;
     }
 }

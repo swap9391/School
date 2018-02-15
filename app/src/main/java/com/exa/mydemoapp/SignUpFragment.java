@@ -1,6 +1,7 @@
 package com.exa.mydemoapp;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -14,9 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.exa.mydemoapp.Common.CommonUtils;
@@ -25,11 +29,13 @@ import com.exa.mydemoapp.annotation.RequiredFieldException;
 import com.exa.mydemoapp.annotation.Validator;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.fragment.CommonFragment;
+import com.exa.mydemoapp.fragment.DatePickerFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
 import com.exa.mydemoapp.model.StudentModel;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -77,12 +83,20 @@ public class SignUpFragment extends CommonFragment {
     private EditText edtTotalFees;
     @ViewById(R.id.edt_roll_number)
     private EditText edtRollNumber;
+    @ViewById(R.id.edt_contact_number)
+    private EditText edtContactNumber;
     @ViewById(R.id.rd_girl)
     RadioButton rdGirl;
     @ViewById(R.id.rd_boy)
     RadioButton rdBoy;
-    boolean isEdit = false;
+    @ViewById(R.id.date_picker_invest1)
+    private Button datePickerInvest1;
+    @ViewById(R.id.date_picker_invest2)
+    private Button datePickerInvest2;
+    @ViewById(R.id.txtBalance)
+    TextView txtBalance;
 
+    boolean isEdit = false;
     private View view;
 
     @Override
@@ -127,10 +141,12 @@ public class SignUpFragment extends CommonFragment {
                         edtInstallment1.setVisibility(View.VISIBLE);
                         edtInstallment2.setVisibility(View.GONE);
                         edtInstallment3.setVisibility(View.GONE);
+                        datePickerInvest2.setVisibility(View.GONE);
                         break;
                     case "Second Installment":
                         edtInstallment1.setVisibility(View.VISIBLE);
                         edtInstallment2.setVisibility(View.VISIBLE);
+                        datePickerInvest2.setVisibility(View.VISIBLE);
                         edtInstallment3.setVisibility(View.GONE);
                         break;
                     case "Third Installment":
@@ -149,14 +165,32 @@ public class SignUpFragment extends CommonFragment {
         });
 
         Bundle bundle = getArguments();
-        studentModel = (StudentModel) bundle.getSerializable("studentData");
-        if (bundle != null && studentModel != null) {
-            bindView();
-            isEdit = true;
+        if (bundle != null) {
+            studentModel = (StudentModel) bundle.getSerializable("studentData");
+            if (studentModel != null) {
+                isEdit = true;
+                bindView();
+            }
         } else {
             studentModel = new StudentModel();
             isEdit = false;
         }
+
+        datePickerInvest1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerInvest1.setTag("invest2");
+                showDatePicker("install2");
+            }
+        });
+
+        datePickerInvest2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerInvest2.setTag("invest3");
+                showDatePicker("install3");
+            }
+        });
 
         return view;
     }
@@ -202,6 +236,7 @@ public class SignUpFragment extends CommonFragment {
         spnFeesType.setSelection(installmentPosition);
         edtRegistrationId.setText(studentModel.getRegistrationId());
         edtStudentName.setText(studentModel.getStudentName());
+        edtContactNumber.setText(studentModel.getContactNumber());
         edtAddress.setText(studentModel.getStudentAddress());
         edtBloodGrp.setText(studentModel.getStudentBloodGrp());
         edtUsername.setText(studentModel.getStudentUserName());
@@ -216,6 +251,11 @@ public class SignUpFragment extends CommonFragment {
         } else {
             rdGirl.setChecked(true);
         }
+        long totalInstallment = CommonUtils.asInt(studentModel.getInstallment1(), 0) + CommonUtils.asInt(studentModel.getInstallment2(), 0) + CommonUtils.asInt(studentModel.getInstallment3(), 0);
+        long banalce = studentModel.getTotalFees() - totalInstallment;
+        if (isEdit) {
+            txtBalance.setText("* Patment Due " + banalce);
+        }
     }
 
     private void bindModel() {
@@ -223,6 +263,7 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setStudentAddress(edtAddress.getText().toString().trim());
         studentModel.setStudentBloodGrp(edtBloodGrp.getText().toString().trim());
         studentModel.setStudentUserName(edtUsername.getText().toString().trim());
+        studentModel.setContactNumber(edtContactNumber.getText().toString().trim());
         studentModel.setRollNumber(edtRollNumber.getText().toString().trim());
         try {
             studentModel.setStudentPassword(CommonUtils.encrypt(edtPassword.getText().toString().trim()));
@@ -248,6 +289,7 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setInstallment2(edtInstallment2.getText().toString().trim());
         studentModel.setInstallment3(edtInstallment3.getText().toString().trim());
         studentModel.setTotalFees(CommonUtils.asInt(edtTotalFees.getText().toString().trim(), 0));
+
     }
 
     @Override
@@ -283,7 +325,7 @@ public class SignUpFragment extends CommonFragment {
     private void saveUserInformation() {
 
         try {
-            AlertDialog.Builder builder = showAlertDialog(getMyActivity(), getString(R.string.logout_title), getString(R.string.save_msg));
+            AlertDialog.Builder builder = showAlertDialog(getMyActivity(), getString(R.string.user_reg_title), getString(R.string.save_msg));
             builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -304,7 +346,6 @@ public class SignUpFragment extends CommonFragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-
                 }
             }).show();
         } catch (Throwable throwable) {
@@ -314,6 +355,14 @@ public class SignUpFragment extends CommonFragment {
     }
 
     private boolean check() {
+        if (studentModel.getContactNumber() == null || studentModel.getContactNumber().isEmpty()) {
+            getMyActivity().showToast("Please Enter Contact Number");
+            return false;
+        }
+        if (studentModel.getContactNumber() == null || studentModel.getContactNumber().length() < 10) {
+            getMyActivity().showToast("Please Enter Valid Contact Number");
+            return false;
+        }
         if (studentModel.getGender() == null || studentModel.getGender().isEmpty()) {
             getMyActivity().showToast("Please Select Gender");
             return false;
@@ -326,6 +375,7 @@ public class SignUpFragment extends CommonFragment {
             getMyActivity().showToast("Please Select Fees Installment");
             return false;
         }
+
         if (studentModel.getInstallmentType().equalsIgnoreCase("First Installment") && (studentModel.getInstallment1() == null || studentModel.getInstallment1().isEmpty())) {
             getMyActivity().showToast("Please Enter First Installment");
             return false;
@@ -341,6 +391,12 @@ public class SignUpFragment extends CommonFragment {
             return false;
         }
 
+        long totalPay = CommonUtils.asInt(studentModel.getInstallment1(), 0) + CommonUtils.asInt(studentModel.getInstallment2(), 0) + CommonUtils.asInt(studentModel.getInstallment3(), 0);
+        if (totalPay > studentModel.getTotalFees()) {
+            getMyActivity().showToast("Please Enter Valid Amount");
+            return false;
+        }
+
         return true;
     }
 
@@ -351,6 +407,72 @@ public class SignUpFragment extends CommonFragment {
         alertDialog.setMessage(msg);
         return alertDialog;
     }
+
+    private void showDatePicker(String flag) {
+        DatePickerFragment date = new DatePickerFragment();
+        /**
+         * Set Up Current Date Into dialog
+         */
+        Calendar calender = Calendar.getInstance();
+        Bundle args = new Bundle();
+        args.putInt("year", calender.get(Calendar.YEAR));
+        args.putInt("month", calender.get(Calendar.MONTH));
+        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        date.setArguments(args);
+        /**
+         * Set Call back to capture selected date
+         */
+        if (flag.equals("install2")) {
+            date.setCallBack(ondate);
+        } else if (flag.equals("install3")) {
+            date.setCallBack(ondate2);
+        }
+        date.show(getFragmentManager(), "Date Picker");
+    }
+
+    DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            monthOfYear += 1;
+            String month = "" + monthOfYear;
+            String day = "" + dayOfMonth;
+            if (monthOfYear < 10) {
+                month = "0" + monthOfYear;
+            }
+            if (dayOfMonth < 10) {
+                day = "0" + dayOfMonth;
+            }
+            Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
+            String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT);
+
+            studentModel.setDateInsvestment2(formatedDate);
+            datePickerInvest1.setText(CommonUtils.formatDateForDisplay(date, "dd-MM-yyyy"));
+
+
+        }
+    };
+
+    DatePickerDialog.OnDateSetListener ondate2 = new DatePickerDialog.OnDateSetListener() {
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            monthOfYear += 1;
+            String month = "" + monthOfYear;
+            String day = "" + dayOfMonth;
+            if (monthOfYear < 10) {
+                month = "0" + monthOfYear;
+            }
+            if (dayOfMonth < 10) {
+                day = "0" + dayOfMonth;
+            }
+            Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
+            String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT);
+            studentModel.setDateInsvestment3(formatedDate);
+            datePickerInvest2.setText(CommonUtils.formatDateForDisplay(date, "dd-MM-yyyy"));
+        }
+    };
+
 
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();

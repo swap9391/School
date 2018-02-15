@@ -55,7 +55,8 @@ public class RewardsPointsFragment extends CommonFragment {
     private TextView txtStudentSpinnerTitle;
     @ViewById(R.id.edt_description)
     private EditText edt_description;
-
+    @ViewById(R.id.edt_point)
+    private EditText edt_points;
 
     List<String> listClass;
     List<String> listStudentName;
@@ -126,7 +127,7 @@ public class RewardsPointsFragment extends CommonFragment {
 
     public void getStudents(String className) {
         listStudent = new ArrayList<>();
-        listStudentName= new ArrayList<>();
+        listStudentName = new ArrayList<>();
         DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.STUDENT);
         Query query = ref2.orderByChild("className").equalTo(className);
@@ -172,7 +173,7 @@ public class RewardsPointsFragment extends CommonFragment {
         rewardModel.setDescription(edt_description.getText().toString().trim());
         rewardModel.setRewardType(spinnerRewardType.getSelectedItem().toString());
         rewardModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
-        setPoints(spinnerRewardType.getSelectedItem().toString());
+        rewardModel.setPoints(CommonUtils.asInt(edt_points.getText().toString(), 0));
     }
 
     private void setPoints(String rewardType) {
@@ -205,14 +206,20 @@ public class RewardsPointsFragment extends CommonFragment {
             getMyActivity().showToast("Please Select Student Name");
             return false;
         }
-        if (rewardModel.getStudentId() == null || rewardModel.getStudentId().equals("")) {
+        if (rewardModel.getRewardType() == null || rewardModel.getRewardType().equals("")) {
             getMyActivity().showToast("Please Select Reward Type");
             return false;
         }
+        if (rewardModel.getPoints() <= 0) {
+            getMyActivity().showToast("Please Enter Points");
+            return false;
+        }
+
         if (rewardModel.getDescription() == null || rewardModel.getDescription().equals("")) {
             getMyActivity().showToast("Please Enter Reward Description");
             return false;
         }
+
         return true;
     }
 

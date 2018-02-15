@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -1509,5 +1510,21 @@ public class CommonUtils {
         Key key = new SecretKeySpec(KEY.getBytes(), ALGORITHM);
         return key;
     }
+
+    public static String getAppVersion(Context context) {
+        String result = "";
+
+        try {
+            result = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0)
+                    .versionName;
+            result = result.replaceAll("[a-zA-Z]|-", "");
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("Error", e.getMessage());
+        }
+
+        return result;
+    }
+
 
 }

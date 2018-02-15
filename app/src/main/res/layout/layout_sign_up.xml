@@ -86,6 +86,22 @@
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp">
+
+                <EditText
+                    android:id="@+id/edt_contact_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Contact "
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:minLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -189,8 +205,17 @@
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
 
+            <TextView
+                android:id="@+id/txtBalance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/caldroid_light_red" />
 
             <TextView
+                android:id="@+id/lblInstallment1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -207,37 +232,87 @@
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp"></Spinner>
 
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="7dp">
+                android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/edt_installment_1"
-                    android:layout_width="match_parent"
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Enter first installment"
-                    android:inputType="number"
-                    android:maxLength="6"
-                    android:maxLines="1"
-                    android:minLines="1" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_margin="7dp"
+                    android:layout_weight="2"
+                    android:gravity="center">
 
-            <android.support.design.widget.TextInputLayout
+                    <EditText
+                        android:id="@+id/edt_installment_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter first installment"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:maxLines="1"
+                        android:minLines="1" />
+                </android.support.design.widget.TextInputLayout>
+
+
+                <Button
+                    android:id="@+id/date_picker_invest1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:drawableRight="@drawable/ic_calender"
+                    android:text="Select Date"
+                    android:textSize="8sp"
+
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="7dp">
+                android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/edt_installment_2"
-                    android:layout_width="match_parent"
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Enter second installment"
-                    android:inputType="number"
-                    android:maxLength="6"
-                    android:maxLines="1"
-                    android:minLines="1" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_margin="7dp"
+                    android:layout_weight="2">
+
+                    <EditText
+                        android:id="@+id/edt_installment_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter second installment"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:maxLines="1"
+                        android:minLines="1" />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/date_picker_invest2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:drawableRight="@drawable/ic_calender"
+                    android:text="Select Date"
+                    android:textSize="8sp"
+
+                    />
+            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

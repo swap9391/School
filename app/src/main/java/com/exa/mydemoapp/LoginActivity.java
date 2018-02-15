@@ -45,15 +45,16 @@ public class LoginActivity extends CommonActivity {
     StudentModel studentModel;
     ProgressDialog progressDialog;
     StudentInfoSingleton studentInfoSingleton;
+    String appVersion;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_login);
         view = getWindow().getDecorView();
+        appVersion = CommonUtils.getAppVersion(this);
         if (CommonUtils.getSharedPref(Constants.USER_NAME, this) != null && !CommonUtils.getSharedPref(Constants.USER_NAME, this).isEmpty()) {
             studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
-
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             finish();
