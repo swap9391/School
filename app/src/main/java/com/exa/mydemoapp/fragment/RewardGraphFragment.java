@@ -31,7 +31,6 @@ public class RewardGraphFragment extends CommonFragment {
     View view;
     PieChart pieChart;
     List<RewardModel> rewardModelList;
-    int sportsPoint = 0, culturePoint = 0, interSchoolPoint = 0, acadamicPoint = 0, otherPoint = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +59,7 @@ public class RewardGraphFragment extends CommonFragment {
     }
 
     private void loadData() {
+        int sportsPoint = 0, culturePoint = 0, interSchoolPoint = 0, acadamicPoint = 0, otherPoint = 0;
 
         for (RewardModel rewardModel : rewardModelList) {
             if (rewardModel.getRewardType().equals(getStringById(R.string.reward_sports))) {

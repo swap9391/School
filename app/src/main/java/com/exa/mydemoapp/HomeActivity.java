@@ -214,7 +214,7 @@ public class HomeActivity extends CommonActivity {
             showFragment(dashboardFragment, null);
         } else if (rewardGraphFragment != null && rewardGraphFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
-            showFragment(rewardsPointsFragment, null);
+            showFragment(profileFragment, null);
         } else {
             exitDialog();
         }

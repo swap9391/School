@@ -1,6 +1,7 @@
 package com.exa.mydemoapp.fragment;
 
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
@@ -68,6 +70,7 @@ public class ProfileFragment extends CommonFragment {
     @ViewById(R.id.lay_reward)
     LinearLayout layReward;
     List<RewardModel> rewardModelList;
+    ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,7 +96,16 @@ public class ProfileFragment extends CommonFragment {
             }
         });
         if (!AppController.isAdmin(getMyActivity())) {
-            getRewardsPoints();
+            if (Connectivity.isConnected(getMyActivity())) {
+                progressDialog = new ProgressDialog(getMyActivity());
+                progressDialog.setTitle("Loading Reward Points...");
+                progressDialog.show();
+                getRewardsPoints();
+            } else {
+                getMyActivity().showToast("Please Connect to internet !!");
+            }
+
+
             layReward.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -130,9 +142,9 @@ public class ProfileFragment extends CommonFragment {
 
         String dueDate = "";
         if (studentInfoSingleton.getStudentModel().getDateInsvestment2() != null) {
-            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentInfoSingleton.getStudentModel().getDateInsvestment2(),"dd-MM-yyyy hh:mm"),"dd/MM/yyy" ) ;
+            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentInfoSingleton.getStudentModel().getDateInsvestment2(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
         } else if (studentInfoSingleton.getStudentModel().getDateInsvestment3() != null) {
-            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentInfoSingleton.getStudentModel().getDateInsvestment3(),"dd-MM-yyyy hh:mm"),"dd/MM/yyy" ) ;
+            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentInfoSingleton.getStudentModel().getDateInsvestment3(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
         }
 
         String duesPayable = "Total Dues :" + dues + " " + dueDate;
@@ -175,11 +187,13 @@ public class ProfileFragment extends CommonFragment {
                         rewardModelList.add(rewardModel);
                     }
                     txtRewards.setText("Reward Points " + points);
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.e("Exception", "onCancelled", databaseError.toException());
+                    progressDialog.dismiss();
                 }
             });
 
