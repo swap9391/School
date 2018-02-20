@@ -25,12 +25,12 @@
     </string-array>
 
     <string-array name="image_type">
-        <item>News Feed</item>
-        <item>Blog</item>
-        <item>Achievement</item>
-        <item>Gallery</item>
-        <item>Staff Information</item>
-        <item>School Facilities</item>
+        <item>@string/img_type_news</item>
+        <item>@string/img_type_blog</item>
+        <item>@string/img_type_archive</item>
+        <item>@string/img_type_gallery</item>
+        <item>@string/img_type_staff</item>
+        <item>@string/img_type_facilities</item>
     </string-array>
 
     <string-array name="school_name">
@@ -130,6 +130,7 @@
         <item>@string/dashboard_blog</item>
     </string-array>
 
+
     <integer-array name="imagesForGuest">
         <item>@drawable/ic_about_school</item>
         <item>@drawable/ic_facility</item>
@@ -138,6 +139,13 @@
         <item>@drawable/ic_archivement</item>
         <item>@drawable/ic_blog</item>
     </integer-array>
+
+    <string name="img_type_news">News Feed</string>
+    <string name="img_type_blog">Blog</string>
+    <string name="img_type_archive">Achievement</string>
+    <string name="img_type_gallery">Gallery</string>
+    <string name="img_type_staff">Staff Information</string>
+    <string name="img_type_facilities">School Facilities</string>
 
     <string name="dashboard_about_school">About School</string>
     <string name="dashboard_facilities">School Facilities</string>

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.annotation.RequiredFieldException;
@@ -32,10 +34,15 @@ import com.exa.mydemoapp.fragment.CommonFragment;
 import com.exa.mydemoapp.fragment.DatePickerFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
 import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -472,6 +479,29 @@ public class SignUpFragment extends CommonFragment {
             datePickerInvest2.setText(CommonUtils.formatDateForDisplay(date, "dd-MM-yyyy"));
         }
     };
+
+    private void save() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(IJson.mobile_no, "" + studentModel.getClassName());
+        hashMap.put(IJson.password, "" + studentModel.getStudentName());
+        hashMap.put(IJson.userId, "0");
+        hashMap.put(IJson.active, "1");
+
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
+            @Override
+            public void onResponse(StudentModel[] object) {
+                if (object[0] instanceof StudentModel) {
+                    for (StudentModel bean : object) {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, StudentModel[].class);
+    }
 
 
     public HomeActivity getMyActivity() {

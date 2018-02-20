@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
@@ -18,6 +19,11 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -143,6 +149,29 @@ public class AlbumViewFragment extends CommonFragment {
 
             }
         }));
+    }
+
+    private void getImageList() {
+        String studentId = getMyActivity().getStudentInfoSingleton().getStudentModel().getUniqKey();
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(IJson.mobile_no, "" + getStringById(R.string.img_type_gallery));
+        hashMap.put(IJson.password, "" + studentId);
+
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
+            @Override
+            public void onResponse(StudentModel[] object) {
+                if (object[0] instanceof StudentModel) {
+                    for (StudentModel bean : object) {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, StudentModel[].class);
+
     }
 
     public HomeActivity getMyActivity() {
