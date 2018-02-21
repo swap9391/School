@@ -7,7 +7,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.exa.mydemoapp.Common.AppController;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.model.StudentModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,10 +34,8 @@ public class CallWebService {
       @param aClass
       @param <T>
 */
-
     static ProgressDialog progressDialog;
-
-    public synchronized static <T> void getWebservice(Context context, int post, String url, final HashMap<String, String> param, VolleyResponseListener<StudentModel> volleyResponseListener, Class<StudentModel[]> aClass) {
+    public synchronized static <T> void getWebservice(Context context, int post, String url, final HashMap<String, String> param, VolleyResponseListener volleyResponseListener, Class<T[]> aClass) {
 
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("Loading...");
@@ -46,6 +47,22 @@ public class CallWebService {
                         try {
                             JSONObject jsonObject = response;
                             progressDialog.dismiss();
+
+                            String key = jsonObject.getString(Constants.RESPONSE_KEY);
+                            String message = jsonObject.getString(Constants.RESPONSE_MESSAGE);
+//                          Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                            if (key.equalsIgnoreCase(Constants.RESPONSE_SUCCESS)) {
+                                jsonArray1 = jsonObject.getJSONArray(Constants.RESPONSE_INFO);
+                                GsonBuilder gsonBuilder = new GsonBuilder();
+                                Gson gson = gsonBuilder.create();
+
+                                Object[] object = gson.fromJson(String.valueOf(jsonArray1), aClass);
+                                volleyResponseListener.onResponse(object);
+                            } else if (key.equalsIgnoreCase(Constants.RESPONSE_ERROR)) {
+                                progressDialog.dismiss();
+                                volleyResponseListener.onError(message.toString());
+                            }
+
                         } catch (Exception e) {
                             progressDialog.dismiss();
                         }

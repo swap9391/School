@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
@@ -22,11 +23,17 @@ import com.exa.mydemoapp.Common.FloatingActionButton;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 /**
  * Created by midt-006 on 12/12/17.
@@ -149,6 +156,27 @@ public class LoginActivity extends CommonActivity {
                 progressDialog.dismiss();
             }
         });
+
+    }
+
+    private void Login() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(IJson.mobile_no, "" + studentModel.getStudentUserName());
+        hashMap.put(IJson.password, "" + studentModel.getStudentPassword());
+        CallWebService.getWebservice(this, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
+            @Override
+            public void onResponse(StudentModel[] object) {
+                if (object[0] instanceof StudentModel) {
+                    for (StudentModel bean : object) {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, StudentModel[].class);
 
     }
 

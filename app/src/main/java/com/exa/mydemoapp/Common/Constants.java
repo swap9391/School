@@ -8,6 +8,12 @@ import com.exa.mydemoapp.BuildConfig;
 
 public interface Constants {
 
+    String RESPONSE_MESSAGE = "message";
+    String RESPONSE_KEY = "key";
+    String RESPONSE_INFO = "data";
+    String RESPONSE_SUCCESS = "1";
+    String RESPONSE_ERROR = "0";
+
     public static String MAIN_TABLE = BuildConfig.MAIN_TABLE_NAME;
     public static String IMAGE_TABLE = "IMAGETABLE";
     public static String EVENT_TABLE = "EVENTTABLE";
