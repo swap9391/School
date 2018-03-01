@@ -54,6 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Registration Id"
+                    android:imeOptions="actionNext"
                     android:maxLines="1"
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
@@ -68,6 +69,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Roll Number"
+                    android:imeOptions="actionNext"
                     android:maxLines="1"
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
@@ -82,6 +84,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Student Name"
+                    android:imeOptions="actionNext"
                     android:maxLines="1"
                     android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
@@ -96,6 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Contact "
+                    android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLines="1"
                     android:minLines="1" />
@@ -152,6 +156,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Student Blood Group"
+                    android:imeOptions="actionNext"
                     android:maxLength="5"
                     android:maxLines="1"
                     android:minLines="1" />
@@ -167,6 +172,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Student User Name"
+                    android:imeOptions="actionNext"
                     android:maxLength="25"
                     android:maxLines="1"
                     android:minLines="1" />
@@ -182,6 +188,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Student Password"
+                    android:imeOptions="actionNext"
                     android:inputType="textPassword"
                     android:maxLength="20"
                     android:maxLines="1"
@@ -199,6 +206,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Total Fees"
+                    android:imeOptions="actionNext"
                     android:inputType="number"
                     android:maxLength="6"
                     android:maxLines="1"

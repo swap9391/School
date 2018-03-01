@@ -76,9 +76,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Points"
+                    android:imeOptions="actionNext"
                     android:inputType="number"
                     android:maxLength="4"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:minLines="1" />
             </android.support.design.widget.TextInputLayout>
 
             <EditText
