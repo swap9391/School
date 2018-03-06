@@ -40,6 +40,7 @@ public class StudentModel implements Serializable {
     private String contactNumber;
     private String dateInsvestment2;
     private String dateInsvestment3;
+    private boolean subscribed;
 
     public String getVisiblity() {
         return visiblity;
@@ -223,5 +224,13 @@ public class StudentModel implements Serializable {
 
     public void setDateInsvestment3(String dateInsvestment3) {
         this.dateInsvestment3 = dateInsvestment3;
+    }
+
+    public boolean isSubscribed() {
+        return subscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
     }
 }

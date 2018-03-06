@@ -97,6 +97,7 @@ public class LoginActivity extends CommonActivity {
                     progressDialog.show();
                     bindModel();
                     checkLogin();
+                    //Login();
                 } else {
                     showToast(getStringById(R.string.no_internet));
                 }
@@ -160,7 +161,7 @@ public class LoginActivity extends CommonActivity {
     }
 
     private void Login() {
-        HashMap<String, String> hashMap = new HashMap<>();
+ /*       HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(IJson.mobile_no, "" + studentModel.getStudentUserName());
         hashMap.put(IJson.password, "" + studentModel.getStudentPassword());
         CallWebService.getWebservice(this, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
@@ -177,6 +178,28 @@ public class LoginActivity extends CommonActivity {
             public void onError(String message) {
             }
         }, StudentModel[].class);
+
+    }*/
+
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(IJson.mobile_no, "" + studentModel.getStudentUserName());
+        hashMap.put(IJson.password, "" + studentModel.getStudentPassword());
+        CallWebService.getWebserviceObject(this, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
+            @Override
+            public void onResponse(StudentModel[] object) {
+
+            }
+
+            @Override
+            public void onResponse(StudentModel object) {
+                Log.e("Tag", object.getStudentName());
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        }, StudentModel.class);
 
     }
 

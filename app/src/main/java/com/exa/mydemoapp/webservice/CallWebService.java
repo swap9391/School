@@ -23,18 +23,20 @@ import java.util.HashMap;
  */
 public class CallWebService {
     public static JSONArray jsonArray1 = null;
+    public static JSONObject jsonObjectResult = null;
 
 
-     /* used it while u get whole data in response  not only id
-      @param context
-      @param method
-      @param url
-      @param param
-      @param listener
-      @param aClass
-      @param <T>
+    /* used it while u get whole data in response  not only id
+     @param context
+     @param method
+     @param url
+     @param param
+     @param listener
+     @param aClass
+     @param <T>
 */
     static ProgressDialog progressDialog;
+
     public synchronized static <T> void getWebservice(Context context, int post, String url, final HashMap<String, String> param, VolleyResponseListener volleyResponseListener, Class<T[]> aClass) {
 
         progressDialog = new ProgressDialog(context);
@@ -76,5 +78,45 @@ public class CallWebService {
         });
         AppController.getInstance().addToRequestQueue(req);
 
+    }
+
+    public synchronized static <T> void getWebserviceObject(Context context, int post, String url, final HashMap<String, String> param, VolleyResponseListener volleyResponseListener, Class<T> aClass) {
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Loading...");
+        progressDialog.show();
+        JsonObjectRequest req = new JsonObjectRequest(url, new JSONObject(param),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            JSONObject jsonObject = response;
+                            progressDialog.dismiss();
+                            String key = jsonObject.getString(Constants.RESPONSE_KEY);
+                            String message = jsonObject.getString(Constants.RESPONSE_MESSAGE);
+//                          Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                            if (key.equalsIgnoreCase(Constants.RESPONSE_SUCCESS)) {
+                                jsonObjectResult = jsonObject.getJSONObject(Constants.RESPONSE_INFO);
+                                GsonBuilder gsonBuilder = new GsonBuilder();
+                                Gson gson = gsonBuilder.create();
+                                Object object = gson.fromJson(String.valueOf(jsonObjectResult), aClass);
+                                volleyResponseListener.onResponse(object);
+                            } else if (key.equalsIgnoreCase(Constants.RESPONSE_ERROR)) {
+                                progressDialog.dismiss();
+                                volleyResponseListener.onError(message.toString());
+                            }
+
+                        } catch (Exception e) {
+                            progressDialog.dismiss();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+            }
+        });
+        AppController.getInstance().addToRequestQueue(req);
     }
 }

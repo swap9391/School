@@ -168,6 +168,11 @@ public class AlbumViewFragment extends CommonFragment {
             }
 
             @Override
+            public void onResponse(StudentModel object) {
+
+            }
+
+            @Override
             public void onError(String message) {
             }
         }, StudentModel[].class);

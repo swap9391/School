@@ -498,6 +498,11 @@ public class SignUpFragment extends CommonFragment {
             }
 
             @Override
+            public void onResponse(StudentModel object) {
+
+            }
+
+            @Override
             public void onError(String message) {
             }
         }, StudentModel[].class);
