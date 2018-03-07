@@ -79,6 +79,9 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.0.1'
     compile 'com.github.blackfizz:eazegraph:1.2.2@aar'
     compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.6.+'
+    compile 'com.amazonaws:aws-android-sdk-cognito:2.6.+'
+    compile ('com.amazonaws:aws-android-sdk-mobile-client:2.6.7@aar') { transitive = true; }
 }
 
 

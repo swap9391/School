@@ -7,6 +7,7 @@ import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -42,6 +43,7 @@ public class AppController extends Application {
         if (!FirebaseApp.getApps(this).isEmpty()) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         }
+        AWSMobileClient.getInstance().initialize(this).execute();
         mInstance = this;
         mMainContext = getApplicationContext();
         mMainHandler = new Handler(getMainLooper());

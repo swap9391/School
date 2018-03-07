@@ -34,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.bumptech.glide.Glide;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
@@ -45,6 +46,8 @@ import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.LocationModel;
 import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
+import com.exa.mydemoapp.s3Upload.S3UploadActivity;
 import com.exa.mydemoapp.service.LocationUpdateService;
 import com.exa.mydemoapp.service.ServiceCallbacks;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,6 +62,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -73,7 +79,8 @@ import java.util.Map;
 public class UploadPhotoFragment extends CommonFragment implements View.OnClickListener, ServiceCallbacks {
 
     Uri fileView;
-    List<Uri> imglist = new ArrayList<>();
+    //List<Uri> imglist = new ArrayList<>();
+    List<File> imageFiles = new ArrayList<>();
     private int REQUEST_CAMERA = 101, PICK_IMAGE = 102;
     Uri imageUri;
     int count = 0;
@@ -123,7 +130,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         getMyActivity().toolbar.setTitle("Upload Photo");
         getMyActivity().init();
         initViewBinding(view);
-
+        imageFiles = new ArrayList<>();
         listEventType = Arrays.asList(getResources().getStringArray(R.array.image_type));
         ArrayAdapter<String> eventAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listEventType);
         eventAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -260,13 +267,49 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
             }
             isEdit = false;
-            if (imglist.size() > 0) {
+            /*if (imglist.size() > 0) {
                 uploadImage();
+            }*/
+            if (imageFiles.size() > 0) {
+                uploadImages();
             }
         }
     }
 
-    @SuppressWarnings("VisibleForTests")
+    public void uploadImages() {
+        final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
+        progressDialog.setTitle("Uploading... ");
+        progressDialog.show();
+        S3UploadActivity.uploadData(getMyActivity(), new S3FileTransferDelegate() {
+            @Override
+            public void onS3FileTransferStateChanged(int id, TransferState state, String url) {
+                imageFiles.remove(0);
+                imageRequest.setImg(url);
+                saveUserInformation();
+                progressDialog.dismiss();
+                count = imageFiles.size();
+                if (count > 0) {
+                    uploadImages();
+                } else {
+                    ClearView();
+                    getMyActivity().performBackForDesign();
+                }
+            }
+
+            @Override
+            public void onS3FileTransferProgressChanged(int id, String fileName, int percentage) {
+                progressDialog.setTitle("Uploading.. " + percentage + "%    " + imageFiles.size() + "/" + totalImages);
+            }
+
+            @Override
+            public void onS3FileTransferError(int id, String fileName, Exception ex) {
+                progressDialog.dismiss();
+            }
+        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss"), imageFiles.get(0));
+    }
+
+
+   /* @SuppressWarnings("VisibleForTests")
     public void uploadImage() {
         // Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
         final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
@@ -314,7 +357,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                     }
                 });
 
-    }
+    }*/
 
 
     private void startCamera() {
@@ -412,7 +455,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         }
     }
 
-
+    //for camera image
     private void setImage(String uristr) {
 
         Bitmap bitmap = null;
@@ -425,7 +468,9 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 bt.compress(Bitmap.CompressFormat.PNG, 50, stream);
                 byte[] vehicleImage = stream.toByteArray();
                 fileView = getMyActivity().getImageUri(getMyActivity(), bt);
-                imglist.add(fileView);
+
+
+                //imglist.add(fileView);
                 bindView(fileView, true);
 
             }
@@ -434,6 +479,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         }
     }
 
+    //for gallery images
     private void setImage(List<Uri> listOfUri) {
         totalImages = listOfUri.size();
         //        Uri selectedImage1 = data.getData();
@@ -447,7 +493,24 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 //  bt.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] vehicleImage = stream.toByteArray();
                 fileView = getMyActivity().getImageUri(getMyActivity(), bitmap);
-                imglist.add(fileView);
+
+
+                File filesDir = getMyActivity().getFilesDir();
+                File imageFile = new File(filesDir, "image" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss") + ".JPG");
+
+                OutputStream os;
+                try {
+                    os = new FileOutputStream(imageFile);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                    os.flush();
+                    os.close();
+                } catch (Exception e) {
+                    Log.e(getMyActivity().getClass().getSimpleName(), "Error writing bitmap", e);
+                }
+
+                imageFiles.add(imageFile);
+
+                //imglist.add(fileView);
                 bindView(fileView, false);
 
 
@@ -547,8 +610,9 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                             bindModel();
                             if (check()) {
                                 if (Connectivity.isConnected(getMyActivity())) {
-                                    if (!isEdit && imglist.size() > 0) {
-                                        uploadImage();
+                                    if (!isEdit && imageFiles.size() > 0) {
+                                        // uploadImage();
+                                        uploadImages();
                                     } else {
                                         saveUserInformation();
                                     }
