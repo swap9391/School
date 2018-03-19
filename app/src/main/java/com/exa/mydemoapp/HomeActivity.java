@@ -2,29 +2,42 @@ package com.exa.mydemoapp;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
+import com.exa.mydemoapp.adapter.UserAdapter;
+import com.exa.mydemoapp.database.Database;
+import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
@@ -41,12 +54,20 @@ import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
 import com.exa.mydemoapp.model.ImageRequest;
-import com.exa.mydemoapp.notification.NotifyService;
+import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.tracker.TrackerService;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by midt-006 on 12/10/17.
@@ -75,11 +96,15 @@ public class HomeActivity extends CommonActivity {
     private Fragment fromFragment;
     private String newsFeedType;
     private StudentInfoSingleton studentInfoSingleton;
+    Database db;
+    DbInvoker dbInvoker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        db = new Database(HomeActivity.this);
+        dbInvoker = new DbInvoker(this);
         if (intent != null && intent.getStringExtra(Constants.USER_TYPE) != null && intent.getStringExtra(Constants.USER_TYPE).equals(Constants.USER_TYPE_GUEST)) {
             isGuest = true;
         } else {
@@ -91,9 +116,13 @@ public class HomeActivity extends CommonActivity {
             setContentView(R.layout.layout_home);
             //   startNotificationService();
             studentInfoSingleton = StudentInfoSingleton.getInstance(this);
-            if (studentInfoSingleton.getStudentModel() == null) {
-                studentInfoSingleton.checkLogin();
-            }
+            FirebaseMessaging.getInstance().subscribeToTopic("test123");
+            FirebaseInstanceId.getInstance().getToken();
+            String token = FirebaseInstanceId.getInstance().getToken();
+            /*String fb_reg = CommonUtils.getSharedPref(Constants.FIREBASE, this);
+            if (fb_reg == null) {
+                registerToken(token);
+            }*/
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -121,12 +150,8 @@ public class HomeActivity extends CommonActivity {
                                 showFragment(newsFeedFragment, bundle);
                                 break;
                             case R.id.action_item3:
-                                if (studentInfoSingleton.getStudentModel() != null) {
                                     showToolbar();
-                                    showFragment(profileFragment, null);
-                                } else {
-                                    studentInfoSingleton.checkLogin();
-                                }
+                                    showFragment(usersListFragment, null);
                                 break;
                         }
                         return true;
@@ -138,7 +163,7 @@ public class HomeActivity extends CommonActivity {
         // updateStudentInfo();
 
     }
-
+/*
     private void startNotificationService() {
         // Before we start the service, confirm that we have extra power usage privileges.
         Intent intent = new Intent();
@@ -146,7 +171,7 @@ public class HomeActivity extends CommonActivity {
         intent.setData(Uri.parse("package:" + getPackageName()));
         startActivity(intent);
         startService(new Intent(this, NotifyService.class));
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -401,6 +426,44 @@ public class HomeActivity extends CommonActivity {
     public StudentInfoSingleton getStudentInfoSingleton() {
         return studentInfoSingleton;
     }
+
+
+    private void registerToken(final String token) {
+        String url = null;
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url + "?Token=" + token,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE, "FIREBASE");
+                        pDialog.hide();
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        pDialog.hide();
+                        Toast.makeText(getApplication(), error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+
+
+
 
 }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,15 +20,23 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
+import com.exa.mydemoapp.LoginActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.RewardModel;
 import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +46,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -62,9 +72,10 @@ public class RewardsPointsFragment extends CommonFragment {
     List<String> listStudentName;
     List<String> listRewardType;
     List<StudentModel> listStudent;
+    List<StudentModel> listStudentClassWise;
     ProgressDialog progressDialog;
-
     RewardModel rewardModel;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +92,11 @@ public class RewardsPointsFragment extends CommonFragment {
         initViewBinding(view);
 
         rewardModel = new RewardModel();
+
+        listStudent = new ArrayList<>();
+        listStudentName = new ArrayList<>();
+
+        getUserList();
 
         listClass = Arrays.asList(getResources().getStringArray(R.array.class_type));
         //listClass.remove(new String("All"));
@@ -101,13 +117,20 @@ public class RewardsPointsFragment extends CommonFragment {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (!listClass.get(position).equals("All")) {
 
-                    if (Connectivity.isConnected(getMyActivity())) {
-                        progressDialog = new ProgressDialog(getMyActivity());
-                        progressDialog.setTitle("Loading Student List...");
-                        progressDialog.show();
-                        getStudents(listClass.get(position));
-                    } else {
-                        getMyActivity().showToast("Please Connect to internet !!");
+                    if (listStudent != null && listStudent.size() > 0) {
+                        listStudentClassWise = new ArrayList<>();
+                        for (StudentModel bean : listStudent) {
+                            if (bean.getClassName().equals(listClass.get(position))) {
+                                listStudentClassWise.add(bean);
+                                listStudentName.add(bean.getStudentName() + " " + bean.getRegistrationId());
+                            }
+                        }
+                        spinnerStudentName.setVisibility(View.VISIBLE);
+                        txtStudentSpinnerTitle.setVisibility(View.VISIBLE);
+                        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listStudentName);
+                        classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerStudentName.setAdapter(classAdapter);
+                        classAdapter.notifyDataSetChanged();
                     }
                 } else {
                     spinnerStudentName.setVisibility(View.GONE);
@@ -122,6 +145,34 @@ public class RewardsPointsFragment extends CommonFragment {
         });
 
         return view;
+    }
+
+
+    public void getUserList() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        // hashMap.put(IJson.password, "" + studentId);
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<StudentModel>() {
+            @Override
+            public void onResponse(StudentModel[] object) {
+
+                for (StudentModel studentModel : object) {
+                    listStudent.add(studentModel);
+                }
+                /*if (object[0] instanceof StudentModel) {
+                 for (S)
+                }*/
+
+            }
+
+            @Override
+            public void onResponse(StudentModel object) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, StudentModel[].class);
     }
 
 
@@ -164,8 +215,8 @@ public class RewardsPointsFragment extends CommonFragment {
 
     private void bindModel() {
         rewardModel.setClassName(spnClass.getSelectedItem().toString());
-        if (listStudentName != null && listStudentName.size() > 0) {
-            String studentId = listStudent.get(spinnerStudentName.getSelectedItemPosition()).getUniqKey();
+        if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
+            String studentId = listStudent.get(spinnerStudentName.getSelectedItemPosition()).getId().toString();
             if (studentId != null) {
                 rewardModel.setStudentId(studentId);
             }
@@ -244,11 +295,7 @@ public class RewardsPointsFragment extends CommonFragment {
                         public void onClick(DialogInterface dialog, int which) {
                             bindModel();
                             if (check()) {
-                                if (Connectivity.isConnected(getMyActivity())) {
-                                    saveUserInformation();
-                                } else {
-                                    getMyActivity().showToast("Please Connect to internet !!");
-                                }
+                                save();
                             }
                         }
                     }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -269,6 +316,33 @@ public class RewardsPointsFragment extends CommonFragment {
 
         }
         return true;
+    }
+
+
+    private void save() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(IJson.classId, "" + rewardModel.getClassName());
+        hashMap.put(IJson.studentId, "" + rewardModel.getStudentId());
+        hashMap.put(IJson.rewardType, "" + rewardModel.getRewardType());
+        hashMap.put(IJson.points, "" + rewardModel.getPoints());
+        hashMap.put(IJson.description, "" + rewardModel.getDescription());
+
+        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<RewardModel>() {
+            @Override
+            public void onResponse(RewardModel[] object) {
+            }
+
+            @Override
+            public void onResponse(RewardModel studentData) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
+            }
+        }, RewardModel.class);
+
     }
 
     private void saveUserInformation() {

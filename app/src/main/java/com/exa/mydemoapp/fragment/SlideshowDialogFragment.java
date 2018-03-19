@@ -201,7 +201,7 @@ public class SlideshowDialogFragment extends DialogFragment {
             final ImageRequest image = images.get(position);
 
 
-            Glide.with(getActivity()).load(image.getImg())
+            Glide.with(getActivity()).load(image.getImages().get(0).getImgUrl())
                     .thumbnail(0.5f)
                     .crossFade()
                     .override(800, 500)

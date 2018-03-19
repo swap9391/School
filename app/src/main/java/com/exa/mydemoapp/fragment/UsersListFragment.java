@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
@@ -20,7 +21,11 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.UserAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +33,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -39,9 +46,10 @@ public class UsersListFragment extends CommonFragment {
     public UserAdapter mAdapter;
     @ViewById(R.id.recyclerView)
     private RecyclerView recyclerView;
-    private ArrayList<StudentModel> listStudent;
+    private List<StudentModel> listStudent;
     private View view;
     ProgressDialog progressDialog;
+    DbInvoker dbInvoker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,18 +65,51 @@ public class UsersListFragment extends CommonFragment {
         getMyActivity().init();
         setHasOptionsMenu(true);
         listStudent = new ArrayList<>();
-        if (Connectivity.isConnected(getMyActivity())) {
+        getUserList();
+        /*if (Connectivity.isConnected(getMyActivity())) {
             progressDialog = new ProgressDialog(getMyActivity());
             progressDialog.setTitle("Loading...");
             progressDialog.show();
             getImageData();
         } else {
             getMyActivity().showToast("Please Connect to internet !!");
-        }
+        }*/
+
         getMyActivity().toolbar.setTitle("Users");
-
-
         return view;
+    }
+
+
+    private void getUserList() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        // hashMap.put(IJson.password, "" + studentId);
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<StudentModel>() {
+            @Override
+            public void onResponse(StudentModel[] object) {
+
+                for (StudentModel studentModel : object) {
+                    listStudent.add(studentModel);
+                }
+                /*if (object[0] instanceof StudentModel) {
+                 for (S)
+                }*/
+                mAdapter = new UserAdapter(listStudent, getMyActivity());
+                LinearLayoutManager mLayoutManager =
+                        new LinearLayoutManager(getMyActivity());
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(mAdapter);
+            }
+
+            @Override
+            public void onResponse(StudentModel object) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, StudentModel[].class);
     }
 
 

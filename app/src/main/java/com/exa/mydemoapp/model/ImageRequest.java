@@ -1,6 +1,7 @@
 package com.exa.mydemoapp.model;
 
 import com.exa.mydemoapp.annotation.Required;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class ImageRequest implements Serializable {
     @Required(message = "Place Name")
+    @SerializedName("imgTitle")
     private String placeName;
     private String description;
     private String rating;
@@ -22,9 +24,20 @@ public class ImageRequest implements Serializable {
     private Integer image_like;
     private String imageType;
     private String dateStamp;
+    @SerializedName("classId")
     private String className;
     private String studentId;
-    private List<String> imageUrl = new ArrayList<>();
+    @SerializedName("imageList")
+    private List<ImageModel> images = new ArrayList<>();
+    private ImageModel imageModel ;
+
+    public ImageModel getImageModel() {
+        return imageModel;
+    }
+
+    public void setImageModel(ImageModel imageModel) {
+        this.imageModel = imageModel;
+    }
 
     public String getImg() {
         return img;
@@ -82,12 +95,12 @@ public class ImageRequest implements Serializable {
         this.uniqKey = uniqKey;
     }
 
-    public List<String> getImageUrl() {
-        return imageUrl;
+    public List<ImageModel> getImages() {
+        return images;
     }
 
-    public void setImageUrl(List<String> imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImages(List<ImageModel> images) {
+        this.images = images;
     }
 
     public Integer getImage_like() {
@@ -129,4 +142,6 @@ public class ImageRequest implements Serializable {
     public void setStudentId(String studentId) {
         this.studentId = studentId;
     }
+
+
 }

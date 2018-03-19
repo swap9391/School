@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
@@ -17,6 +18,10 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.NewsFeedsAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,17 +66,63 @@ public class NewsFeedFragment extends CommonFragment {
         albumNames = new ArrayList<>();
         getMyActivity().init();
         if (Connectivity.isConnected(getMyActivity())) {
-            progressDialog = new ProgressDialog(getMyActivity());
-            progressDialog.setTitle("Loading...");
-            progressDialog.show();
-            getImageData();
-        }else {
+            getImageList();
+        } else {
             getMyActivity().showToast("Please Connect to internet !!");
         }
         getMyActivity().toolbar.setTitle(feed);
 
 
         return view;
+    }
+
+
+    private void getImageList() {
+        Map<Integer, ImageRequest> td = new HashMap<>();
+        Map<String, ImageRequest> mapAlbum = new HashMap<>();
+        String studentId = "0";
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(IJson.studentId, studentId);
+        hashMap.put(IJson.imageType, getStringById(R.string.img_type_news));
+        // hashMap.put(IJson.password, "" + studentId);
+
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_LIST, hashMap, new VolleyResponseListener<ImageRequest>() {
+            @Override
+            public void onResponse(ImageRequest[] object) {
+                if (object[0] instanceof ImageRequest) {
+                    int count = 0;
+                    for (ImageRequest bean : object) {
+                        count++;
+                        mapAlbum.put(bean.getPlaceName(), bean);
+                        td.put(count, bean);
+                    }
+                    AllImages = new ArrayList<>(td.values());
+                    List<String> albumNames = new ArrayList<String>(mapAlbum.keySet());
+                    CoverImages = new ArrayList<ImageRequest>();
+                    for (String string : albumNames) {
+                        CoverImages.add(mapAlbum.get(string));
+                    }
+                    mAdapter = new NewsFeedsAdapter(AllImages, CoverImages, getMyActivity(), feed);
+                    LinearLayoutManager mLayoutManager =
+                            new LinearLayoutManager(getMyActivity());
+                    recyclerView.setLayoutManager(mLayoutManager);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    recyclerView.setAdapter(mAdapter);
+
+                }
+            }
+
+            @Override
+            public void onResponse(ImageRequest object) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+                getMyActivity().showToast(message);
+            }
+        }, ImageRequest[].class);
+
     }
 
 

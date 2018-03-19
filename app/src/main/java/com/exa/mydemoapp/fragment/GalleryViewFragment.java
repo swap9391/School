@@ -50,7 +50,6 @@ public class GalleryViewFragment extends CommonFragment {
         return view;
     }
 
-
     private void ShowList(final List<ImageRequest> imageRequestList) {
         mAdapter = new GalleryAdapter(getMyActivity(), imageRequestList, 0,null);
 

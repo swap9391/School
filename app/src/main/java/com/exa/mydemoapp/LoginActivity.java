@@ -92,12 +92,12 @@ public class LoginActivity extends CommonActivity {
             @Override
             public void onClick(View v) {
                 if (Connectivity.isConnected(LoginActivity.this)) {
-                    progressDialog = new ProgressDialog(LoginActivity.this);
+  /*                  progressDialog = new ProgressDialog(LoginActivity.this);
                     progressDialog.setTitle(getStringById(R.string.loading));
-                    progressDialog.show();
+                    progressDialog.show();*/
                     bindModel();
-                    checkLogin();
-                    //Login();
+                    // checkLogin();
+                    Login();
                 } else {
                     showToast(getStringById(R.string.no_internet));
                 }
@@ -161,43 +161,60 @@ public class LoginActivity extends CommonActivity {
     }
 
     private void Login() {
- /*       HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put(IJson.mobile_no, "" + studentModel.getStudentUserName());
-        hashMap.put(IJson.password, "" + studentModel.getStudentPassword());
-        CallWebService.getWebservice(this, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
-            @Override
-            public void onResponse(StudentModel[] object) {
-                if (object[0] instanceof StudentModel) {
-                    for (StudentModel bean : object) {
+        String encryptedText = null;
+        String finalEncryptedText = null;
+        try {
+            encryptedText = CommonUtils.encrypt(edtPassword.getText().toString().trim());
+            // finalEncryptedText = encryptedText.substring(0, 10);
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
 
-                    }
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-            }
-        }, StudentModel[].class);
-
-    }*/
-
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put(IJson.mobile_no, "" + studentModel.getStudentUserName());
-        hashMap.put(IJson.password, "" + studentModel.getStudentPassword());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(IJson.studentUserName, "" + studentModel.getStudentUserName());
+        hashMap.put(IJson.studentPassword, "" + encryptedText.trim());
         CallWebService.getWebserviceObject(this, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
             @Override
             public void onResponse(StudentModel[] object) {
-
             }
 
             @Override
-            public void onResponse(StudentModel object) {
-                Log.e("Tag", object.getStudentName());
+            public void onResponse(StudentModel studentData) {
+                Log.e("Tag", studentData.getStudentName());
+                /*String password = studentData.getStudentPassword().substring(0, 10);
+                if (password.equals(finalEncryptedText1)) {*/
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getStudentUserName());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getId().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getRollNumber().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getContactNumber().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getGender().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getInstallment1().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getInstallment2().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getInstallment3().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getDateInsvestment2().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getDateInsvestment3().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getTotalFees()+"");
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getDivision().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getClassName().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getDateStamp().toString());
+
+                studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
+                studentInfoSingleton.setStudentModel(studentData);
+                AppController.isAdmin(LoginActivity.this);
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+                // Toast.makeText(getApplicationContext(), getStringById(R.string.login_success), Toast.LENGTH_SHORT).show();
+
+                /*} else {
+                    Toast.makeText(getApplicationContext(), getStringById(R.string.valid_password), Toast.LENGTH_SHORT).show();
+                }*/
             }
 
             @Override
             public void onError(String message) {
-
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         }, StudentModel.class);
 

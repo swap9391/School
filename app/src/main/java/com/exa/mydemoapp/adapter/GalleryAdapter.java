@@ -86,14 +86,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
             holder.txtImageFooter.setVisibility(View.VISIBLE);
             holder.txtImageFooter.setText(image.getPlaceName());
         }
-        Glide.with(mContext).load(image.getImg())
-                .thumbnail(0.5f)
-                .crossFade()
-                .override(200, 200)
-                .placeholder(R.drawable.defualt_album_icon)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.thumbnail);
-
+        if (image.getImages().size()>0&&image.getImages().get(0).getImgUrl()!=null) {
+            Glide.with(mContext).load(image.getImages().get(0).getImgUrl())
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .override(200, 200)
+                    .placeholder(R.drawable.defualt_album_icon)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.thumbnail);
+        }
         if (fragment != null && fragment.equalsIgnoreCase("Staff")) {
             holder.cardView.setVisibility(View.VISIBLE);
             holder.txtImageFooter.setVisibility(View.GONE);

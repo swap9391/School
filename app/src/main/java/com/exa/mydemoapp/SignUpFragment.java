@@ -102,7 +102,6 @@ public class SignUpFragment extends CommonFragment {
     private Button datePickerInvest2;
     @ViewById(R.id.txtBalance)
     TextView txtBalance;
-
     boolean isEdit = false;
     private View view;
 
@@ -273,7 +272,7 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setContactNumber(edtContactNumber.getText().toString().trim());
         studentModel.setRollNumber(edtRollNumber.getText().toString().trim());
         try {
-            studentModel.setStudentPassword(CommonUtils.encrypt(edtPassword.getText().toString().trim()));
+            studentModel.setStudentPassword(CommonUtils.encrypt(edtPassword.getText().toString().trim()).trim());
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
         }
@@ -316,7 +315,8 @@ public class SignUpFragment extends CommonFragment {
                 try {
                     if (Validator.validateForNulls(studentModel, getMyActivity())) {
                         if (check()) {
-                            saveUserInformation();
+                          //  saveUserInformation();
+                            save();
                             Log.d(TAG, "Validations Successful");
                         }
                     }
@@ -481,13 +481,30 @@ public class SignUpFragment extends CommonFragment {
     };
 
     private void save() {
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put(IJson.mobile_no, "" + studentModel.getClassName());
-        hashMap.put(IJson.password, "" + studentModel.getStudentName());
-        hashMap.put(IJson.userId, "0");
-        hashMap.put(IJson.active, "1");
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(IJson.schoolName, studentModel.getSchoolName());
+        hashMap.put(IJson.className, studentModel.getClassName());
+        hashMap.put(IJson.division, studentModel.getDivision());
+        hashMap.put(IJson.registrationId, studentModel.getRegistrationId());
+        hashMap.put(IJson.studentName, studentModel.getStudentName());
+        hashMap.put(IJson.studentAddress, studentModel.getStudentAddress());
+        hashMap.put(IJson.studentUserName, studentModel.getStudentUserName());
+        hashMap.put(IJson.studentPassword, studentModel.getStudentPassword());
+        hashMap.put(IJson.userType, studentModel.getUserType());
+        hashMap.put(IJson.studentBloodGrp, studentModel.getStudentBloodGrp());
+        hashMap.put(IJson.gender, studentModel.getGender());
+        hashMap.put(IJson.totalFees, "" + studentModel.getTotalFees());
+        hashMap.put(IJson.installmentType, studentModel.getInstallmentType());
+        hashMap.put(IJson.installment1, studentModel.getInstallment1());
+        hashMap.put(IJson.installment2, studentModel.getInstallment2());
+        hashMap.put(IJson.installment3, studentModel.getInstallment3());
+        hashMap.put(IJson.rollNumber, studentModel.getRollNumber());
+        hashMap.put(IJson.contactNumber, studentModel.getContactNumber());
+        hashMap.put(IJson.dateInsvestment2, studentModel.getDateInsvestment2());
+        hashMap.put(IJson.dateInsvestment3, studentModel.getDateInsvestment3());
 
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
+
+        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.SIGN_UP, hashMap, new VolleyResponseListener<StudentModel>() {
             @Override
             public void onResponse(StudentModel[] object) {
                 if (object[0] instanceof StudentModel) {
@@ -499,13 +516,19 @@ public class SignUpFragment extends CommonFragment {
 
             @Override
             public void onResponse(StudentModel object) {
-
+                if (!isEdit) {
+                    Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+                    getMyActivity().showFragment(getMyActivity().profileFragment, null);
+                } else {
+                    Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
+                    getMyActivity().showFragment(new UsersListFragment(), null);
+                }
             }
 
             @Override
             public void onError(String message) {
             }
-        }, StudentModel[].class);
+        }, StudentModel.class);
     }
 
 

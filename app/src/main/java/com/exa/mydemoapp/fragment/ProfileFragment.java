@@ -3,6 +3,8 @@ package com.exa.mydemoapp.fragment;
 import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +13,9 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
@@ -19,9 +23,15 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.adapter.UserAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.RewardModel;
+import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -96,15 +107,7 @@ public class ProfileFragment extends CommonFragment {
             }
         });
         if (!AppController.isAdmin(getMyActivity())) {
-            if (Connectivity.isConnected(getMyActivity())) {
-                progressDialog = new ProgressDialog(getMyActivity());
-                progressDialog.setTitle("Loading Reward Points...");
-                progressDialog.show();
-                getRewardsPoints();
-            } else {
-                getMyActivity().showToast("Please Connect to internet !!");
-            }
-
+            getRewards();
 
             layReward.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -171,34 +174,31 @@ public class ProfileFragment extends CommonFragment {
         }
     }
 
-    public void getRewardsPoints() {
-        try {
-            rewardModelList = new ArrayList<>();
-            DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
-            DatabaseReference ref2 = ref1.child(Constants.REWARD_TABLE);
-            Query query = ref2.orderByChild("studentId").equalTo(studentInfoSingleton.getStudentModel().getUniqKey());
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    int points = 0;
-                    for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                        RewardModel rewardModel = Snapshot.getValue(RewardModel.class);
-                        points = points + rewardModel.getPoints();
-                        rewardModelList.add(rewardModel);
-                    }
-                    txtRewards.setText("Reward Points " + points);
-                    progressDialog.dismiss();
-                }
+    private void getRewards() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(IJson.studentId, "" + CommonUtils.getSharedPref(Constants.STUDENT_ID, getMyActivity()));
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<RewardModel>() {
+            @Override
+            public void onResponse(RewardModel[] object) {
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e("Exception", "onCancelled", databaseError.toException());
-                    progressDialog.dismiss();
+                for (RewardModel rewardModel : object) {
+                    rewardModelList.add(rewardModel);
                 }
-            });
+                /*if (object[0] instanceof StudentModel) {
+                 for (S)
+                }*/
 
-        } catch (Exception e) {
-        }
+            }
+
+            @Override
+            public void onResponse(RewardModel object) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, RewardModel[].class);
 
     }
 

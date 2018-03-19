@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Gravity;
@@ -35,14 +34,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.android.volley.Request;
 import com.bumptech.glide.Glide;
+import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.FloatingActionButton;
+import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
+import com.exa.mydemoapp.LoginActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.model.BaseModel;
+import com.exa.mydemoapp.model.ImageModel;
 import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.LocationModel;
 import com.exa.mydemoapp.model.StudentModel;
@@ -50,16 +55,15 @@ import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
 import com.exa.mydemoapp.s3Upload.S3UploadActivity;
 import com.exa.mydemoapp.service.LocationUpdateService;
 import com.exa.mydemoapp.service.ServiceCallbacks;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -236,9 +240,8 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         } else {
             imageRequest.setStudentId("NA");
         }
-
         imageRequest.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
-        imageRequest.setVisiblity("TRUE");
+
     }
 
     private void bindView() {
@@ -284,15 +287,18 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             @Override
             public void onS3FileTransferStateChanged(int id, TransferState state, String url) {
                 imageFiles.remove(0);
-                imageRequest.setImg(url);
-                saveUserInformation();
+                ImageModel imageModel = new ImageModel();
+                imageModel.setImgUrl(url);
+                imageRequest.getImages().add(imageModel);
                 progressDialog.dismiss();
                 count = imageFiles.size();
                 if (count > 0) {
                     uploadImages();
                 } else {
-                    ClearView();
-                    getMyActivity().performBackForDesign();
+                    //saveUserInformation();
+                    save();
+                    /* ClearView();
+                    getMyActivity().performBackForDesign();*/
                 }
             }
 
@@ -614,7 +620,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                                         // uploadImage();
                                         uploadImages();
                                     } else {
-                                        saveUserInformation();
+                                        save();
                                     }
                                 } else {
                                     getMyActivity().showToast("Please Connect to internet !!");
@@ -636,7 +642,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             case R.id.action_gallery:
                 getMyActivity().showFragment(new NewsFeedFragment(), null);
                 break;
-
         }
         return true;
     }
@@ -648,13 +653,10 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 Map<String, ImageRequest> td = new HashMap<String, ImageRequest>();
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
                     ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
-
                     td.put(Snapshot.getKey(), imageRequest);
                 }
-
                 ArrayList<ImageRequest> values = new ArrayList<>(td.values());
                 List<String> keys = new ArrayList<String>(td.keySet());
-
                 for (ImageRequest job : values) {
                     Log.d("firebase", job.getImg().toString());
                 }
@@ -758,17 +760,38 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         });
 
     }
-    /* public void getMyValues() {
-         HashMap<String, String> hashMap = new HashMap<>();
-         // hashMap.put(IJson.userId, "" + CommonUtils.getSharedPref(getMyActivity(),IConstants.USER_ID));
-         http://reportcard.ae/rest/api/v1/login?password=Qwerty12#$&username=soundvvn_trial&st=R5s3vGRuCG7DPPM25pckKaeWY8
-         hashMap.put("password",  "Qwerty12#$");
-         hashMap.put("username",  "soundvvn_trial");
-         hashMap.put("st",  "R5s3vGRuCG7DPPM25pckKaeWY8");
 
-         String url = "http://reportcard.ae/rest/api/v1/login";
-         CallWebService.getWebservice(url, hashMap);
-     }*/
+    private void save() {
+        BaseModel baseModel = new BaseModel();
+        //baseModel.setId(getMyActivity().getStudentInfoSingleton().getStudentModel().getId());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(IJson.imgTitle, "" + imageRequest.getPlaceName());
+        hashMap.put(IJson.description, "" + imageRequest.getDescription());
+        hashMap.put(IJson.userName, "" + imageRequest.getUserName());
+        hashMap.put(IJson.imageType, "" + imageRequest.getImageType());
+        hashMap.put(IJson.dateStamp, "" + imageRequest.getDateStamp());
+        hashMap.put(IJson.classId, "" + imageRequest.getClassName());
+        hashMap.put(IJson.studentId,  "0");
+        hashMap.put(IJson.images, imageRequest.getImages());
+
+        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<ImageRequest>() {
+            @Override
+            public void onResponse(ImageRequest[] object) {
+
+            }
+
+            @Override
+            public void onResponse(ImageRequest studentData) {
+             getMyActivity().showFragment(new DashboardFragment(),null);
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
+            }
+        }, ImageRequest.class);
+
+    }
 
 
     public HomeActivity getMyActivity() {

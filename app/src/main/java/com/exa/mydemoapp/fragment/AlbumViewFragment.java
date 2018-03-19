@@ -64,10 +64,7 @@ public class AlbumViewFragment extends CommonFragment {
         images = new ArrayList<>();
 
         if (Connectivity.isConnected(getMyActivity())) {
-            progressDialog = new ProgressDialog(getMyActivity());
-            progressDialog.setTitle("Loading...");
-            progressDialog.show();
-            getImageData();
+            getImageList();
         } else {
             getMyActivity().showToast("Please Connect to internet !!");
         }
@@ -152,30 +149,44 @@ public class AlbumViewFragment extends CommonFragment {
     }
 
     private void getImageList() {
-        String studentId = getMyActivity().getStudentInfoSingleton().getStudentModel().getUniqKey();
+        Map<Integer, ImageRequest> td = new HashMap<>();
+        Map<String, ImageRequest> mapAlbum = new HashMap<>();
+        String studentId = "0";
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put(IJson.mobile_no, "" + getStringById(R.string.img_type_gallery));
-        hashMap.put(IJson.password, "" + studentId);
+        hashMap.put(IJson.studentId, studentId);
+        hashMap.put(IJson.imageType, getStringById(R.string.img_type_gallery));
+        // hashMap.put(IJson.password, "" + studentId);
 
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_LIST, hashMap, new VolleyResponseListener<ImageRequest>() {
             @Override
-            public void onResponse(StudentModel[] object) {
-                if (object[0] instanceof StudentModel) {
-                    for (StudentModel bean : object) {
-
+            public void onResponse(ImageRequest[] object) {
+                if (object[0] instanceof ImageRequest) {
+                    int count = 0;
+                    for (ImageRequest bean : object) {
+                        count++;
+                        mapAlbum.put(bean.getPlaceName(), bean);
+                        td.put(count, bean);
                     }
+                    images = new ArrayList<>(td.values());
+                    List<String> albumNames = new ArrayList<String>(mapAlbum.keySet());
+                    List<ImageRequest> listAlbum = new ArrayList<ImageRequest>();
+                    for (String string : albumNames) {
+                        listAlbum.add(mapAlbum.get(string));
+                    }
+                    ShowList(listAlbum);
+
                 }
             }
 
             @Override
-            public void onResponse(StudentModel object) {
+            public void onResponse(ImageRequest object) {
 
             }
 
             @Override
             public void onError(String message) {
             }
-        }, StudentModel[].class);
+        }, ImageRequest[].class);
 
     }
 

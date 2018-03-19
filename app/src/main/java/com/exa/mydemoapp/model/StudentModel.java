@@ -1,6 +1,9 @@
 package com.exa.mydemoapp.model;
 
 import com.exa.mydemoapp.annotation.Required;
+import com.exa.mydemoapp.database.BasicBean;
+import com.exa.mydemoapp.database.ContentHolder;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
@@ -8,16 +11,23 @@ import java.io.Serializable;
  * Created by midt-006 on 11/12/17.
  */
 
-public class StudentModel implements Serializable {
+public class StudentModel extends BasicBean implements Serializable {
+
+    @SerializedName("visiblity")
     private String visiblity;
     private String uniqKey;
+    @SerializedName("registrationDate")
     private String dateStamp;
+    @SerializedName("schoolName")
     @Required(message = "Please Select School Name")
     private String schoolName;
+    @SerializedName("classId")
     @Required(message = "Please Select Class Name")
     private String className;
+    @SerializedName("divisionId")
     @Required(message = "Please Select Division Name")
     private String division;
+    @SerializedName("registrationId")
     @Required(message = "Please Registration Id")
     private String registrationId;
     @Required(message = "Please Enter Student Name")
@@ -40,7 +50,7 @@ public class StudentModel implements Serializable {
     private String contactNumber;
     private String dateInsvestment2;
     private String dateInsvestment3;
-    private boolean subscribed;
+    private String subscribed;
 
     public String getVisiblity() {
         return visiblity;
@@ -226,11 +236,40 @@ public class StudentModel implements Serializable {
         this.dateInsvestment3 = dateInsvestment3;
     }
 
-    public boolean isSubscribed() {
+    public String getSubscribed() {
         return subscribed;
     }
 
-    public void setSubscribed(boolean subscribed) {
+    public void setSubscribed(String subscribed) {
         this.subscribed = subscribed;
+    }
+
+    @Override
+    public void dbBinding(ContentHolder holder) {
+        super.dbBinding(holder);
+        holder.setTable("student_data");
+        holder.getValues().put("_id",getId());
+        holder.getValues().put("registrationDate",getDateStamp());
+        holder.getValues().put("schoolName",getSchoolName());
+        holder.getValues().put("classId",getClassName());
+        holder.getValues().put("divisionId",getDivision());
+        holder.getValues().put("registrationId",getRegistrationId());
+        holder.getValues().put("studentName",getStudentName());
+        holder.getValues().put("studentAddress",getStudentAddress());
+        holder.getValues().put("studentUserName",getStudentUserName());
+        holder.getValues().put("studentPassword",getStudentPassword());
+        holder.getValues().put("studentBloodGrp",getStudentBloodGrp());
+        holder.getValues().put("gender",getGender());
+        holder.getValues().put("totalFees",getTotalFees());
+        holder.getValues().put("installmentType",getInstallmentType());
+        holder.getValues().put("installment1",getInstallment1());
+        holder.getValues().put("installment2",getInstallment2());
+        holder.getValues().put("installment3",getInstallment3());
+        holder.getValues().put("rollNumber",getRollNumber());
+        holder.getValues().put("contactNumber",getContactNumber());
+        holder.getValues().put("dateInsvestment2",getDateInsvestment2());
+        holder.getValues().put("dateInsvestment3",getDateInsvestment3());
+        holder.getValues().put("subscribed",getSubscribed());
+        holder.getValues().put("visiblity",getVisiblity());
     }
 }
