@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -22,6 +25,10 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.FloatingActionButton;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.database.Database;
+import com.exa.mydemoapp.database.DbInvoker;
+import com.exa.mydemoapp.fragment.AttendanceFragment;
+import com.exa.mydemoapp.model.LoginDataModel;
 import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
@@ -33,7 +40,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by midt-006 on 12/12/17.
@@ -53,6 +62,8 @@ public class LoginActivity extends CommonActivity {
     ProgressDialog progressDialog;
     StudentInfoSingleton studentInfoSingleton;
     String appVersion;
+    Database database;
+    DbInvoker dbInvoker;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +71,8 @@ public class LoginActivity extends CommonActivity {
         setContentView(R.layout.layout_login);
         view = getWindow().getDecorView();
         appVersion = CommonUtils.getAppVersion(this);
+        database = new Database(this);
+        dbInvoker = new DbInvoker(this);
         if (CommonUtils.getSharedPref(Constants.USER_NAME, this) != null && !CommonUtils.getSharedPref(Constants.USER_NAME, this).isEmpty()) {
             studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
             Intent intent = new Intent(this, HomeActivity.class);
@@ -92,12 +105,10 @@ public class LoginActivity extends CommonActivity {
             @Override
             public void onClick(View v) {
                 if (Connectivity.isConnected(LoginActivity.this)) {
-  /*                  progressDialog = new ProgressDialog(LoginActivity.this);
-                    progressDialog.setTitle(getStringById(R.string.loading));
-                    progressDialog.show();*/
                     bindModel();
                     // checkLogin();
                     Login();
+                    //saveLogin();
                 } else {
                     showToast(getStringById(R.string.no_internet));
                 }
@@ -160,6 +171,39 @@ public class LoginActivity extends CommonActivity {
 
     }
 
+  /*  private void saveLogin() {
+
+       *//* studentModel.setId(102);
+        studentModel.setStudentUserName("vaibhav");
+        studentModel.setStudentPassword("123456");
+        studentModel.setDateInsvestment2("12/02/2018");
+        studentModel.setDateInsvestment3("12/04/2018");
+        studentModel.setContactNumber("123456789");
+        studentModel.setTotalFees(1123);
+        studentModel.setRollNumber("12");
+        studentModel.setGender("male");
+        studentModel.setInstallmentType("1st");
+        studentModel.setRegistrationId("NREf434");
+        studentModel.setVisiblity("TRUE");
+        studentModel.setStudentAddress("Sangvi");
+        studentModel.setStudentName("Vaibhav J");
+        studentModel.setClassName("9th");
+        studentModel.setDivision("A");
+        studentModel.setSchoolName("NKVS");
+        studentModel.setInstallment1("12000");
+        studentModel.setUserType("STUDENT");
+        studentModel.setStudentBloodGrp("B+ve");
+        studentModel.setSubscribed("TRUE");
+        studentModel.setDateStamp("12/03/2018");
+
+        dbInvoker.insertUpdateUser(studentModel);*//*
+        List<StudentModel> studentModelList = new ArrayList<>();
+        studentModelList = dbInvoker.getUserList();
+        studentModelList= dbInvoker.getStudentListByClass("9th");
+        StudentModel studentModel = new StudentModel();
+        studentModel= dbInvoker.getStudentById(102);
+    }*/
+
     private void Login() {
         String encryptedText = null;
         String finalEncryptedText = null;
@@ -186,18 +230,6 @@ public class LoginActivity extends CommonActivity {
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getStudentUserName());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getId().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getRollNumber().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getContactNumber().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getGender().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getInstallment1().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getInstallment2().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getInstallment3().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getDateInsvestment2().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getDateInsvestment3().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getTotalFees()+"");
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getDivision().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getClassName().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getDateStamp().toString());
 
                 studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
                 studentInfoSingleton.setStudentModel(studentData);

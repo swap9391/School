@@ -48,12 +48,19 @@ public class Database extends SQLiteOpenHelper {
             "subscribed VARCHAR DEFAULT NULL," +
             "visiblity VARCHAR DEFAULT NULL)";
 
+    public static final String LOGIN_DATA = "Create table if not exists login_data"
+            + " ( localId integer primary key autoincrement," +
+            "_id integer," +
+            "username VARCHAR DEFAULT NULL," +
+            "password VARCHAR DEFAULT NULL)";
+
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase db = context.openOrCreateDatabase(
                 DATABASE_NAME, context.MODE_PRIVATE, null);
 
         db.execSQL(STUDENT_DATA);
+        db.execSQL(LOGIN_DATA);
 
     }
 
@@ -61,6 +68,7 @@ public class Database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(STUDENT_DATA);
+        db.execSQL(LOGIN_DATA);
     }
 
     @Override

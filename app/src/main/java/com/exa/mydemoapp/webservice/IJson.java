@@ -46,4 +46,7 @@ public interface IJson {
     String rewardType = "rewardType";
     String points = "points";
 
+    //Attendance
+    String studentList = "studentList";
+    String inStatus = "inStatus";
 }

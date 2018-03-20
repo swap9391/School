@@ -16,8 +16,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +33,6 @@ import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
-import com.exa.mydemoapp.adapter.UserAdapter;
 import com.exa.mydemoapp.database.Database;
 import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
@@ -57,7 +54,6 @@ import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.tracker.TrackerService;
 import com.exa.mydemoapp.webservice.CallWebService;
-import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -67,7 +63,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by midt-006 on 12/10/17.
@@ -150,8 +145,8 @@ public class HomeActivity extends CommonActivity {
                                 showFragment(newsFeedFragment, bundle);
                                 break;
                             case R.id.action_item3:
-                                    showToolbar();
-                                    showFragment(usersListFragment, null);
+                                showToolbar();
+                                showFragment(usersListFragment, null);
                                 break;
                         }
                         return true;
@@ -159,6 +154,10 @@ public class HomeActivity extends CommonActivity {
                 });
 
         showFragment(dashboardFragment, null);
+        if (AppController.isAdmin(this)) {
+            getUserList();
+        }
+
         // updateAlbumInfo();
         // updateStudentInfo();
 
@@ -462,8 +461,40 @@ public class HomeActivity extends CommonActivity {
     }
 
 
+    public void getUserList() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        // hashMap.put(IJson.password, "" + studentId);
+        CallWebService.getWebservice(HomeActivity.this, Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<StudentModel>() {
+            @Override
+            public void onResponse(StudentModel[] object) {
+
+                for (StudentModel studentModel : object) {
+                    dbInvoker.insertUpdateUser(studentModel);
+                }
+                /*if (object[0] instanceof StudentModel) {
+                 for (S)
+                }*/
+
+            }
+
+            @Override
+            public void onResponse(StudentModel object) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, StudentModel[].class);
+    }
 
 
+    public DbInvoker getDbInvoker() {
+        return dbInvoker;
+    }
 
+    public void setDbInvoker(DbInvoker dbInvoker) {
+        this.dbInvoker = dbInvoker;
+    }
 }
 

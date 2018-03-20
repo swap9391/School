@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.exa.mydemoapp.mapper.StudentMapper;
+import com.exa.mydemoapp.model.LoginDataModel;
 import com.exa.mydemoapp.model.StudentModel;
 
 
@@ -129,17 +130,34 @@ public class DbInvoker {
 
     }
 
-    public void insertUpdateClass(StudentModel bean) {
+    public void insertLoginModel(LoginDataModel bean) {
         insertUpdateBean(bean);
     }
 
-    public List<StudentModel> getStudentList() {
-        String sql = SQLs.sel_student_data + " ORDER BY _id ASC";
+    public void insertUpdateUser(StudentModel bean) {
+        insertUpdateBean(bean);
+    }
+
+    public List<StudentModel> getStudentListByClass(String className) {
+        String sql = SQLs.sel_student_data + " and className=" + "'" + className + "'" + " ORDER BY localId ASC";
         String[] params = {""};
         return (List<StudentModel>) executeSelect(sql, params,
                 new StudentMapper());
     }
 
+    public List<StudentModel> getUserList() {
+        String sql = SQLs.sel_student_data + " ORDER BY localId ASC";
+        String[] params = {""};
+        return (List<StudentModel>) executeSelect(sql, params,
+                new StudentMapper());
+    }
+
+    public StudentModel getStudentById(int id) {
+        String[] params = {""};
+        String sql = SQLs.sel_student_data + " and _id=" + id;
+        return executeSelectOne(sql, params,
+                new StudentMapper());
+    }
 
     /*public List<IdValue> getCodeValue(int codeTypeId) {
         String sql = SQLs.sel_class_name+" and _id="+codeTypeId;

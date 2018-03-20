@@ -92,7 +92,6 @@ public class AppController extends Application {
     }
 
     public static boolean isAdmin(Context context) {
-
         String usertype = CommonUtils.getSharedPref(Constants.USER_TYPE, context);
         if (usertype != null && usertype.equals("ADMIN")) {
             IS_ADMIN = true;

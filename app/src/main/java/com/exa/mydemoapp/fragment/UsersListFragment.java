@@ -65,7 +65,7 @@ public class UsersListFragment extends CommonFragment {
         getMyActivity().init();
         setHasOptionsMenu(true);
         listStudent = new ArrayList<>();
-        getUserList();
+        initAdapter();
         /*if (Connectivity.isConnected(getMyActivity())) {
             progressDialog = new ProgressDialog(getMyActivity());
             progressDialog.setTitle("Loading...");
@@ -79,37 +79,16 @@ public class UsersListFragment extends CommonFragment {
         return view;
     }
 
-
-    private void getUserList() {
-        HashMap<String, String> hashMap = new HashMap<>();
-        // hashMap.put(IJson.password, "" + studentId);
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<StudentModel>() {
-            @Override
-            public void onResponse(StudentModel[] object) {
-
-                for (StudentModel studentModel : object) {
-                    listStudent.add(studentModel);
-                }
-                /*if (object[0] instanceof StudentModel) {
-                 for (S)
-                }*/
-                mAdapter = new UserAdapter(listStudent, getMyActivity());
-                LinearLayoutManager mLayoutManager =
-                        new LinearLayoutManager(getMyActivity());
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
-                recyclerView.setAdapter(mAdapter);
-            }
-
-            @Override
-            public void onResponse(StudentModel object) {
-
-            }
-
-            @Override
-            public void onError(String message) {
-            }
-        }, StudentModel[].class);
+    private void initAdapter() {
+        listStudent = getMyActivity().getDbInvoker().getUserList();
+        if (listStudent != null && listStudent.size() > 0) {
+            mAdapter = new UserAdapter(listStudent, getMyActivity());
+            LinearLayoutManager mLayoutManager =
+                    new LinearLayoutManager(getMyActivity());
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(mAdapter);
+        }
     }
 
 

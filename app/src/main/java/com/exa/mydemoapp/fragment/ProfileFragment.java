@@ -131,28 +131,34 @@ public class ProfileFragment extends CommonFragment {
 
     private void setData() {
         studentInfoSingleton = StudentInfoSingleton.getInstance(getMyActivity());
-        String name = studentInfoSingleton.getStudentModel().getStudentName();
-        String address = studentInfoSingleton.getStudentModel().getStudentAddress();
-        String className = "Class " + studentInfoSingleton.getStudentModel().getClassName();
-        String division = "Division " + studentInfoSingleton.getStudentModel().getDivision();
-        String bloodGrp = "Blood Group " + studentInfoSingleton.getStudentModel().getStudentBloodGrp();
-        String totalFees = "Total Fees :" + studentInfoSingleton.getStudentModel().getTotalFees();
-        int paid = CommonUtils.asInt(studentInfoSingleton.getStudentModel().getInstallment1(), 0)
-                + CommonUtils.asInt(studentInfoSingleton.getStudentModel().getInstallment2(), 0)
-                + CommonUtils.asInt(studentInfoSingleton.getStudentModel().getInstallment3(), 0);
+        StudentModel studentModel = new StudentModel();
+        int studentId = CommonUtils.asInt(CommonUtils.getSharedPref(Constants.STUDENT_ID, getMyActivity()), 0);
+        if (studentId > 0) {
+            studentModel = getMyActivity().getDbInvoker().getStudentById(studentId);
+        }
+
+        String name = studentModel.getStudentName();
+        String address = studentModel.getStudentAddress();
+        String className = "Class " + studentModel.getClassName();
+        String division = "Division " + studentModel.getDivision();
+        String bloodGrp = "Blood Group " + studentModel.getStudentBloodGrp();
+        String totalFees = "Total Fees :" + studentModel.getTotalFees();
+        int paid = CommonUtils.asInt(studentModel.getInstallment1(), 0)
+                + CommonUtils.asInt(studentModel.getInstallment2(), 0)
+                + CommonUtils.asInt(studentModel.getInstallment3(), 0);
         String paidFees = "Paid :" + paid;
-        int dues = studentInfoSingleton.getStudentModel().getTotalFees() - paid;
+        int dues = studentModel.getTotalFees() - paid;
 
         String dueDate = "";
-        if (studentInfoSingleton.getStudentModel().getDateInsvestment2() != null) {
-            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentInfoSingleton.getStudentModel().getDateInsvestment2(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
-        } else if (studentInfoSingleton.getStudentModel().getDateInsvestment3() != null) {
-            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentInfoSingleton.getStudentModel().getDateInsvestment3(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
+        if (studentModel.getDateInsvestment2() != null) {
+            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment2(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
+        } else if (studentModel.getDateInsvestment3() != null) {
+            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment3(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
         }
 
         String duesPayable = "Total Dues :" + dues + " " + dueDate;
 
-        if (studentInfoSingleton.getStudentModel().getGender().equalsIgnoreCase("Boy")) {
+        if (studentModel.getGender().equalsIgnoreCase("Boy")) {
             circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
         } else {
             circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_girl));

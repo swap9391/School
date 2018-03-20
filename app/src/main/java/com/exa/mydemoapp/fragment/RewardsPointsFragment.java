@@ -71,7 +71,6 @@ public class RewardsPointsFragment extends CommonFragment {
     List<String> listClass;
     List<String> listStudentName;
     List<String> listRewardType;
-    List<StudentModel> listStudent;
     List<StudentModel> listStudentClassWise;
     ProgressDialog progressDialog;
     RewardModel rewardModel;
@@ -93,10 +92,9 @@ public class RewardsPointsFragment extends CommonFragment {
 
         rewardModel = new RewardModel();
 
-        listStudent = new ArrayList<>();
         listStudentName = new ArrayList<>();
 
-        getUserList();
+        listStudentClassWise = new ArrayList<>();
 
         listClass = Arrays.asList(getResources().getStringArray(R.array.class_type));
         //listClass.remove(new String("All"));
@@ -116,14 +114,11 @@ public class RewardsPointsFragment extends CommonFragment {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (!listClass.get(position).equals("All")) {
-
-                    if (listStudent != null && listStudent.size() > 0) {
+                    listStudentClassWise = getMyActivity().getDbInvoker().getStudentListByClass(listClass.get(position));
+                    if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
                         listStudentClassWise = new ArrayList<>();
-                        for (StudentModel bean : listStudent) {
-                            if (bean.getClassName().equals(listClass.get(position))) {
-                                listStudentClassWise.add(bean);
-                                listStudentName.add(bean.getStudentName() + " " + bean.getRegistrationId());
-                            }
+                        for (StudentModel bean : listStudentClassWise) {
+                            listStudentName.add(bean.getStudentName() + " " + bean.getRegistrationId());
                         }
                         spinnerStudentName.setVisibility(View.VISIBLE);
                         txtStudentSpinnerTitle.setVisibility(View.VISIBLE);
@@ -147,76 +142,10 @@ public class RewardsPointsFragment extends CommonFragment {
         return view;
     }
 
-
-    public void getUserList() {
-        HashMap<String, String> hashMap = new HashMap<>();
-        // hashMap.put(IJson.password, "" + studentId);
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<StudentModel>() {
-            @Override
-            public void onResponse(StudentModel[] object) {
-
-                for (StudentModel studentModel : object) {
-                    listStudent.add(studentModel);
-                }
-                /*if (object[0] instanceof StudentModel) {
-                 for (S)
-                }*/
-
-            }
-
-            @Override
-            public void onResponse(StudentModel object) {
-
-            }
-
-            @Override
-            public void onError(String message) {
-            }
-        }, StudentModel[].class);
-    }
-
-
-    public void getStudents(String className) {
-        listStudent = new ArrayList<>();
-        listStudentName = new ArrayList<>();
-        DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
-        DatabaseReference ref2 = ref1.child(Constants.STUDENT);
-        Query query = ref2.orderByChild("className").equalTo(className);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                progressDialog.dismiss();
-                for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    StudentModel studentData = Snapshot.getValue(StudentModel.class);
-                    listStudent.add(studentData);
-                    listStudentName.add(studentData.getStudentName() + " " + studentData.getRollNumber());
-                }
-                if (listStudent != null && listStudent.size() > 0) {
-                    spinnerStudentName.setVisibility(View.VISIBLE);
-                    txtStudentSpinnerTitle.setVisibility(View.VISIBLE);
-                    ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listStudentName);
-                    classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerStudentName.setAdapter(classAdapter);
-                    classAdapter.notifyDataSetChanged();
-                } else {
-                    spinnerStudentName.setVisibility(View.GONE);
-                    txtStudentSpinnerTitle.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Exception", "onCancelled", databaseError.toException());
-                progressDialog.dismiss();
-            }
-        });
-
-    }
-
     private void bindModel() {
         rewardModel.setClassName(spnClass.getSelectedItem().toString());
         if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
-            String studentId = listStudent.get(spinnerStudentName.getSelectedItemPosition()).getId().toString();
+            String studentId = listStudentClassWise.get(spinnerStudentName.getSelectedItemPosition()).getId().toString();
             if (studentId != null) {
                 rewardModel.setStudentId(studentId);
             }

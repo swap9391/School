@@ -12,7 +12,6 @@ public class AttendaceModel implements Serializable {
 
     private String dateStamp;
     private String className;
-    private String uniqKey;
     private List<StudentAttendanceModel> studentAttendanceModels= new ArrayList<>();
 
     public String getDateStamp() {
@@ -29,14 +28,6 @@ public class AttendaceModel implements Serializable {
 
     public void setClassName(String className) {
         this.className = className;
-    }
-
-    public String getUniqKey() {
-        return uniqKey;
-    }
-
-    public void setUniqKey(String uniqKey) {
-        this.uniqKey = uniqKey;
     }
 
     public List<StudentAttendanceModel> getStudentAttendanceModels() {
