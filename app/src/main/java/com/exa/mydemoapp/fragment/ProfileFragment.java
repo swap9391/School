@@ -130,7 +130,6 @@ public class ProfileFragment extends CommonFragment {
     }
 
     private void setData() {
-        studentInfoSingleton = StudentInfoSingleton.getInstance(getMyActivity());
         StudentModel studentModel = new StudentModel();
         int studentId = CommonUtils.asInt(CommonUtils.getSharedPref(Constants.STUDENT_ID, getMyActivity()), 0);
         if (studentId > 0) {

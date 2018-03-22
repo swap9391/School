@@ -23,7 +23,6 @@ import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
-import com.exa.mydemoapp.s3Upload.S3UploadActivity;
 
 /**
  * Created by midt-006 on 13/11/17.
@@ -135,7 +134,7 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new RewardsPointsFragment(), null);
                         break;
                     case "Bus Location":
-                        Intent intent1 = new Intent(context, S3UploadActivity.class);
+                        Intent intent1 = new Intent(context, MapsActivity.class);
                         context.startActivity(intent1);
                         //context.finish();
                         break;

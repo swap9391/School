@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -27,8 +24,6 @@ import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.database.Database;
 import com.exa.mydemoapp.database.DbInvoker;
-import com.exa.mydemoapp.fragment.AttendanceFragment;
-import com.exa.mydemoapp.model.LoginDataModel;
 import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
@@ -40,9 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by midt-006 on 12/12/17.
