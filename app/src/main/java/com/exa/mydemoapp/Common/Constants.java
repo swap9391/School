@@ -34,6 +34,8 @@ public interface Constants {
     public static String FB_TITLE = "title";
     public static String FB_MESSAGE = "message";
     public static String FIREBASE = "firebase";
+    public static String FIREBASE_REGISTER = "FIREBASE_REGISTER";
+
 
     public static int REWARD_SPORT = 10;
     public static int REWARD_CULTURAL = 10;

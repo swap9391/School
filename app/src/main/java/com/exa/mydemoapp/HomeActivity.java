@@ -50,10 +50,13 @@ import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
+import com.exa.mydemoapp.model.FirebaseTokenModel;
 import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.RewardModel;
 import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.tracker.TrackerService;
 import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -114,10 +117,10 @@ public class HomeActivity extends CommonActivity {
             FirebaseMessaging.getInstance().subscribeToTopic("test123");
             FirebaseInstanceId.getInstance().getToken();
             String token = FirebaseInstanceId.getInstance().getToken();
-            /*String fb_reg = CommonUtils.getSharedPref(Constants.FIREBASE, this);
-            if (fb_reg == null) {
-                registerToken(token);
-            }*/
+            String fb_reg = CommonUtils.getSharedPref(Constants.FIREBASE_REGISTER, this);
+            if (fb_reg == null || !fb_reg.equalsIgnoreCase("TRUE")) {
+                //registerToken(token);
+            }
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -428,36 +431,25 @@ public class HomeActivity extends CommonActivity {
 
 
     private void registerToken(final String token) {
-        String url = null;
-        final ProgressDialog pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Loading...");
-        pDialog.show();
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(IJson.token, token);
+        hashMap.put(IJson.studentId, "" + CommonUtils.getSharedPref(Constants.STUDENT_ID, HomeActivity.this));
+        CallWebService.getWebserviceObject(HomeActivity.this, Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<FirebaseTokenModel>() {
+            @Override
+            public void onResponse(FirebaseTokenModel[] object) {
+                CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
+            }
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url + "?Token=" + token,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE, "FIREBASE");
-                        pDialog.hide();
-                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+            @Override
+            public void onResponse(FirebaseTokenModel studentData) {
 
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        pDialog.hide();
-                        Toast.makeText(getApplication(), error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
+            }
 
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+            @Override
+            public void onError(String message) {
+                Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        }, FirebaseTokenModel.class);
     }
 
 

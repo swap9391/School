@@ -25,7 +25,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         //  String msgType=remoteMessage.getData().get("type");
-        String myImei = remoteMessage.getData().get("imei");
         String msg = remoteMessage.getData().get("message");
         String title = remoteMessage.getData().get("title");
         /*if(msgType.equals(IConstants.MSG_TYPE_ALL)){
@@ -56,7 +55,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 .setContentTitle(Title) // notification title
                 .setContentText(message)
                 .setVibrate(new long[]{2000, 2000, 2000, 2000, 2000})
-                .setLights(Color.CYAN, 3000, 3000)
+                .setLights(Color.CYAN, 3000,
+                        3000)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                 .setContentIntent(pendingIntent);
 

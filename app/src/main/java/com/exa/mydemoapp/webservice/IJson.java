@@ -49,4 +49,7 @@ public interface IJson {
     //Attendance
     String studentList = "studentList";
     String inStatus = "inStatus";
+
+    //firebase token
+    String token = "token";
 }
