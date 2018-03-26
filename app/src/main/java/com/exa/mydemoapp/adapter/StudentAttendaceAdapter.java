@@ -47,8 +47,10 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
     {
         private TextView txtName;
         private TextView txtAttendanceStatus;
+        private TextView txtInOutStatus;
         private LinearLayout linearLayout;
         private CheckBox chkAttendance;
+
 
         public MyViewHolder(View view) {
             super(view);

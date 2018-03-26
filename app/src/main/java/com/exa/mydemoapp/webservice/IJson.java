@@ -52,4 +52,7 @@ public interface IJson {
 
     //firebase token
     String token = "token";
+
+    //Homework
+    String subject = "subject";
 }

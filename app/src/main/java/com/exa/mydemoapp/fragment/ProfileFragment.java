@@ -96,6 +96,7 @@ public class ProfileFragment extends CommonFragment {
         getMyActivity().init();
         getMyActivity().toolbar.setTitle("My Profile");
         setData();
+        rewardModelList= new ArrayList<>();
         if (!AppController.isAdmin(getMyActivity())) {
             layManageUser.setVisibility(View.GONE);
         }

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
@@ -17,6 +18,10 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,7 +29,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by midt-006 on 21/8/17.
@@ -36,8 +43,6 @@ public class StaffInfoFragment extends CommonFragment {
     @ViewById(R.id.recycler_view)
     private RecyclerView recyclerView;
     View view;
-    ProgressDialog progressDialog;
-    List<ImageRequest> listAlbumChild;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,17 +59,47 @@ public class StaffInfoFragment extends CommonFragment {
         images = new ArrayList<>();
 
         if (Connectivity.isConnected(getMyActivity())) {
-            progressDialog = new ProgressDialog(getMyActivity());
-            progressDialog.setTitle("Loading...");
-            progressDialog.show();
-            getImageData();
+            getImageList();
         } else {
             getMyActivity().showToast("Please Connect to internet !!");
         }
         return view;
     }
 
-    private void getImageData() {
+    private void getImageList() {
+        Map<Integer, ImageRequest> td = new HashMap<>();
+        Map<String, ImageRequest> mapAlbum = new HashMap<>();
+        String studentId = "0";
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(IJson.studentId, studentId);
+        hashMap.put(IJson.imageType, getStringById(R.string.img_type_staff));
+        // hashMap.put(IJson.password, "" + studentId);
+
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_LIST, hashMap, new VolleyResponseListener<ImageRequest>() {
+            @Override
+            public void onResponse(ImageRequest[] object) {
+                if (object[0] instanceof ImageRequest) {
+                    for (ImageRequest bean : object) {
+                        images.add(bean);
+                    }
+                    ShowList(images);
+
+                }
+            }
+
+            @Override
+            public void onResponse(ImageRequest object) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, ImageRequest[].class);
+
+    }
+
+    /*private void getImageData() {
         String userId = getMyActivity().databaseReference.push().getKey();
         DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
@@ -89,7 +124,7 @@ public class StaffInfoFragment extends CommonFragment {
             }
         });
 
-    }
+    }*/
 
 
     private void ShowList(final List<ImageRequest> imageRequestList) {
@@ -99,29 +134,6 @@ public class StaffInfoFragment extends CommonFragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-       /* recyclerView.addOnItemTouchListener(new GalleryAdapter.RecyclerTouchListener(getMyActivity(), recyclerView, new GalleryAdapter.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-
-                ImageRequest imageRequest = imageRequestList.get(position);
-                List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
-                for (ImageRequest img : images) {
-                    if (imageRequest.getPlaceName().equals(img.getPlaceName())) {
-                        listAlbumChild.add(img);
-                    }
-                }
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("mylist", (Serializable) listAlbumChild);
-                getMyActivity().showFragment(new GalleryViewFragment(), bundle);
-
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));*/
     }
 
     public HomeActivity getMyActivity() {

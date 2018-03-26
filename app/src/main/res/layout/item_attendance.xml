@@ -17,6 +17,16 @@
         android:padding="20dp" />
 
     <TextView
+        android:id="@+id/txt_inout_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="NA"
+        android:textColor="@color/caldroid_light_red" />
+
+    <TextView
         android:id="@+id/txt_attendance_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

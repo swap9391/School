@@ -59,12 +59,11 @@
                             android:id="@+id/edt_user_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
                             android:hint="Enter User Name"
                             android:imeOptions="actionNext"
                             android:maxLength="25"
-                            android:minLines="1"
-                            android:maxLines="1"
-                             />
+                            android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -76,13 +75,12 @@
                             android:id="@+id/edt_password"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
                             android:hint="Enter Password"
                             android:imeOptions="actionDone"
                             android:inputType="textPassword"
                             android:maxLength="25"
-                            android:minLines="1"
-                            android:maxLines="1"
-                             />
+                            android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
