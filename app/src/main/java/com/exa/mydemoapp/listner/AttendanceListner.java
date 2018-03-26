@@ -1,5 +1,6 @@
 package com.exa.mydemoapp.listner;
 
+import com.exa.mydemoapp.model.StudentAttendanceModel;
 import com.exa.mydemoapp.model.StudentModel;
 
 /**
@@ -7,7 +8,7 @@ import com.exa.mydemoapp.model.StudentModel;
  */
 
 public interface AttendanceListner {
-    public void present(StudentModel bean);
+    public void present(StudentAttendanceModel bean);
 
-    public void absent(StudentModel bean);
+    public void absent(StudentAttendanceModel bean);
 }

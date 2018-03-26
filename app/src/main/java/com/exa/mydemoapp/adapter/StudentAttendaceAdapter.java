@@ -1,28 +1,21 @@
 package com.exa.mydemoapp.adapter;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.exa.mydemoapp.Common.CommonUtils;
-import com.exa.mydemoapp.Common.Constants;
-import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
-import com.exa.mydemoapp.SignUpFragment;
-import com.exa.mydemoapp.fragment.AttendanceFragment;
+import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.listner.AttendanceListner;
+import com.exa.mydemoapp.model.StudentAttendanceModel;
 import com.exa.mydemoapp.model.StudentModel;
 
-import java.util.Date;
 import java.util.List;
 
 /*
@@ -31,12 +24,12 @@ import java.util.List;
 
 public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttendaceAdapter.MyViewHolder> {
 
-    private List<StudentModel> listUser;
+    private List<StudentAttendanceModel> listUser;
     private Activity context;
     private int lastCheckedPosition = -1;
     private AttendanceListner attendanceListner;
 
-    public StudentAttendaceAdapter(List<StudentModel> listUser, Activity context, AttendanceListner attendanceListner) {
+    public StudentAttendaceAdapter(List<StudentAttendanceModel> listUser, Activity context, AttendanceListner attendanceListner) {
         this.listUser = listUser;
         this.context = context;
         this.attendanceListner = attendanceListner;
@@ -83,15 +76,26 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        StudentModel selectedItem = listUser.get(position);
-        holder.txtName.setText(selectedItem.getStudentName());
+        StudentAttendanceModel selectedItem = listUser.get(position);
+        DbInvoker dbInvoker = new DbInvoker(context);
 
+        holder.txtName.setText(selectedItem.getStudentName());
+       // StudentAttendanceModel bean = listUser.get(lastCheckedPosition);
+
+        if (holder.chkAttendance.isChecked()) {
+            lastCheckedPosition = position;
+            holder.txtAttendanceStatus.setText("Present");
+            attendanceListner.present(selectedItem);
+        } else {
+            lastCheckedPosition = position;
+            holder.txtAttendanceStatus.setText("Absent");
+            attendanceListner.absent(selectedItem);
+        }
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 lastCheckedPosition = position;
-                StudentModel bean = listUser.get(lastCheckedPosition);
                 if (!holder.chkAttendance.isChecked()) {
                     holder.chkAttendance.setChecked(true);
                 } else {
@@ -106,14 +110,12 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 lastCheckedPosition = position;
-                StudentModel bean = listUser.get(lastCheckedPosition);
-
                 if (isChecked) {
                     holder.txtAttendanceStatus.setText("Present");
-                    attendanceListner.present(bean);
+                    attendanceListner.present(selectedItem);
                 } else {
                     holder.txtAttendanceStatus.setText("Absent");
-                    attendanceListner.absent(bean);
+                    attendanceListner.absent(selectedItem);
                 }
                 // notifyDataSetChanged();
             }

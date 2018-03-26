@@ -116,7 +116,6 @@ public class RewardsPointsFragment extends CommonFragment {
                 if (!listClass.get(position).equals("All")) {
                     listStudentClassWise = getMyActivity().getDbInvoker().getStudentListByClass(listClass.get(position));
                     if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
-                        listStudentClassWise = new ArrayList<>();
                         for (StudentModel bean : listStudentClassWise) {
                             listStudentName.add(bean.getStudentName() + " " + bean.getRegistrationId());
                         }

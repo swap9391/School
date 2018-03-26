@@ -38,6 +38,7 @@ import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
+import com.exa.mydemoapp.fragment.AttendanceFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.DashboardFragment;
@@ -80,6 +81,7 @@ public class HomeActivity extends CommonActivity {
     public NewsFeedFragment newsFeedFragment;
     public SlideshowDialogFragment slideshowDialogFragment;
     public UploadPhotoFragment uploadPhotoFragment;
+    public AttendanceFragment attendanceFragment;
     public CommunityFragment communityFragment;
     public AboutSchoolFragment aboutSchoolFragment;
     public ProfileFragment profileFragment;
@@ -149,7 +151,7 @@ public class HomeActivity extends CommonActivity {
                                 break;
                             case R.id.action_item3:
                                 showToolbar();
-                                showFragment(usersListFragment, null);
+                                showFragment(profileFragment, null);
                                 break;
                         }
                         return true;
@@ -158,7 +160,7 @@ public class HomeActivity extends CommonActivity {
 
         showFragment(dashboardFragment, null);
         if (AppController.isAdmin(this)) {
-            getUserList();
+          //  getUserList();
         }
 
         // updateAlbumInfo();
@@ -239,6 +241,9 @@ public class HomeActivity extends CommonActivity {
         } else if (rewardsPointsFragment != null && rewardsPointsFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
+        } else if (attendanceFragment != null && attendanceFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
         } else if (rewardGraphFragment != null && rewardGraphFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(profileFragment, null);
@@ -277,6 +282,7 @@ public class HomeActivity extends CommonActivity {
         usersListFragment = new UsersListFragment();
         rewardsPointsFragment = new RewardsPointsFragment();
         rewardGraphFragment = new RewardGraphFragment();
+        attendanceFragment = new AttendanceFragment();
     }
 
     public List<ImageRequest> getListAlbumChild() {
@@ -459,7 +465,7 @@ public class HomeActivity extends CommonActivity {
         CallWebService.getWebservice(HomeActivity.this, Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<StudentModel>() {
             @Override
             public void onResponse(StudentModel[] object) {
-
+                dbInvoker.deleteStudents();
                 for (StudentModel studentModel : object) {
                     dbInvoker.insertUpdateUser(studentModel);
                 }

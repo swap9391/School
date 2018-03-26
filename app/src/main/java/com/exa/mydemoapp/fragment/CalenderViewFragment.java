@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
@@ -19,6 +20,10 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.DateModel;
 import com.exa.mydemoapp.model.EventModel;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -106,10 +112,10 @@ public class CalenderViewFragment extends Fragment {
         // setCustomResourceForDates();
 
         // Attach to the activity
-        if (Connectivity.isConnected(getMyActivity())) {
-            getData();
+        if (listEvent.size() == 0) {
+            getCalenderEvents();
         } else {
-            getMyActivity().showToast("Please Connect to internet !!");
+            initCalender();
         }
         // Setup listener
         final CaldroidListener listener = new CaldroidListener() {
@@ -132,7 +138,11 @@ public class CalenderViewFragment extends Fragment {
                 countWeekendDays(year, month);
                 if (Connectivity.isConnected(getMyActivity())) {
                     textview.setText("");
-                    getData();
+                    if (listEvent.size()>0){
+                        initCalender();
+                    }else {
+                        getCalenderEvents();
+                    }
                 } else {
                     getMyActivity().showToast("Please Connect to internet !!");
                 }
@@ -257,6 +267,74 @@ public class CalenderViewFragment extends Fragment {
                 progressDialog.dismiss();
             }
         });
+
+    }
+
+    private void getCalenderEvents() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(IJson.classId, "All" );
+        hashMap.put(IJson.divisionId, "" );
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_GET_EVENTS, hashMap, new VolleyResponseListener<EventModel>() {
+            @Override
+            public void onResponse(EventModel[] object) {
+                for (EventModel rewardModel : object) {
+                    listEvent.add(rewardModel);
+                }
+                if (listEvent.size() > 0) {
+                    initCalender();
+                }
+            }
+
+            @Override
+            public void onResponse(EventModel object) {
+            }
+            @Override
+            public void onError(String message) {
+            }
+        }, EventModel[].class);
+
+    }
+
+
+    private void initCalender() {
+        int count=0;
+        listDate= new ArrayList<>();
+        for (EventModel bean : listEvent) {
+            Date date = CommonUtils.toDate(bean.getEventDate(), Constants.DATE_FORMAT);
+            DateModel dateModel = new DateModel();
+            dateModel.setPosition(count);
+            dateModel.setDate(date);
+            dateModel.setEventType(bean.getEventType());
+            listDate.add(dateModel);
+            count++;
+        }
+        ColorDrawable skyblue = new ColorDrawable(getResources().getColor(R.color.caldroid_sky_blue));
+        ColorDrawable yellow = new ColorDrawable(getResources().getColor(R.color.disable_btn_color));
+        ColorDrawable green = new ColorDrawable(getResources().getColor(R.color.green));
+        ColorDrawable red = new ColorDrawable(getResources().getColor(R.color.caldroid_light_red));
+
+        for (DateModel dateModel : listDate) {
+
+            switch (dateModel.getEventType()) {
+                case "Holiday":
+                    caldroidFragment.setBackgroundDrawableForDate(skyblue, dateModel.getDate());
+                    break;
+                case "Exam":
+                    caldroidFragment.setBackgroundDrawableForDate(yellow, dateModel.getDate());
+                    break;
+                case "Curricular":
+                    caldroidFragment.setBackgroundDrawableForDate(green, dateModel.getDate());
+                    break;
+                default:
+                    caldroidFragment.setBackgroundDrawableForDate(red, dateModel.getDate());
+                    break;
+            }
+
+        }
+
+        FragmentTransaction t = getMyActivity().getSupportFragmentManager().beginTransaction();
+        t.replace(R.id.calendar1, caldroidFragment);
+        t.commit();
 
     }
 

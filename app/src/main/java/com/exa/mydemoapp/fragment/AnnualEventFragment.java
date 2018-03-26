@@ -18,12 +18,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.EventModel;
+import com.exa.mydemoapp.model.RewardModel;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -83,7 +90,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
         spinnerClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
 
-        getData();
+        getCalenderEvents();
         return view;
     }
 
@@ -108,7 +115,6 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
         eventModel.setUniqKey(userId);
         getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.EVENT_TABLE).child(userId).setValue(eventModel);
         Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-        getData();
     }
 
     @Override
@@ -126,7 +132,8 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
                 bindModel();
                 if (check()) {
                     if (Connectivity.isConnected(getMyActivity())) {
-                        saveUserInformation();
+                        //saveUserInformation();
+                        save();
                     } else {
                         getMyActivity().showToast("Please Connect to internet !!");
                     }
@@ -155,35 +162,39 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             return false;
         }
 
-        for (EventModel bean : listEvent) {
-            if (eventModel.getEventDate().equalsIgnoreCase(bean.getEventDate())) {
-                CommonUtils.showToast(getMyActivity(), "Event already present to this date.");
-                return false;
+        if (listEvent.size() > 0) {
+            for (EventModel bean : listEvent) {
+                if (eventModel.getEventDate().equalsIgnoreCase(bean.getEventDate())) {
+                    CommonUtils.showToast(getMyActivity(), "Event already present to this date.");
+                    return false;
+                }
             }
         }
 
         return true;
     }
 
-    private void getData() {
-
-        String userId = getMyActivity().databaseReference.push().getKey();
-        DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
-        DatabaseReference ref2 = ref1.child(Constants.EVENT_TABLE);
-        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void getCalenderEvents() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put(IJson.classId, "All");
+        hashMap.put(IJson.divisionId, "");
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_GET_EVENTS, hashMap, new VolleyResponseListener<EventModel>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    EventModel bean = Snapshot.getValue(EventModel.class);
-                    listEvent.add(bean);
+            public void onResponse(EventModel[] object) {
+                for (EventModel rewardModel : object) {
+                    listEvent.add(rewardModel);
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Exception", "onCancelled", databaseError.toException());
+            public void onResponse(EventModel object) {
             }
-        });
+
+            @Override
+            public void onError(String message) {
+            }
+        }, EventModel[].class);
+
     }
 
 
@@ -229,5 +240,32 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();
     }
+
+    private void save() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(IJson.eventName, "" + eventModel.getEventName());
+        hashMap.put(IJson.eventDate, "" + eventModel.getEventDate());
+        hashMap.put(IJson.eventType, "" + eventModel.getEventType());
+        hashMap.put(IJson.classId, "" + eventModel.getEventClass());
+        //hashMap.put(IJson.divisionId, "" + eventModel.getdi());
+
+        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_EVENTS, hashMap, new VolleyResponseListener<RewardModel>() {
+            @Override
+            public void onResponse(RewardModel[] object) {
+            }
+
+            @Override
+            public void onResponse(RewardModel studentData) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
+            }
+        }, RewardModel.class);
+
+    }
+
 
 }

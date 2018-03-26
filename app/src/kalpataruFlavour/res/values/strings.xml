@@ -72,6 +72,7 @@
         <item>@string/dashboard_community</item>
         <item>@string/dashboard_staff</item>
         <item>@string/dashboard_upload</item>
+        <item>@string/dashboard_attendance</item>
         <item>@string/dashboard_annual</item>
         <item>@string/dashboard_reward</item>
         <item>@string/dashboard_bus_loc</item>
@@ -88,6 +89,7 @@
         <item>@drawable/ic_community</item>
         <item>@drawable/ic_teacher</item>
         <item>@drawable/ic_paren_student</item>
+        <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_paren_student</item>
         <item>@drawable/ic_rewards</item>
         <item>@drawable/icon_bus_location</item>
@@ -157,6 +159,7 @@
     <string name="dashboard_community">Parent Chatting</string>
     <string name="dashboard_staff">Staff Information</string>
     <string name="dashboard_upload">Upload Photo</string>
+    <string name="dashboard_attendance">Student Attendance</string>
     <string name="dashboard_annual">Annual Event</string>
     <string name="dashboard_bus_loc">Bus Location</string>
     <string name="dashboard_reward">Add Reward Points</string>

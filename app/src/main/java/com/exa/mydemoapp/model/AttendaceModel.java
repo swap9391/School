@@ -1,5 +1,7 @@
 package com.exa.mydemoapp.model;
 
+import com.exa.mydemoapp.database.BasicBean;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,11 +10,12 @@ import java.util.List;
  * Created by midt-078 on 14/2/18.
  */
 
-public class AttendaceModel implements Serializable {
+public class AttendaceModel extends BasicBean implements Serializable {
 
     private String dateStamp;
-    private String className;
-    private List<StudentAttendanceModel> studentAttendanceModels= new ArrayList<>();
+    private String classId;
+    private String divisionId;
+    private List<StudentAttendanceModel> studentList= new ArrayList<>();
 
     public String getDateStamp() {
         return dateStamp;
@@ -23,18 +26,26 @@ public class AttendaceModel implements Serializable {
     }
 
     public String getClassName() {
-        return className;
+        return classId;
     }
 
     public void setClassName(String className) {
-        this.className = className;
+        this.classId = className;
     }
 
-    public List<StudentAttendanceModel> getStudentAttendanceModels() {
-        return studentAttendanceModels;
+    public String getDivisionId() {
+        return divisionId;
     }
 
-    public void setStudentAttendanceModels(List<StudentAttendanceModel> studentAttendanceModels) {
-        this.studentAttendanceModels = studentAttendanceModels;
+    public void setDivisionId(String divisionId) {
+        this.divisionId = divisionId;
+    }
+
+    public List<StudentAttendanceModel> getStudentList() {
+        return studentList;
+    }
+
+    public void setStudentList(List<StudentAttendanceModel> studentList) {
+        this.studentList = studentList;
     }
 }

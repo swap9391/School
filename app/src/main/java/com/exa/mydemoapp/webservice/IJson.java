@@ -50,6 +50,13 @@ public interface IJson {
     String studentList = "studentList";
     String inStatus = "inStatus";
 
+    //Calender
+    String eventName = "eventName";
+    String eventDate = "eventDate";
+    String eventType = "eventType";
+
+
+
     //firebase token
     String token = "token";
 

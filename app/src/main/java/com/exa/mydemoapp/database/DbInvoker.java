@@ -152,7 +152,14 @@ public class DbInvoker {
                 new StudentMapper());
     }
 
-    public StudentModel getStudentById(int id) {
+    public List<StudentModel> getUserListByStudent(String className) {
+        String sql = SQLs.sel_student_data + " and userType='STUDENT' and className='" + className + "' ORDER BY localId ASC";
+        String[] params = {""};
+        return (List<StudentModel>) executeSelect(sql, params,
+                new StudentMapper());
+    }
+
+    public StudentModel getStudentById(Integer id) {
         String[] params = {""};
         String sql = SQLs.sel_student_data + " and _id=" + id;
         return executeSelectOne(sql, params,
@@ -166,13 +173,17 @@ public class DbInvoker {
     }*/
 
 
-    public void deleteClassById(int Id) {
+    public void deleteStudents() {
         String[] params = new String[0];
-        String sql = SQLs.del_class_name + " WHERE _id=" + Id;
+        String sql = SQLs.del_student;
         executeSQL(sql, params);
-
     }
 
+    public void dropStudents() {
+        String[] params = new String[0];
+        String sql = SQLs.truncate_student;
+        executeSQL(sql, params);
+    }
 
 /*
     public List<DivisionName> getDivisionNameByClass(int classId) {

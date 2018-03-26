@@ -75,62 +75,10 @@ public class DashboardFragment extends CommonFragment {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForStudent, imagesForStudent));
             }
         }
-
-
-
-
-     /*   ((Button) view.findViewById(R.id.btnUpload)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnAlbum)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnNewsFeed)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnCalender)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnBlog)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnArchivement)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnAboutSchool)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnFacilities)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnCommunity)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnStaff)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.btnAnnualEvent)).setOnClickListener(this);*/
         return view;
     }
 
 
-    /* @Override
-     public void onClick(View view) {
-         Bundle bundle = new Bundle();
-         switch (view.getId()) {
-             case R.id.btnUpload:
-                 getMyActivity().showFragment(new UploadPhotoFragment(), null);
-                 break;
-             case R.id.btnAlbum:
-                 getMyActivity().showFragment(new AlbumViewFragment(), null);
-                 break;
-             case R.id.btnNewsFeed:
-                 bundle.putString("FEED", "News Feed");
-                 getMyActivity().showFragment(new NewsFeedFragment(), bundle);
-                 break;
-             case R.id.btnArchivement:
-                 bundle.putString("FEED", "Achievement");
-                 getMyActivity().showFragment(new NewsFeedFragment(), bundle);
-                 break;
-             case R.id.btnBlog:
-                 bundle.putString("FEED", "Blog");
-                 getMyActivity().showFragment(new NewsFeedFragment(), bundle);
-                 break;
-             case R.id.btnFacilities:
-                 bundle.putString("FEED", "School Facilities");
-                 getMyActivity().showFragment(new NewsFeedFragment(), bundle);
-                 break;
-             case R.id.btnCalender:
-                 getMyActivity().showFragment(new CalenderViewFragment(), null);
-                 break;
-             case R.id.btnAnnualEvent:
-                 getMyActivity().showFragment(new AnnualEventFragment(), null);
-                 break;
-
-
-         }
-
-     }*/
     public static String[] removeElements(String[] input, String deleteMe) {
         List result = new LinkedList();
 

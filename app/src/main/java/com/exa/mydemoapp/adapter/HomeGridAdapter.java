@@ -17,6 +17,7 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
+import com.exa.mydemoapp.fragment.AttendanceFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
@@ -126,6 +127,9 @@ public class HomeGridAdapter extends BaseAdapter {
                         break;
                     case "Upload Photo":
                         context.showFragment(new UploadPhotoFragment(), null);
+                        break;
+                    case "Student Attendance":
+                        context.showFragment(new AttendanceFragment(), null);
                         break;
                     case "Annual Event":
                         context.showFragment(new AnnualEventFragment(), null);

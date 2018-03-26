@@ -13,6 +13,8 @@ public class SQLs {
             "dateInsvestment2,dateInsvestment3,subscribed,visiblity" +
             " From student_data Where 1=1";
     public static final String del_class_name = "DELETE from class_data";
+    public static final String del_student= "DELETE from student_data";
+    public static final String truncate_student= "TRUNCATE TABLE student_data";
     public static final String sel_division_name = "Select _id,class_id,division_name From division_data Where 1=1";
     public static final String del_division_name = "DELETE from division_data";
     public static final String sel_user_data = "Select _id,class_id,division_id,name,mobile,education,blood_group,dob,user_type,user_name,password,profile_local_path,profile_server_path user From user Where 1=1";
