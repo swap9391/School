@@ -80,16 +80,20 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
         DbInvoker dbInvoker = new DbInvoker(context);
 
         holder.txtName.setText(selectedItem.getStudentName());
-       // StudentAttendanceModel bean = listUser.get(lastCheckedPosition);
+        // StudentAttendanceModel bean = listUser.get(lastCheckedPosition);
+
+        if (selectedItem.getPresent().equals("true")){
+
+        }
 
         if (holder.chkAttendance.isChecked()) {
             lastCheckedPosition = position;
             holder.txtAttendanceStatus.setText("Present");
-            attendanceListner.present(selectedItem);
+            attendanceListner.present(selectedItem, position);
         } else {
             lastCheckedPosition = position;
             holder.txtAttendanceStatus.setText("Absent");
-            attendanceListner.absent(selectedItem);
+            attendanceListner.absent(selectedItem, position);
         }
 
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
@@ -112,10 +116,10 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
                 lastCheckedPosition = position;
                 if (isChecked) {
                     holder.txtAttendanceStatus.setText("Present");
-                    attendanceListner.present(selectedItem);
+                    attendanceListner.present(selectedItem, position);
                 } else {
                     holder.txtAttendanceStatus.setText("Absent");
-                    attendanceListner.absent(selectedItem);
+                    attendanceListner.absent(selectedItem, position);
                 }
                 // notifyDataSetChanged();
             }

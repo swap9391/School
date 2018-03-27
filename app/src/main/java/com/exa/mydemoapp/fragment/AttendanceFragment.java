@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.exa.mydemoapp.AdminActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
@@ -31,11 +32,14 @@ import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by midt-078 on 14/2/18.
@@ -54,6 +58,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
 
     private List<StudentModel> listStudent;
     private List<StudentAttendanceModel> selectedStudents;
+    HashMap<String, Object> selectedStudentMap = new HashMap<>();
     private DbInvoker dbInvoker;
     StudentAttendaceAdapter mAdapter;
     AttendaceModel attendaceModel;
@@ -71,6 +76,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
         view = inflater.inflate(R.layout.layout_attendance, container, false);
         dbInvoker = new DbInvoker(getMyActivity());
         attendaceModel = new AttendaceModel();
+        listStudent = new ArrayList<>();
         getMyActivity().toolbar.setTitle("Add Attendance");
         initViewBinding(view);
         List<String> listClass = new ArrayList(Arrays.asList(getResources().getStringArray(R.array.class_type)));
@@ -152,33 +158,13 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
 
 
     @Override
-    public void present(StudentAttendanceModel bean) {
-        int count = 0;
-        for (StudentAttendanceModel studentModel : getSelectedStudents()) {
-            if (studentModel.getStudentId() == bean.getId()) {
-                getSelectedStudents().remove(count);
-                break;
-            }
-            count++;
-        }
-        bean.setPresent("true");
-        bean.setIn("Yes");
-        getSelectedStudents().add(bean);
+    public void present(StudentAttendanceModel bean, int position) {
+        getSelectedStudents().get(position).setPresent("true");
     }
 
     @Override
-    public void absent(StudentAttendanceModel bean) {
-        int count = 0;
-        for (StudentAttendanceModel studentModel : getSelectedStudents()) {
-            if (studentModel.getStudentId() == bean.getId()) {
-                getSelectedStudents().remove(count);
-                break;
-            }
-            count++;
-        }
-        bean.setPresent("false");
-        getSelectedStudents().add(bean);
-
+    public void absent(StudentAttendanceModel bean, int position) {
+        getSelectedStudents().get(position).setPresent("false");
     }
 
     private boolean check() {
@@ -279,6 +265,23 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 if (message != null && message.isEmpty()) {
                     Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
                 }
+             /*   StudentModel studentModel0 = new StudentModel();
+                studentModel0.setId(1);
+                studentModel0.setStudentName("Swapnil");
+                StudentModel studentModel1 = new StudentModel();
+                studentModel1.setId(2);
+                studentModel1.setStudentName("Vaibhav");
+                StudentModel studentModel2 = new StudentModel();
+                studentModel2.setId(3);
+                studentModel2.setStudentName("Manohar");
+                StudentModel studentModel3 = new StudentModel();
+                studentModel3.setId(4);
+                studentModel3.setStudentName("Uday");
+                listStudent.add(studentModel0);
+                listStudent.add(studentModel1);
+                listStudent.add(studentModel2);
+                listStudent.add(studentModel3);
+*/
                 listStudent = dbInvoker.getUserListByStudent(className);
                 for (StudentModel studentModel : listStudent) {
                     StudentAttendanceModel attendanceModel = new StudentAttendanceModel();
@@ -286,6 +289,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                     attendanceModel.setStudentId(studentModel.getId());
                     selectedStudents.add(attendanceModel);
                 }
+
                 initAdapter(selectedStudents);
             }
         }, AttendaceModel.class);
@@ -294,7 +298,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     }
 
 
-    private HomeActivity getMyActivity() {
-        return (HomeActivity) getActivity();
+    private AdminActivity getMyActivity() {
+        return (AdminActivity) getActivity();
     }
 }

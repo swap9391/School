@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 
 import com.exa.mydemoapp.Common.CommonActivity;
+import com.exa.mydemoapp.fragment.AttendanceFragment;
 
 /**
  * Created by midt-078 on 27/3/18.
@@ -26,7 +27,7 @@ public class AdminActivity extends CommonActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
-        showFragment(new SignUpFragment(), null);
+        showFragment(new AttendanceFragment(), null);
     }
 
     public void showFragment(Fragment fragmentClass, Bundle bundle) {

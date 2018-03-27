@@ -8,7 +8,7 @@ import com.exa.mydemoapp.model.StudentModel;
  */
 
 public interface AttendanceListner {
-    public void present(StudentAttendanceModel bean);
+    public void present(StudentAttendanceModel bean,int position);
 
-    public void absent(StudentAttendanceModel bean);
+    public void absent(StudentAttendanceModel bean,int position);
 }
