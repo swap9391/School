@@ -281,7 +281,7 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setDivision(spnDivision.getSelectedItem().toString().trim());
         studentModel.setRegistrationId(edtRegistrationId.getText().toString().trim());
         if (!isEdit) {
-            studentModel.setUserType("STUDENT");
+            studentModel.setUserType("ADMIN");
         }
         studentModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
         studentModel.setVisiblity("TRUE");
@@ -314,11 +314,27 @@ public class SignUpFragment extends CommonFragment {
                 bindModel();
                 try {
                     if (Validator.validateForNulls(studentModel, getMyActivity())) {
-                        if (check()) {
-                          //  saveUserInformation();
-                            save();
-                            Log.d(TAG, "Validations Successful");
+                        try {
+                            AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.app_name), getString(R.string.save_msg));
+                            builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    bindModel();
+                                    if (check()) {
+                                        save();
+                                    }
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+                                }
+                            }).show();
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
                         }
+
                     }
                 } catch (RequiredFieldException | ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
                     // Inform user about his SINS
@@ -341,7 +357,7 @@ public class SignUpFragment extends CommonFragment {
                         studentModel.setUniqKey(userId);
                         getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.STUDENT).child(studentModel.getUniqKey()).setValue(studentModel);
                         Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-                        getMyActivity().showFragment(getMyActivity().profileFragment, null);
+                        //  getMyActivity().showFragment(getMyActivity().profileFragment, null);
                     } else {
                         getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.STUDENT).child(studentModel.getUniqKey()).setValue(studentModel);
                         Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
@@ -518,7 +534,7 @@ public class SignUpFragment extends CommonFragment {
             public void onResponse(StudentModel object) {
                 if (!isEdit) {
                     Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-                    getMyActivity().showFragment(getMyActivity().profileFragment, null);
+                    // getMyActivity().showFragment(getMyActivity().profileFragment, null);
                 } else {
                     Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
                     getMyActivity().showFragment(new UsersListFragment(), null);
@@ -527,12 +543,15 @@ public class SignUpFragment extends CommonFragment {
 
             @Override
             public void onError(String message) {
+                if (message != null && !message.isEmpty()) {
+                    getMyActivity().showToast(message);
+                }
             }
         }, StudentModel.class);
     }
 
 
-    public HomeActivity getMyActivity() {
-        return (HomeActivity) getActivity();
+    public AdminActivity getMyActivity() {
+        return (AdminActivity) getActivity();
     }
 }

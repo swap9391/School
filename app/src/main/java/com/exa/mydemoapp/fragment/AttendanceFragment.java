@@ -1,13 +1,11 @@
 package com.exa.mydemoapp.fragment;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,30 +17,20 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.exa.mydemoapp.Common.CommonUtils;
-import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
-import com.exa.mydemoapp.LoginActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.StudentAttendaceAdapter;
-import com.exa.mydemoapp.adapter.UserAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.listner.AttendanceListner;
 import com.exa.mydemoapp.model.AttendaceModel;
-import com.exa.mydemoapp.model.RewardModel;
 import com.exa.mydemoapp.model.StudentAttendanceModel;
 import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
