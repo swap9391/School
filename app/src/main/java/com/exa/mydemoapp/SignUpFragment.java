@@ -58,6 +58,7 @@ public class SignUpFragment extends CommonFragment {
     private List<String> listClass;
     private List<String> listDivision;
     private List<String> listFees;
+    private List<String> listUserType;
     @ViewById(R.id.toolbar)
     public Toolbar toolbar;
     @ViewById(R.id.spinner_school_name)
@@ -102,6 +103,14 @@ public class SignUpFragment extends CommonFragment {
     private Button datePickerInvest2;
     @ViewById(R.id.txtBalance)
     TextView txtBalance;
+    @ViewById(R.id.spinner_user_type)
+    private Spinner spnUserType;
+    @ViewById(R.id.txt_class_name)
+    TextView txtClassName;
+    @ViewById(R.id.txt_division)
+    TextView txtDivision;
+    @ViewById(R.id.lblInstallment1)
+    TextView txtInstallmentType;
     boolean isEdit = false;
     private View view;
 
@@ -131,6 +140,14 @@ public class SignUpFragment extends CommonFragment {
         spnDivision.setAdapter(divisionAdapter);
         divisionAdapter.notifyDataSetChanged();
 
+
+        listUserType = Arrays.asList(getResources().getStringArray(R.array.userType));
+        ArrayAdapter<String> userTypeadapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listUserType);
+        userTypeadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnUserType.setAdapter(userTypeadapter);
+        userTypeadapter.notifyDataSetChanged();
+
+
         edtInstallment2.setVisibility(View.GONE);
         edtInstallment3.setVisibility(View.GONE);
 
@@ -153,12 +170,15 @@ public class SignUpFragment extends CommonFragment {
                         edtInstallment1.setVisibility(View.VISIBLE);
                         edtInstallment2.setVisibility(View.VISIBLE);
                         datePickerInvest2.setVisibility(View.VISIBLE);
+                        datePickerInvest1.setVisibility(View.GONE);
                         edtInstallment3.setVisibility(View.GONE);
                         break;
                     case "Third Installment":
                         edtInstallment1.setVisibility(View.VISIBLE);
                         edtInstallment2.setVisibility(View.VISIBLE);
                         edtInstallment3.setVisibility(View.VISIBLE);
+                        datePickerInvest2.setVisibility(View.GONE);
+                        datePickerInvest1.setVisibility(View.GONE);
                         break;
                 }
 
@@ -195,6 +215,81 @@ public class SignUpFragment extends CommonFragment {
             public void onClick(View v) {
                 datePickerInvest2.setTag("invest3");
                 showDatePicker("install3");
+            }
+        });
+
+
+        //usertype UI binding
+        spnUserType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                switch (listUserType.get(position)) {
+                    case "ADMIN":
+                        txtClassName.setVisibility(View.GONE);
+                        txtDivision.setVisibility(View.GONE);
+                        spnClass.setVisibility(View.GONE);
+                        spnDivision.setVisibility(View.GONE);
+                        edtRollNumber.setVisibility(View.GONE);
+                        edtTotalFees.setVisibility(View.GONE);
+                        spnFeesType.setVisibility(View.GONE);
+                        datePickerInvest1.setVisibility(View.GONE);
+                        datePickerInvest2.setVisibility(View.GONE);
+                        txtInstallmentType.setVisibility(View.GONE);
+                        edtInstallment1.setVisibility(View.GONE);
+                        edtInstallment2.setVisibility(View.GONE);
+                        edtInstallment3.setVisibility(View.GONE);
+                        break;
+                    case "TEACHER":
+                        txtClassName.setVisibility(View.VISIBLE);
+                        txtDivision.setVisibility(View.VISIBLE);
+                        spnClass.setVisibility(View.VISIBLE);
+                        spnDivision.setVisibility(View.VISIBLE);
+                        edtRollNumber.setVisibility(View.GONE);
+                        edtTotalFees.setVisibility(View.GONE);
+                        spnFeesType.setVisibility(View.GONE);
+                        datePickerInvest1.setVisibility(View.GONE);
+                        datePickerInvest2.setVisibility(View.GONE);
+                        txtInstallmentType.setVisibility(View.GONE);
+                        edtInstallment1.setVisibility(View.GONE);
+                        edtInstallment2.setVisibility(View.GONE);
+                        edtInstallment3.setVisibility(View.GONE);
+                        break;
+                    case "DRIVER":
+                        txtClassName.setVisibility(View.GONE);
+                        txtDivision.setVisibility(View.GONE);
+                        spnClass.setVisibility(View.GONE);
+                        spnDivision.setVisibility(View.GONE);
+                        edtRollNumber.setVisibility(View.GONE);
+                        edtTotalFees.setVisibility(View.GONE);
+                        spnFeesType.setVisibility(View.GONE);
+                        datePickerInvest1.setVisibility(View.GONE);
+                        datePickerInvest2.setVisibility(View.GONE);
+                        txtInstallmentType.setVisibility(View.GONE);
+                        edtInstallment1.setVisibility(View.GONE);
+                        edtInstallment2.setVisibility(View.GONE);
+                        edtInstallment3.setVisibility(View.GONE);
+                        break;
+                    case "STUDENT":
+                        txtClassName.setVisibility(View.VISIBLE);
+                        txtDivision.setVisibility(View.VISIBLE);
+                        spnClass.setVisibility(View.VISIBLE);
+                        spnDivision.setVisibility(View.VISIBLE);
+                        edtRollNumber.setVisibility(View.VISIBLE);
+                        edtTotalFees.setVisibility(View.VISIBLE);
+                        spnFeesType.setVisibility(View.VISIBLE);
+                        datePickerInvest1.setVisibility(View.VISIBLE);
+                        txtInstallmentType.setVisibility(View.VISIBLE);
+                        edtInstallment1.setVisibility(View.VISIBLE);
+                        edtInstallment2.setVisibility(View.VISIBLE);
+                        edtInstallment3.setVisibility(View.VISIBLE);
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
             }
         });
 
@@ -271,6 +366,7 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setStudentUserName(edtUsername.getText().toString().trim());
         studentModel.setContactNumber(edtContactNumber.getText().toString().trim());
         studentModel.setRollNumber(edtRollNumber.getText().toString().trim());
+        studentModel.setUserType(spnUserType.getSelectedItem().toString().trim());
         try {
             studentModel.setStudentPassword(CommonUtils.encrypt(edtPassword.getText().toString().trim()).trim());
         } catch (Exception e) {
@@ -280,9 +376,7 @@ public class SignUpFragment extends CommonFragment {
         studentModel.setClassName(spnClass.getSelectedItem().toString().trim());
         studentModel.setDivision(spnDivision.getSelectedItem().toString().trim());
         studentModel.setRegistrationId(edtRegistrationId.getText().toString().trim());
-        if (!isEdit) {
-            studentModel.setUserType("ADMIN");
-        }
+
         studentModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
         studentModel.setVisiblity("TRUE");
         if (rdGirl.isChecked()) {
@@ -378,6 +472,34 @@ public class SignUpFragment extends CommonFragment {
     }
 
     private boolean check() {
+        if (studentModel.getSchoolName() == null || studentModel.getSchoolName().isEmpty()) {
+            getMyActivity().showToast("Please Select School Name");
+            return false;
+        }
+        if (studentModel.getUserType() == null || studentModel.getUserType().isEmpty()) {
+            getMyActivity().showToast("Please Select User Type");
+            return false;
+        }
+        if ((studentModel.getUserType().equals("STUDENT") || studentModel.getUserType().equals("TEACHER")) && (studentModel.getClassName() == null || studentModel.getClassName().isEmpty())) {
+            getMyActivity().showToast("Please Select Class");
+            return false;
+        }
+        if ((studentModel.getUserType().equals("STUDENT") || studentModel.getUserType().equals("TEACHER")) && (studentModel.getDivision() == null || studentModel.getDivision().isEmpty())) {
+            getMyActivity().showToast("Please Select Division");
+            return false;
+        }
+        if (studentModel.getRegistrationId() == null || studentModel.getRegistrationId().isEmpty()) {
+            getMyActivity().showToast("Please Enter Registration Id");
+            return false;
+        }
+        if ((studentModel.getUserType().equals("STUDENT")) && (studentModel.getRollNumber() == null || studentModel.getRollNumber().isEmpty())) {
+            getMyActivity().showToast("Please Enter Roll Number");
+            return false;
+        }
+        if (studentModel.getStudentName() == null || studentModel.getStudentName().isEmpty()) {
+            getMyActivity().showToast("Please Enter Full Name");
+            return false;
+        }
         if (studentModel.getContactNumber() == null || studentModel.getContactNumber().isEmpty()) {
             getMyActivity().showToast("Please Enter Contact Number");
             return false;
@@ -390,34 +512,50 @@ public class SignUpFragment extends CommonFragment {
             getMyActivity().showToast("Please Select Gender");
             return false;
         }
-        if (studentModel.getTotalFees() <= 0) {
-            getMyActivity().showToast("Please Enter Total Fees");
-            return false;
-        }
-        if (studentModel.getInstallmentType() == null || studentModel.getInstallmentType().isEmpty()) {
-            getMyActivity().showToast("Please Select Fees Installment");
+        if (studentModel.getStudentAddress() == null || studentModel.getStudentAddress().isEmpty()) {
+            getMyActivity().showToast("Please Enter Address");
             return false;
         }
 
-        if (studentModel.getInstallmentType().equalsIgnoreCase("First Installment") && (studentModel.getInstallment1() == null || studentModel.getInstallment1().isEmpty())) {
-            getMyActivity().showToast("Please Enter First Installment");
+        if (studentModel.getStudentUserName() == null || studentModel.getStudentUserName().isEmpty()) {
+            getMyActivity().showToast("Please Enter User Name");
+            return false;
+        }
+        if (studentModel.getStudentPassword() == null || studentModel.getStudentPassword().isEmpty()) {
+            getMyActivity().showToast("Please Enter Password");
             return false;
         }
 
-        if (studentModel.getInstallmentType().equalsIgnoreCase("Second Installment") && (studentModel.getInstallment2() == null || studentModel.getInstallment2().isEmpty())) {
-            getMyActivity().showToast("Please Enter Second Installment");
-            return false;
-        }
+        if (studentModel.getUserType().equals("STUDENT")) {
+            if (studentModel.getTotalFees() <= 0) {
+                getMyActivity().showToast("Please Enter Total Fees");
+                return false;
+            }
+            if (studentModel.getInstallmentType() == null || studentModel.getInstallmentType().isEmpty()) {
+                getMyActivity().showToast("Please Select Fees Installment");
+                return false;
+            }
 
-        if (studentModel.getInstallmentType().equalsIgnoreCase("Third Installment") && (studentModel.getInstallment3() == null || studentModel.getInstallment3().isEmpty())) {
-            getMyActivity().showToast("Please Enter Third Installment");
-            return false;
-        }
+            if (studentModel.getInstallmentType().equalsIgnoreCase("First Installment") && (studentModel.getInstallment1() == null || studentModel.getInstallment1().isEmpty())) {
+                getMyActivity().showToast("Please Enter First Installment");
+                return false;
+            }
 
-        long totalPay = CommonUtils.asInt(studentModel.getInstallment1(), 0) + CommonUtils.asInt(studentModel.getInstallment2(), 0) + CommonUtils.asInt(studentModel.getInstallment3(), 0);
-        if (totalPay > studentModel.getTotalFees()) {
-            getMyActivity().showToast("Please Enter Valid Amount");
-            return false;
+            if (studentModel.getInstallmentType().equalsIgnoreCase("Second Installment") && (studentModel.getInstallment2() == null || studentModel.getInstallment2().isEmpty())) {
+                getMyActivity().showToast("Please Enter Second Installment");
+                return false;
+            }
+
+            if (studentModel.getInstallmentType().equalsIgnoreCase("Third Installment") && (studentModel.getInstallment3() == null || studentModel.getInstallment3().isEmpty())) {
+                getMyActivity().showToast("Please Enter Third Installment");
+                return false;
+            }
+
+            long totalPay = CommonUtils.asInt(studentModel.getInstallment1(), 0) + CommonUtils.asInt(studentModel.getInstallment2(), 0) + CommonUtils.asInt(studentModel.getInstallment3(), 0);
+            if (totalPay > studentModel.getTotalFees()) {
+                getMyActivity().showToast("Please Enter Valid Amount");
+                return false;
+            }
         }
 
         return true;
@@ -499,8 +637,10 @@ public class SignUpFragment extends CommonFragment {
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.schoolName, studentModel.getSchoolName());
-        hashMap.put(IJson.className, studentModel.getClassName());
-        hashMap.put(IJson.division, studentModel.getDivision());
+        if (studentModel.getUserType().equals("STUDENT") || studentModel.getUserType().equals("TEACHER")) {
+            hashMap.put(IJson.className, studentModel.getClassName());
+            hashMap.put(IJson.division, studentModel.getDivision());
+        }
         hashMap.put(IJson.registrationId, studentModel.getRegistrationId());
         hashMap.put(IJson.studentName, studentModel.getStudentName());
         hashMap.put(IJson.studentAddress, studentModel.getStudentAddress());
@@ -509,16 +649,17 @@ public class SignUpFragment extends CommonFragment {
         hashMap.put(IJson.userType, studentModel.getUserType());
         hashMap.put(IJson.studentBloodGrp, studentModel.getStudentBloodGrp());
         hashMap.put(IJson.gender, studentModel.getGender());
-        hashMap.put(IJson.totalFees, "" + studentModel.getTotalFees());
-        hashMap.put(IJson.installmentType, studentModel.getInstallmentType());
-        hashMap.put(IJson.installment1, studentModel.getInstallment1());
-        hashMap.put(IJson.installment2, studentModel.getInstallment2());
-        hashMap.put(IJson.installment3, studentModel.getInstallment3());
-        hashMap.put(IJson.rollNumber, studentModel.getRollNumber());
         hashMap.put(IJson.contactNumber, studentModel.getContactNumber());
-        hashMap.put(IJson.dateInsvestment2, studentModel.getDateInsvestment2());
-        hashMap.put(IJson.dateInsvestment3, studentModel.getDateInsvestment3());
-
+        if (studentModel.getUserType().equals("STUDENT")) {
+            hashMap.put(IJson.totalFees, "" + studentModel.getTotalFees());
+            hashMap.put(IJson.installmentType, studentModel.getInstallmentType());
+            hashMap.put(IJson.installment1, studentModel.getInstallment1());
+            hashMap.put(IJson.installment2, studentModel.getInstallment2());
+            hashMap.put(IJson.installment3, studentModel.getInstallment3());
+            hashMap.put(IJson.rollNumber, studentModel.getRollNumber());
+            hashMap.put(IJson.dateInsvestment2, studentModel.getDateInsvestment2());
+            hashMap.put(IJson.dateInsvestment3, studentModel.getDateInsvestment3());
+        }
 
         CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.SIGN_UP, hashMap, new VolleyResponseListener<StudentModel>() {
             @Override

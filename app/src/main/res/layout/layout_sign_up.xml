@@ -14,6 +14,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Select School" />
+
+
             <Spinner
                 android:id="@+id/spinner_school_name"
                 android:layout_width="match_parent"
@@ -23,6 +32,33 @@
                 android:layout_marginTop="5dp"
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp"></Spinner>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Select User Type" />
+
+            <Spinner
+                android:id="@+id/spinner_user_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="20dp"></Spinner>
+
+            <TextView
+                android:id="@+id/txt_class_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Select Class" />
 
             <Spinner
                 android:id="@+id/spinner_class_name"
@@ -34,6 +70,15 @@
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp"></Spinner>
 
+            <TextView
+                android:id="@+id/txt_division"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Select Division" />
+
             <Spinner
                 android:id="@+id/spinner_division"
                 android:layout_width="match_parent"
@@ -43,6 +88,7 @@
                 android:layout_marginTop="5dp"
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp"></Spinner>
+
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -83,7 +129,7 @@
                     android:id="@+id/edt_student_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Student Name"
+                    android:hint="Enter Full Name"
                     android:imeOptions="actionNext"
                     android:maxLines="1"
                     android:minLines="1" />
@@ -141,7 +187,7 @@
                     android:id="@+id/edt_student_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Student Address"
+                    android:hint="Enter Address"
                     android:maxLines="2"
                     android:minLines="2" />
             </android.support.design.widget.TextInputLayout>
@@ -155,7 +201,7 @@
                     android:id="@+id/edt_student_blood_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Student Blood Group"
+                    android:hint="Enter Blood Group"
                     android:imeOptions="actionNext"
                     android:maxLength="5"
                     android:maxLines="1"
@@ -171,7 +217,7 @@
                     android:id="@+id/edt_student_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Student User Name"
+                    android:hint="Enter User Name"
                     android:imeOptions="actionNext"
                     android:maxLength="25"
                     android:maxLines="1"
@@ -187,7 +233,7 @@
                     android:id="@+id/edt_student_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Student Password"
+                    android:hint="Enter Password"
                     android:imeOptions="actionNext"
                     android:inputType="textPassword"
                     android:maxLength="20"
@@ -240,87 +286,69 @@
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp"></Spinner>
 
-            <LinearLayout
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_margin="7dp"
+                android:gravity="center">
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="0dp"
+                <EditText
+                    android:id="@+id/edt_installment_1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="7dp"
-                    android:layout_weight="2"
-                    android:gravity="center">
+                    android:hint="Enter first installment"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:maxLines="1"
+                    android:minLines="1" />
+            </android.support.design.widget.TextInputLayout>
 
-                    <EditText
-                        android:id="@+id/edt_installment_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Enter first installment"
-                        android:inputType="number"
-                        android:maxLength="6"
-                        android:maxLines="1"
-                        android:minLines="1" />
-                </android.support.design.widget.TextInputLayout>
-
-
-                <Button
-                    android:id="@+id/date_picker_invest1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:drawableRight="@drawable/ic_calender"
-                    android:text="Select Date"
-                    android:textSize="8sp"
-
-                    />
-
-            </LinearLayout>
-
-            <LinearLayout
+            <Button
+                android:id="@+id/date_picker_invest1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:drawableRight="@drawable/ic_calender"
+                android:text="Select Next Payment Date"
+                android:textSize="8sp"
 
+                />
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="0dp"
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp">
+
+                <EditText
+                    android:id="@+id/edt_installment_2"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="7dp"
-                    android:layout_weight="2">
+                    android:hint="Enter second installment"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:maxLines="1"
+                    android:minLines="1" />
+            </android.support.design.widget.TextInputLayout>
 
-                    <EditText
-                        android:id="@+id/edt_installment_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Enter second installment"
-                        android:inputType="number"
-                        android:maxLength="6"
-                        android:maxLines="1"
-                        android:minLines="1" />
-                </android.support.design.widget.TextInputLayout>
+            <Button
+                android:id="@+id/date_picker_invest2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:drawableRight="@drawable/ic_calender"
+                android:text="Select Next Payment Date"
+                android:textSize="8sp"
 
-                <Button
-                    android:id="@+id/date_picker_invest2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:drawableRight="@drawable/ic_calender"
-                    android:text="Select Date"
-                    android:textSize="8sp"
-
-                    />
-            </LinearLayout>
+                />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

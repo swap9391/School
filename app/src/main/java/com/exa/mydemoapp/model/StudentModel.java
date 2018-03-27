@@ -19,24 +19,16 @@ public class StudentModel extends BasicBean implements Serializable {
     @SerializedName("registrationDate")
     private String dateStamp;
     @SerializedName("schoolName")
-    @Required(message = "Please Select School Name")
     private String schoolName;
     @SerializedName("classId")
-    @Required(message = "Please Select Class Name")
     private String className;
     @SerializedName("divisionId")
-    @Required(message = "Please Select Division Name")
     private String division;
     @SerializedName("registrationId")
-    @Required(message = "Please Registration Id")
     private String registrationId;
-    @Required(message = "Please Enter Student Name")
     private String studentName;
-    @Required(message = "Please Enter Student Address")
     private String studentAddress;
-    @Required(message = "Please Enter User Name")
     private String studentUserName;
-    @Required(message = "Please Enter Password")
     private String studentPassword;
     private String userType;
     private String studentBloodGrp;

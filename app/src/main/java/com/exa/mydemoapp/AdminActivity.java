@@ -27,7 +27,7 @@ public class AdminActivity extends CommonActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
-        showFragment(new AttendanceFragment(), null);
+        showFragment(new SignUpFragment(), null);
     }
 
     public void showFragment(Fragment fragmentClass, Bundle bundle) {

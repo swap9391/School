@@ -73,6 +73,8 @@
         <item>@string/dashboard_staff</item>
         <item>@string/dashboard_upload</item>
         <item>@string/dashboard_attendance</item>
+        <item>@string/dashboard_add_homework</item>
+        <item>@string/dashboard_homework_list</item>
         <item>@string/dashboard_annual</item>
         <item>@string/dashboard_reward</item>
         <item>@string/dashboard_bus_loc</item>
@@ -90,6 +92,8 @@
         <item>@drawable/ic_teacher</item>
         <item>@drawable/ic_paren_student</item>
         <item>@drawable/ic_annual_calender</item>
+        <item>@drawable/ic_annual_calender</item>
+        <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_paren_student</item>
         <item>@drawable/ic_rewards</item>
         <item>@drawable/icon_bus_location</item>
@@ -98,6 +102,7 @@
 
     <string-array name="nameForSudent">
         <item>@string/dashboard_about_school</item>
+        <item>@string/dashboard_homework_list</item>
         <item>@string/dashboard_facilities</item>
         <item>@string/dashboard_calender</item>
         <item>@string/dashboard_image_gallery</item>
@@ -111,6 +116,7 @@
 
     <integer-array name="imagesForStudent">
         <item>@drawable/ic_about_school</item>
+        <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_facility</item>
         <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_gallery</item>
@@ -142,6 +148,14 @@
         <item>@drawable/ic_blog</item>
     </integer-array>
 
+
+    <string-array name="userType">
+        <item>@string/user_type_admin</item>
+        <item>@string/user_type_teacher</item>
+        <item>@string/user_type_student</item>
+        <item>@string/user_type_driver</item>
+    </string-array>
+
     <string name="img_type_news">News Feed</string>
     <string name="img_type_blog">Blog</string>
     <string name="img_type_archive">Achievement</string>
@@ -160,6 +174,8 @@
     <string name="dashboard_staff">Staff Information</string>
     <string name="dashboard_upload">Upload Photo</string>
     <string name="dashboard_attendance">Student Attendance</string>
+    <string name="dashboard_add_homework">Add Home Work</string>
+    <string name="dashboard_homework_list">Home Work</string>
     <string name="dashboard_annual">Annual Event</string>
     <string name="dashboard_bus_loc">Bus Location</string>
     <string name="dashboard_reward">Add Reward Points</string>
@@ -196,4 +212,9 @@
     <string name="valid_password">Please Enter Valid Password</string>
     <string name="login_success">Login Successful!!</string>
     <string name="user_reg_title">User Registration</string>
+
+    <string name="user_type_admin">ADMIN</string>
+    <string name="user_type_teacher">TEACHER</string>
+    <string name="user_type_student">STUDENT</string>
+    <string name="user_type_driver">DRIVER</string>
 </resources>
