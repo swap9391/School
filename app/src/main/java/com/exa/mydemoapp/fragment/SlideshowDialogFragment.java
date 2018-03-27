@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Swapnil on 4/8/17.
@@ -124,8 +125,9 @@ public class SlideshowDialogFragment extends DialogFragment {
                 }
             });
         }
-
-        getMyActivity().setListAlbumChild(images);
+        List<ImageRequest> requestList = new ArrayList<>();
+        requestList.add(images.get(0));
+        getMyActivity().setListAlbumChild(requestList);
 
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
@@ -201,7 +203,7 @@ public class SlideshowDialogFragment extends DialogFragment {
             final ImageRequest image = images.get(position);
 
 
-            Glide.with(getActivity()).load(image.getImages().get(0).getImgUrl())
+            Glide.with(getActivity()).load(image.getImg())
                     .thumbnail(0.5f)
                     .crossFade()
                     .override(800, 500)
@@ -307,7 +309,9 @@ public class SlideshowDialogFragment extends DialogFragment {
                     getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
                     CommonUtils.showToast(getMyActivity(), "Photo deleted successfully!");
                     images.remove(imageRequest);
-                    getMyActivity().setListAlbumChild(images);
+                    List<ImageRequest> requestList = new ArrayList<>();
+                    requestList.add(images.get(0));
+                    getMyActivity().setListAlbumChild(requestList);
                     getMyActivity().performBackForDesign();
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

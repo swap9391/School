@@ -65,7 +65,13 @@ public class UsersListFragment extends CommonFragment {
         getMyActivity().init();
         setHasOptionsMenu(true);
         listStudent = new ArrayList<>();
-        initAdapter();
+        if (getMyActivity().flagCallUserList) {
+            getUserList();
+        } else {
+            initAdapter();
+        }
+
+
         /*if (Connectivity.isConnected(getMyActivity())) {
             progressDialog = new ProgressDialog(getMyActivity());
             progressDialog.setTitle("Loading...");
@@ -150,4 +156,33 @@ public class UsersListFragment extends CommonFragment {
         }
         return true;
     }
+
+    public void getUserList() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        // hashMap.put(IJson.password, "" + studentId);
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<StudentModel>() {
+            @Override
+            public void onResponse(StudentModel[] object) {
+                getMyActivity().getDbInvoker().deleteStudents();
+                for (StudentModel studentModel : object) {
+                    getMyActivity().getDbInvoker().insertUpdateUser(studentModel);
+                }
+                /*if (object[0] instanceof StudentModel) {
+                 for (S)
+                }*/
+                initAdapter();
+
+            }
+
+            @Override
+            public void onResponse(StudentModel object) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, StudentModel[].class);
+    }
+
 }

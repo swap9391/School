@@ -49,6 +49,7 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
             super(view);
             txtName = (TextView) view.findViewById(R.id.txt_student_name);
             txtAttendanceStatus = (TextView) view.findViewById(R.id.txt_attendance_status);
+            txtInOutStatus= (TextView) view.findViewById(R.id.txt_inout_status);
             linearLayout = (LinearLayout) view.findViewById(R.id.relativeLayout);
             chkAttendance = (CheckBox) view.findViewById(R.id.btn_checkbox);
             linearLayout.setOnClickListener(this);
@@ -82,10 +83,21 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
         holder.txtName.setText(selectedItem.getStudentName());
         // StudentAttendanceModel bean = listUser.get(lastCheckedPosition);
 
-        if (selectedItem.getPresent().equals("true")){
-
+        if (selectedItem.getIn() != null && selectedItem.getIn().equals("STATUS_IN")) {
+            holder.txtInOutStatus.setText("IN");
+        } else if (selectedItem.getOut() != null && selectedItem.getOut().equals("STATUS_OUT")) {
+            holder.txtInOutStatus.setText("OUT");
+        }else {
+            holder.chkAttendance.setChecked(true);
         }
 
+        if (selectedItem.getPresent() != null && selectedItem.getPresent().equals("true")) {
+            holder.chkAttendance.setChecked(true);
+        } else if (selectedItem.getPresent() != null && selectedItem.getPresent().equals("false")) {
+            holder.chkAttendance.setChecked(false);
+        }else {
+            holder.chkAttendance.setChecked(true);
+        }
         if (holder.chkAttendance.isChecked()) {
             lastCheckedPosition = position;
             holder.txtAttendanceStatus.setText("Present");

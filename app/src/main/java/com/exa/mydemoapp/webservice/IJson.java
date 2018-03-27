@@ -9,6 +9,7 @@ import com.exa.mydemoapp.annotation.Required;
 public interface IJson {
 
     //student
+    String id = "_id";
     String schoolName = "schoolName";
     String className = "classId";
     String division = "divisionId";
@@ -58,7 +59,8 @@ public interface IJson {
 
 
     //firebase token
-    String token = "token";
+    String token = "tokenNo";
+    String userId = "userId";
 
     //Homework
     String subject = "subject";

@@ -96,7 +96,7 @@ public class ProfileFragment extends CommonFragment {
         getMyActivity().init();
         getMyActivity().toolbar.setTitle("My Profile");
         setData();
-        rewardModelList= new ArrayList<>();
+        rewardModelList = new ArrayList<>();
         if (!AppController.isAdmin(getMyActivity())) {
             layManageUser.setVisibility(View.GONE);
         }
@@ -136,41 +136,47 @@ public class ProfileFragment extends CommonFragment {
         if (studentId > 0) {
             studentModel = getMyActivity().getDbInvoker().getStudentById(studentId);
         }
+        if (studentModel != null) {
+            String name = studentModel.getStudentName();
+            String address = studentModel.getStudentAddress();
+            String bloodGrp = "Blood Group " + studentModel.getStudentBloodGrp();
 
-        String name = studentModel.getStudentName();
-        String address = studentModel.getStudentAddress();
-        String className = "Class " + studentModel.getClassName();
-        String division = "Division " + studentModel.getDivision();
-        String bloodGrp = "Blood Group " + studentModel.getStudentBloodGrp();
-        String totalFees = "Total Fees :" + studentModel.getTotalFees();
-        int paid = CommonUtils.asInt(studentModel.getInstallment1(), 0)
-                + CommonUtils.asInt(studentModel.getInstallment2(), 0)
-                + CommonUtils.asInt(studentModel.getInstallment3(), 0);
-        String paidFees = "Paid :" + paid;
-        int dues = studentModel.getTotalFees() - paid;
+            if (studentModel.getGender().equalsIgnoreCase("Boy")) {
+                circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
+            } else {
+                circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_girl));
+            }
+            txtName.setText(name != null ? name : "");
+            txtAddress.setText(address != null ? address : "");
+            if (studentModel.getUserType().equals("STUDENT") || studentModel.getUserType().equals("STUDENT")) {
+                String className = "Class " + studentModel.getClassName();
+                String division = "Division " + studentModel.getDivision();
+                txtClassName.setText(className != null ? className : "");
+                txtDivision.setText(division != null ? division : "");
+            }
+            txtBloodGroup.setText(bloodGrp != null ? bloodGrp : "");
+            if (studentModel.getUserType().equals("STUDENT")) {
+                String totalFees = "Total Fees :" + studentModel.getTotalFees();
+                int paid = CommonUtils.asInt(studentModel.getInstallment1(), 0)
+                        + CommonUtils.asInt(studentModel.getInstallment2(), 0)
+                        + CommonUtils.asInt(studentModel.getInstallment3(), 0);
+                String paidFees = "Paid :" + paid;
+                int dues = studentModel.getTotalFees() - paid;
 
-        String dueDate = "";
-        if (studentModel.getDateInsvestment2() != null) {
-            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment2(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
-        } else if (studentModel.getDateInsvestment3() != null) {
-            dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment3(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
+                String dueDate = "";
+                if (studentModel.getDateInsvestment2() != null) {
+                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment2(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
+                } else if (studentModel.getDateInsvestment3() != null) {
+                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment3(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
+                }
+
+                String duesPayable = "Total Dues :" + dues + " " + dueDate;
+
+                txtTotalFees.setText(totalFees != null ? totalFees : "");
+                txtPaidFees.setText(paid > 0 ? paidFees : "");
+                txtTotalDues.setText(dues > 0 ? duesPayable : "");
+            }
         }
-
-        String duesPayable = "Total Dues :" + dues + " " + dueDate;
-
-        if (studentModel.getGender().equalsIgnoreCase("Boy")) {
-            circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
-        } else {
-            circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_girl));
-        }
-        txtName.setText(name != null ? name : "");
-        txtAddress.setText(address != null ? address : "");
-        txtClassName.setText(className != null ? className : "");
-        txtDivision.setText(division != null ? division : "");
-        txtBloodGroup.setText(bloodGrp != null ? bloodGrp : "");
-        txtTotalFees.setText(totalFees != null ? totalFees : "");
-        txtPaidFees.setText(paid > 0 ? paidFees : "");
-        txtTotalDues.setText(dues > 0 ? duesPayable : "");
     }
 
     private class onManageUserClick implements View.OnClickListener {

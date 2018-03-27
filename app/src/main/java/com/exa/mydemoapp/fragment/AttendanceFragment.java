@@ -78,6 +78,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
         attendaceModel = new AttendaceModel();
         listStudent = new ArrayList<>();
         getMyActivity().toolbar.setTitle("Add Attendance");
+        setHasOptionsMenu(true);
         initViewBinding(view);
         List<String> listClass = new ArrayList(Arrays.asList(getResources().getStringArray(R.array.class_type)));
         listClass.remove(0);
@@ -137,7 +138,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
-        /*} else {
+        /*} else {s
            mAdapter.
         }*/
     }
@@ -206,6 +207,9 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 hashMap.put(IJson.classId, "" + attendaceModel.getClassName());
                 hashMap.put(IJson.dateStamp, "" + attendaceModel.getDateStamp());
                 hashMap.put(IJson.studentList, studentAttendanceModels);
+                if (attendaceModel.getId() != null && attendaceModel.getId().intValue() > 0) {
+                    hashMap.put(IJson.id, attendaceModel.getId());
+                }
 
                 CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_ATTENDANCE, hashMap, new VolleyResponseListener<AttendaceModel>() {
                     @Override
@@ -248,12 +252,13 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
 
             @Override
             public void onResponse(AttendaceModel object) {
-                listStudent = dbInvoker.getUserListByStudent(className);
+
+                attendaceModel = object;
                 for (StudentAttendanceModel attendanceModel : object.getStudentList()) {
-                    for (StudentModel studentModel : listStudent) {
-                        attendanceModel.setStudentName(studentModel.getStudentName());
-                        selectedStudents.add(attendanceModel);
-                    }
+                    StudentModel studentModel = dbInvoker.getStudentById(attendanceModel.getStudentId());
+                    attendanceModel.setStudentName(studentModel.getStudentName());
+                    attendanceModel.setStudentId(studentModel.getId());
+                    selectedStudents.add(attendanceModel);
                 }
 
                 initAdapter(selectedStudents);
@@ -298,7 +303,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     }
 
 
-    private AdminActivity getMyActivity() {
-        return (AdminActivity) getActivity();
+    private HomeActivity getMyActivity() {
+        return (HomeActivity) getActivity();
     }
 }

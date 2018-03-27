@@ -98,6 +98,7 @@ public class HomeActivity extends CommonActivity {
     private StudentInfoSingleton studentInfoSingleton;
     Database db;
     DbInvoker dbInvoker;
+    public boolean flagCallUserList = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,9 +120,10 @@ public class HomeActivity extends CommonActivity {
             FirebaseMessaging.getInstance().subscribeToTopic("test123");
             FirebaseInstanceId.getInstance().getToken();
             String token = FirebaseInstanceId.getInstance().getToken();
+//            CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
             String fb_reg = CommonUtils.getSharedPref(Constants.FIREBASE_REGISTER, this);
             if (fb_reg == null || !fb_reg.equalsIgnoreCase("TRUE")) {
-                //registerToken(token);
+                registerToken(token);
             }
         }
 
@@ -160,7 +162,7 @@ public class HomeActivity extends CommonActivity {
 
         showFragment(dashboardFragment, null);
         if (AppController.isAdmin(this)) {
-          //  getUserList();
+            getUserList();
         }
 
         // updateAlbumInfo();
@@ -439,16 +441,16 @@ public class HomeActivity extends CommonActivity {
     private void registerToken(final String token) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.token, token);
-        hashMap.put(IJson.studentId, "" + CommonUtils.getSharedPref(Constants.STUDENT_ID, HomeActivity.this));
-        CallWebService.getWebserviceObject(HomeActivity.this, Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<FirebaseTokenModel>() {
+        hashMap.put(IJson.userId, "" + CommonUtils.getSharedPref(Constants.STUDENT_ID, HomeActivity.this));
+        CallWebService.getWebserviceObject(HomeActivity.this, Request.Method.POST, IUrls.URL_FIREBASE_REG, hashMap, new VolleyResponseListener<FirebaseTokenModel>() {
             @Override
             public void onResponse(FirebaseTokenModel[] object) {
-                CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
+
             }
 
             @Override
             public void onResponse(FirebaseTokenModel studentData) {
-
+                CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
             }
 
             @Override

@@ -12,6 +12,7 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.model.ImageModel;
 import com.exa.mydemoapp.model.ImageRequest;
 
 import java.io.Serializable;
@@ -51,7 +52,14 @@ public class GalleryViewFragment extends CommonFragment {
     }
 
     private void ShowList(final List<ImageRequest> imageRequestList) {
-        mAdapter = new GalleryAdapter(getMyActivity(), imageRequestList, 0,null);
+        List<ImageRequest> newImagereqList = new ArrayList<>();
+        for (ImageRequest imageRequest : imageRequestList) {
+            for (ImageModel imageModel : imageRequest.getImages()) {
+                imageRequest.setImg(imageModel.getImgUrl());
+                newImagereqList.add(imageRequest);
+            }
+        }
+        mAdapter = new GalleryAdapter(getMyActivity(), newImagereqList, 0, null);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getMyActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -63,7 +71,7 @@ public class GalleryViewFragment extends CommonFragment {
             @Override
             public void onClick(View view, int position) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("images", (Serializable) imageRequestList);
+                bundle.putSerializable("images", (Serializable) newImagereqList);
                 bundle.putInt("position", position);
                 bundle.putString("frag", "gallery");
                 bundle.putBoolean("Guest", getMyActivity().isGuest);

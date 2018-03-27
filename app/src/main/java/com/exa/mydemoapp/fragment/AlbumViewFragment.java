@@ -18,6 +18,7 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.model.ImageModel;
 import com.exa.mydemoapp.model.ImageRequest;
 import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.webservice.CallWebService;
@@ -115,7 +116,15 @@ public class AlbumViewFragment extends CommonFragment {
 
 
     private void ShowList(final List<ImageRequest> imageRequestList) {
-        mAdapter = new GalleryAdapter(getMyActivity(), imageRequestList, imageRequestList.size(), null);
+        List<ImageRequest> newImagereqList = new ArrayList<>();
+        for (ImageRequest imageRequest : imageRequestList) {
+            for (ImageModel imageModel : imageRequest.getImages()) {
+                imageRequest.setImg(imageModel.getImgUrl());
+                newImagereqList.add(imageRequest);
+                break;
+            }
+        }
+        mAdapter = new GalleryAdapter(getMyActivity(), newImagereqList, imageRequestList.size(), null);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getMyActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -129,11 +138,7 @@ public class AlbumViewFragment extends CommonFragment {
 
                 ImageRequest imageRequest = imageRequestList.get(position);
                 List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
-                for (ImageRequest img : images) {
-                    if (imageRequest.getPlaceName().equals(img.getPlaceName())) {
-                        listAlbumChild.add(img);
-                    }
-                }
+                listAlbumChild.add(images.get(position));
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("mylist", (Serializable) listAlbumChild);

@@ -86,8 +86,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
             holder.txtImageFooter.setVisibility(View.VISIBLE);
             holder.txtImageFooter.setText(image.getPlaceName());
         }
-        if (image.getImages().size()>0&&image.getImages().get(0).getImgUrl()!=null) {
-            Glide.with(mContext).load(image.getImages().get(0).getImgUrl())
+        if (image.getImg() != null) {
+            Glide.with(mContext).load(image.getImg())
                     .thumbnail(0.5f)
                     .crossFade()
                     .override(100, 100)

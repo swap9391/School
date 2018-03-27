@@ -660,7 +660,9 @@ public class SignUpFragment extends CommonFragment {
             hashMap.put(IJson.dateInsvestment2, studentModel.getDateInsvestment2());
             hashMap.put(IJson.dateInsvestment3, studentModel.getDateInsvestment3());
         }
-
+        if (studentModel.getId() != null && studentModel.getId().intValue() > 0) {
+            hashMap.put(IJson.id, studentModel.getId().toString());
+        }
         CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.SIGN_UP, hashMap, new VolleyResponseListener<StudentModel>() {
             @Override
             public void onResponse(StudentModel[] object) {
@@ -673,13 +675,16 @@ public class SignUpFragment extends CommonFragment {
 
             @Override
             public void onResponse(StudentModel object) {
-                if (!isEdit) {
+                /*if (!isEdit) {
                     Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
                     // getMyActivity().showFragment(getMyActivity().profileFragment, null);
                 } else {
                     Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
                     getMyActivity().showFragment(new UsersListFragment(), null);
-                }
+                }*/
+                getMyActivity().flagCallUserList=true;
+                getMyActivity().performBackForDesign();
+
             }
 
             @Override
@@ -692,7 +697,7 @@ public class SignUpFragment extends CommonFragment {
     }
 
 
-    public AdminActivity getMyActivity() {
-        return (AdminActivity) getActivity();
+    public HomeActivity getMyActivity() {
+        return (HomeActivity) getActivity();
     }
 }

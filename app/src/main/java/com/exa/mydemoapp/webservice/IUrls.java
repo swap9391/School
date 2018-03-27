@@ -19,4 +19,5 @@ public interface IUrls {
     String URL_GET_EVENTS = BASE_URL + "getevents";
     String URL_ADD_ATTENDANCE = BASE_URL + "markattendance";
     String URL_GET_ATTENDANCE = BASE_URL + "getattendance";
+    String URL_FIREBASE_REG = BASE_URL + "inserttoken";
 }
