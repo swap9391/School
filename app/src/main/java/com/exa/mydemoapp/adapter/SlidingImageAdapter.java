@@ -25,6 +25,7 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
+import com.exa.mydemoapp.model.ImageModel;
 import com.exa.mydemoapp.model.ImageRequest;
 
 import java.io.Serializable;
@@ -35,14 +36,14 @@ import java.util.List;
 public class SlidingImageAdapter extends PagerAdapter {
 
 
-    private List<ImageRequest> listImages;
+    private List<ImageModel> listImages;
     private LayoutInflater inflater;
     private HomeActivity context;
     private ProgressBar progressBar;
     private ImageButton imgDelete;
     private String feed;
 
-    public SlidingImageAdapter(HomeActivity context, List<ImageRequest> listImages, String feed) {
+    public SlidingImageAdapter(HomeActivity context, List<ImageModel> listImages, String feed) {
         this.context = context;
         this.listImages = listImages;
         inflater = LayoutInflater.from(context);
@@ -75,7 +76,7 @@ public class SlidingImageAdapter extends PagerAdapter {
             imgDelete.setVisibility(View.GONE);
         }
         imageView.setTag(R.id.image, position);
-        String path = listImages.get(position).getImg();
+        String path = listImages.get(position).getImgUrl();
         if (position > 0) {
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -104,9 +105,10 @@ public class SlidingImageAdapter extends PagerAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageRequest imageRequest = listImages.get(position);
+
+                ImageRequest imageRequest = new ImageRequest();
                 List<ImageRequest> imageRequestList = new ArrayList<>();
-                imageRequest.setImg(imageRequest.getImg());
+                imageRequest.setImg(listImages.get(position).getImgUrl());
                 imageRequestList.add(imageRequest);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("images", (Serializable) imageRequestList);
@@ -121,26 +123,8 @@ public class SlidingImageAdapter extends PagerAdapter {
         imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ImageRequest imageRequest = listImages.get(position);
-                imageRequest.setVisiblity("FALSE");
-                context.databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
-                CommonUtils.showToast(context, "Photo deleted successfully!");
-                Bundle bundle = new Bundle();
-                bundle.putString("FEED", feed);
-                context.showFragment(context.newsFeedFragment, bundle);
-                /* Query query = context.databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey());
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                            CommonUtils.showToast(context, "Photo deleted successfully!");
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });*/
+
             }
         });
 

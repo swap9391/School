@@ -13,15 +13,10 @@
 
     <string-array name="class_type">
         <item>All</item>
-        <item>1st</item>
-        <item>2nd</item>
-        <item>4th</item>
-        <item>5th</item>
-        <item>6th</item>
-        <item>7th</item>
-        <item>8th</item>
-        <item>9th</item>
-        <item>10th</item>
+        <item>Playgroup</item>
+        <item>Nursery</item>
+        <item>Jr.KG</item>
+        <item>Sr.KG</item>
     </string-array>
 
     <string-array name="image_type">
@@ -34,17 +29,12 @@
     </string-array>
 
     <string-array name="school_name">
-        <item>New English school</item>
-        <item>Ideal School</item>
-        <item>Indira School</item>
         <item>Kalptaru School</item>
     </string-array>
 
     <string-array name="division_name">
         <item>A Division</item>
         <item>B Division</item>
-        <item>C Division</item>
-        <item>D Division</item>
     </string-array>
 
     <string-array name="fees_type">
@@ -66,34 +56,36 @@
         <item>@string/dashboard_facilities</item>
         <item>@string/dashboard_calender</item>
         <item>@string/dashboard_image_gallery</item>
-        <item>@string/dashboard_archiv</item>
+        <!-- <item>@string/dashboard_archiv</item>-->
         <item>@string/dashboard_blog</item>
         <item>@string/dashboard_news</item>
         <item>@string/dashboard_community</item>
         <item>@string/dashboard_staff</item>
+        <item>@string/dashboard_manage_user</item>
         <item>@string/dashboard_upload</item>
         <item>@string/dashboard_attendance</item>
-        <item>@string/dashboard_add_homework</item>
-        <item>@string/dashboard_homework_list</item>
+        <!-- <item>@string/dashboard_add_homework</item>
+         <item>@string/dashboard_homework_list</item>-->
         <item>@string/dashboard_annual</item>
         <item>@string/dashboard_reward</item>
         <item>@string/dashboard_bus_loc</item>
     </string-array>
 
     <integer-array name="imagesForAdmin">
-        <item>@drawable/ic_about_school</item>
+        <item>@mipmap/ic_launcher</item>
         <item>@drawable/ic_facility</item>
         <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_gallery</item>
-        <item>@drawable/ic_archivement</item>
+        <!-- <item>@drawable/ic_archivement</item>-->
         <item>@drawable/ic_blog</item>
         <item>@drawable/ic_news_feed</item>
         <item>@drawable/ic_community</item>
         <item>@drawable/ic_teacher</item>
+        <item>@drawable/ic_manage_users</item>
         <item>@drawable/ic_paren_student</item>
         <item>@drawable/ic_annual_calender</item>
-        <item>@drawable/ic_annual_calender</item>
-        <item>@drawable/ic_annual_calender</item>
+        <!--  <item>@drawable/ic_annual_calender</item>
+          <item>@drawable/ic_annual_calender</item>-->
         <item>@drawable/ic_paren_student</item>
         <item>@drawable/ic_rewards</item>
         <item>@drawable/icon_bus_location</item>
@@ -102,11 +94,11 @@
 
     <string-array name="nameForSudent">
         <item>@string/dashboard_about_school</item>
-        <item>@string/dashboard_homework_list</item>
+        <!-- <item>@string/dashboard_homework_list</item>-->
         <item>@string/dashboard_facilities</item>
         <item>@string/dashboard_calender</item>
         <item>@string/dashboard_image_gallery</item>
-        <item>@string/dashboard_archiv</item>
+        <!--<item>@string/dashboard_archiv</item>-->
         <item>@string/dashboard_blog</item>
         <item>@string/dashboard_news</item>
         <item>@string/dashboard_community</item>
@@ -115,12 +107,12 @@
     </string-array>
 
     <integer-array name="imagesForStudent">
-        <item>@drawable/ic_about_school</item>
-        <item>@drawable/ic_annual_calender</item>
+        <item>@mipmap/ic_launcher</item>
+        <!-- <item>@drawable/ic_annual_calender</item>-->
         <item>@drawable/ic_facility</item>
         <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_gallery</item>
-        <item>@drawable/ic_archivement</item>
+      <!--  <item>@drawable/ic_archivement</item>-->
         <item>@drawable/ic_blog</item>
         <item>@drawable/ic_news_feed</item>
         <item>@drawable/ic_community</item>
@@ -134,7 +126,7 @@
         <item>@string/dashboard_facilities</item>
         <item>@string/dashboard_calender</item>
         <item>@string/dashboard_image_gallery</item>
-        <item>@string/dashboard_archiv</item>
+      <!--  <item>@string/dashboard_archiv</item>-->
         <item>@string/dashboard_blog</item>
     </string-array>
 
@@ -144,8 +136,29 @@
         <item>@drawable/ic_facility</item>
         <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_gallery</item>
-        <item>@drawable/ic_archivement</item>
+        <!--<item>@drawable/ic_archivement</item>-->
         <item>@drawable/ic_blog</item>
+    </integer-array>
+
+    <string-array name="nameForDriver">
+        <item>@string/dashboard_about_school</item>
+        <item>@string/dashboard_facilities</item>
+        <item>@string/dashboard_calender</item>
+        <item>@string/dashboard_image_gallery</item>
+        <!--  <item>@string/dashboard_archiv</item>-->
+        <item>@string/dashboard_blog</item>
+        <item>@string/dashboard_bus_loc</item>
+    </string-array>
+
+
+    <integer-array name="imagesForDriver">
+        <item>@drawable/ic_about_school</item>
+        <item>@drawable/ic_facility</item>
+        <item>@drawable/ic_annual_calender</item>
+        <item>@drawable/ic_gallery</item>
+        <!--<item>@drawable/ic_archivement</item>-->
+        <item>@drawable/ic_blog</item>
+        <item>@drawable/icon_bus_location</item>
     </integer-array>
 
 
@@ -176,6 +189,7 @@
     <string name="dashboard_attendance">Student Attendance</string>
     <string name="dashboard_add_homework">Add Home Work</string>
     <string name="dashboard_homework_list">Home Work</string>
+    <string name="dashboard_manage_user">Manage Users</string>
     <string name="dashboard_annual">Annual Event</string>
     <string name="dashboard_bus_loc">Bus Location</string>
     <string name="dashboard_reward">Add Reward Points</string>

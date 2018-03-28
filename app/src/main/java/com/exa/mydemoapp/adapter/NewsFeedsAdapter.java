@@ -37,7 +37,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
     private List<ImageRequest> coverImages;
     private int lastCheckedPosition = -1;
     private HomeActivity context;
-    PagerContainer mContainer;
+
     SlidingImageAdapter slidingImageAdapter;
     ImageButton imgEdit;
     String feed;
@@ -59,6 +59,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
         private ImageButton imgEdit;
         private ImageButton imgDelete;
         private int currentPage;
+        PagerContainer mContainer;
         //slider
         private ViewPager mPager;
         CirclePageIndicator indicator;
@@ -119,13 +120,19 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
         holder.txtTimeStamp.setText(CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT));
         ImageRequest imageRequest = coverImages.get(position);
         final List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
-        for (ImageRequest img : allImages) {
-            if (imageRequest.getPlaceName().equals(img.getPlaceName())) {
-                listAlbumChild.add(img);
+            for (ImageRequest img : allImages) {
+                if (imageRequest.getPlaceName().equals(img.getPlaceName())) {
+                    listAlbumChild.add(img);
+                }
             }
+
+        if (selectedItem.getImages() != null && selectedItem.getImages().size() > 0) {
+
+        }else {
+            holder.mContainer.setVisibility(View.GONE);
         }
 
-        slidingImageAdapter = new SlidingImageAdapter(context, listAlbumChild, feed);
+        slidingImageAdapter = new SlidingImageAdapter(context, listAlbumChild.get(0).getImages(), feed);
         holder.mPager.setAdapter(slidingImageAdapter);
 
         holder.indicator.setViewPager(holder.mPager);

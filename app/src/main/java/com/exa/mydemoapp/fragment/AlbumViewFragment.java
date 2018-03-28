@@ -74,7 +74,7 @@ public class AlbumViewFragment extends CommonFragment {
 
     private void getImageData() {
         String userId = getMyActivity().databaseReference.push().getKey();
-        String studentId = getMyActivity().getStudentInfoSingleton().getStudentModel().getUniqKey();
+        String studentId =null;
         DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
         Query query = ref2.orderByChild("imageType").equalTo("Gallery");
@@ -136,9 +136,10 @@ public class AlbumViewFragment extends CommonFragment {
             @Override
             public void onClick(View view, int position) {
 
-                ImageRequest imageRequest = imageRequestList.get(position);
+                ImageRequest imageRequest = newImagereqList.get(position);
                 List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
-                listAlbumChild.add(images.get(position));
+
+                listAlbumChild.add(imageRequest);
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("mylist", (Serializable) listAlbumChild);

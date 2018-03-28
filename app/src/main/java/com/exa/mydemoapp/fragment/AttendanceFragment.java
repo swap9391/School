@@ -1,6 +1,7 @@
 package com.exa.mydemoapp.fragment;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -36,6 +38,7 @@ import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +58,8 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     private Button btnIn;
     @ViewById(R.id.btn_out)
     private Button btnOut;
+    @ViewById(R.id.date_picker_event)
+    private Button datePicker;
 
     private List<StudentModel> listStudent;
     private List<StudentAttendanceModel> selectedStudents;
@@ -125,7 +130,12 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 }
             }
         });
-
+        datePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePicker();
+            }
+        });
         return view;
     }
 
@@ -302,6 +312,43 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
 
     }
 
+    private void showDatePicker() {
+        DatePickerFragment date = new DatePickerFragment();
+        /**
+         * Set Up Current Date Into dialog
+         */
+        Calendar calender = Calendar.getInstance();
+        Bundle args = new Bundle();
+        args.putInt("year", calender.get(Calendar.YEAR));
+        args.putInt("month", calender.get(Calendar.MONTH));
+        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        date.setArguments(args);
+        /**
+         * Set Call back to capture selected date
+         */
+        date.setCallBack(ondate);
+        date.show(getFragmentManager(), "Date Picker");
+    }
+
+    DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            monthOfYear += 1;
+            String month = "" + monthOfYear;
+            String day = "" + dayOfMonth;
+            if (monthOfYear < 10) {
+                month = "0" + monthOfYear;
+            }
+            if (dayOfMonth < 10) {
+                day = "0" + dayOfMonth;
+            }
+            Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
+            String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.ONLY_DATE_FORMAT);
+            attendaceModel.setDateStamp(formatedDate);
+            datePicker.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
+        }
+    };
 
     private HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();

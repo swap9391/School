@@ -29,7 +29,7 @@ public class ImageRequest implements Serializable {
     private String studentId;
     @SerializedName("imageList")
     private List<ImageModel> images = new ArrayList<>();
-    private ImageModel imageModel ;
+    private ImageModel imageModel;
 
     public ImageModel getImageModel() {
         return imageModel;

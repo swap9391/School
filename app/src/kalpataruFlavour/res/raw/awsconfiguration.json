@@ -4,8 +4,8 @@
   "CredentialsProvider": {
     "CognitoIdentity": {
       "Default": {
-        "PoolId": "us-east-1:039cef65-6a14-454d-9035-60b325ac1039",
-        "Region": "us-east-1"
+        "PoolId": "ap-south-1:613a3864-b428-4933-a03b-79bfd8c9fa04",
+        "Region": "ap-south-1"
       }
     }
   },
@@ -14,7 +14,7 @@
   },
   "PinpointAnalytics": {
     "Default": {
-      "AppId": "fb015ea6a84c43d18211d388b587c7aa",
+      "AppId": "92f241e6b36b46c9ac823d4efa250ba1",
       "Region": "us-east-1"
     }
   },
@@ -23,10 +23,10 @@
       "Region": "us-east-1"
     }
   },
- "S3TransferUtility": {
+"S3TransferUtility": {
         "Default": {
-            "Bucket": "kalpataru-deployments-mobilehub-1026292921",
-            "Region": "us-east-1"
+            "Bucket": "kk2018photos",
+            "Region": "ap-south-1"
         }
     }
 }

@@ -283,6 +283,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
         progressDialog.setTitle("Uploading... ");
         progressDialog.show();
+        progressDialog.setCancelable(false);
         S3UploadActivity.uploadData(getMyActivity(), new S3FileTransferDelegate() {
             @Override
             public void onS3FileTransferStateChanged(int id, TransferState state, String url) {
@@ -304,7 +305,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
             @Override
             public void onS3FileTransferProgressChanged(int id, String fileName, int percentage) {
-                progressDialog.setTitle("Uploading.. " + percentage + "%    " + imageFiles.size() + "/" + totalImages);
+                progressDialog.setTitle("Uploading.. " + percentage + "%    " + totalImages + "/" + imageFiles.size());
             }
 
             @Override
@@ -771,7 +772,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         hashMap.put(IJson.imageType, "" + imageRequest.getImageType());
         hashMap.put(IJson.dateStamp, "" + imageRequest.getDateStamp());
         hashMap.put(IJson.classId, "" + imageRequest.getClassName());
-        hashMap.put(IJson.studentId,  "0");
+        hashMap.put(IJson.studentId, "0");
         hashMap.put(IJson.images, imageRequest.getImages());
 
         CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<ImageRequest>() {
@@ -782,7 +783,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
             @Override
             public void onResponse(ImageRequest studentData) {
-             getMyActivity().showFragment(new DashboardFragment(),null);
+                getMyActivity().showFragment(new DashboardFragment(), null);
             }
 
             @Override

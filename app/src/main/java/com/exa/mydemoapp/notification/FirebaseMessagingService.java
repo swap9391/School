@@ -14,6 +14,10 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONObject;
+
+import java.util.Map;
+
 
 /**
  * Created by filipp on 5/23/2016.
@@ -25,8 +29,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         //  String msgType=remoteMessage.getData().get("type");
-        String msg = remoteMessage.getData().get("message");
-        String title = remoteMessage.getData().get("title");
+        Map<String, String> params = remoteMessage.getData();
+        JSONObject object = new JSONObject(params);
+        String msg = remoteMessage.getData().get("gcm.notification.message");
+        String title = remoteMessage.getData().get("gcm.notification.title");
+        ;
         /*if(msgType.equals(IConstants.MSG_TYPE_ALL)){
             showNotification(msg,title);
         }
@@ -54,7 +61,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 .setSmallIcon(R.mipmap.ic_launcher) // notification icon
                 .setContentTitle(Title) // notification title
                 .setContentText(message)
-                .setVibrate(new long[]{2000, 2000, 2000, 2000, 2000})
+                .setVibrate(new long[]{500, 500, 500, 500, 500})
                 .setLights(Color.CYAN, 3000,
                         3000)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)

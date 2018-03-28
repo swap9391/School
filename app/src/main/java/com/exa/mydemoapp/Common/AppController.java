@@ -43,7 +43,7 @@ public class AppController extends Application {
         if (!FirebaseApp.getApps(this).isEmpty()) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         }
-        AWSMobileClient.getInstance().initialize(this).execute();
+
         mInstance = this;
         mMainContext = getApplicationContext();
         mMainHandler = new Handler(getMainLooper());

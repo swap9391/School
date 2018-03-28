@@ -51,14 +51,19 @@ public class GalleryViewFragment extends CommonFragment {
         return view;
     }
 
-    private void ShowList(final List<ImageRequest> imageRequestList) {
+    private void ShowList(List<ImageRequest> imageRequestList) {
         List<ImageRequest> newImagereqList = new ArrayList<>();
         for (ImageRequest imageRequest : imageRequestList) {
-            for (ImageModel imageModel : imageRequest.getImages()) {
-                imageRequest.setImg(imageModel.getImgUrl());
-                newImagereqList.add(imageRequest);
+            for (int i = 0; i < imageRequest.getImages().size(); i++) {
+                ImageRequest iRequest = new ImageRequest();
+                iRequest.setPlaceName(imageRequest.getPlaceName());
+                iRequest.setImages(imageRequest.getImages());
+                iRequest.setImg(imageRequest.getImages().get(i).getImgUrl());
+                newImagereqList.add(i, iRequest);
             }
         }
+
+
         mAdapter = new GalleryAdapter(getMyActivity(), newImagereqList, 0, null);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getMyActivity(), 2);

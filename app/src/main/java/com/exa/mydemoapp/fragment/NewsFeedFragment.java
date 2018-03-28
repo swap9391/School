@@ -83,7 +83,7 @@ public class NewsFeedFragment extends CommonFragment {
         String studentId = "0";
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(IJson.studentId, studentId);
-        hashMap.put(IJson.imageType, getStringById(R.string.img_type_news));
+        hashMap.put(IJson.imageType, feed);
         // hashMap.put(IJson.password, "" + studentId);
 
         CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_LIST, hashMap, new VolleyResponseListener<ImageRequest>() {

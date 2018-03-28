@@ -39,6 +39,7 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.CommunityModel;
 import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.StudentModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -72,6 +73,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
     int PICK_IMAGE = 102;
     int count = 0;
     String studentName;
+    StudentModel studentModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,8 +101,12 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        StudentInfoSingleton studentInfoSingleton = StudentInfoSingleton.getInstance(getMyActivity());
-        studentName = studentInfoSingleton.getStudentModel().getStudentName();
+        studentModel = new StudentModel();
+        int studentId = CommonUtils.asInt(CommonUtils.getSharedPref(Constants.STUDENT_ID, getMyActivity()), 0);
+        if (studentId > 0) {
+            studentModel = getMyActivity().getDbInvoker().getStudentById(studentId);
+        }
+        studentName = studentModel.getStudentName();
         telephonyManager = (TelephonyManager) getMyActivity().getSystemService(Context.TELEPHONY_SERVICE);
         showList();
         return view;

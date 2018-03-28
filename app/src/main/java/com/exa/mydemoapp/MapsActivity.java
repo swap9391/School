@@ -26,9 +26,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonActivity;
+import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.model.LocationModel;
+import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.tracker.TrackerActivity;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -104,7 +107,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         toolbar.setTitle("Bus Location");
         setSupportActionBar(toolbar);
 
-        destination = "Alandi,Pune";
+        destination = "Jai ganesh samrajya chauk,bhosari,Pune";
         destination = destination.replace(" ", "+");
         Log.d(TAG, destination);
         mapFragment.getMapAsync(MapsActivity.this);
@@ -153,7 +156,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         mMap.setBuildingsEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         // Add a marker in Home and move the camera
-        sydney = new LatLng(18.572897, 73.880653);
+        sydney = new LatLng(18.675890, 73.880187);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Home"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
@@ -455,10 +458,17 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_map, menu);
-        if (!AppController.isAdmin(MapsActivity.this)) {
+        StudentModel studentModel = new StudentModel();
+        DbInvoker dbInvoker = new DbInvoker(MapsActivity.this);
+        int studentId = CommonUtils.asInt(CommonUtils.getSharedPref(Constants.STUDENT_ID, this), 0);
+        if (studentId > 0) {
+            studentModel = dbInvoker.getStudentById(studentId);
+        }
+        if (studentModel.getUserType().equals(getStringById(R.string.user_type_student))) {
             menu.findItem(R.id.menu_tracker).setVisible(false);
             menu.findItem(R.id.menu_map_demo).setVisible(false);
         }
+
         // return true so that the menu pop up is opened
         return true;
     }
@@ -481,8 +491,8 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     private void DemoMap() {
         String requestUrl = null;
         try {
-            final double latitude = 18.572605;
-            double longitude = 73.878208;
+            final double latitude = 18.675890;
+            double longitude = 73.880187;
             requestUrl = "https://maps.googleapis.com/maps/api/directions/json?" +
                     "mode=driving&"
                     + "transit_routing_preference=less_driving&"

@@ -67,7 +67,7 @@ public class LoginActivity extends CommonActivity {
         database = new Database(this);
         dbInvoker = new DbInvoker(this);
         if (CommonUtils.getSharedPref(Constants.USER_NAME, this) != null && !CommonUtils.getSharedPref(Constants.USER_NAME, this).isEmpty()) {
-            studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
+            //studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             finish();
@@ -224,8 +224,6 @@ public class LoginActivity extends CommonActivity {
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getId().toString());
 
-                studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
-                studentInfoSingleton.setStudentModel(studentData);
                 AppController.isAdmin(LoginActivity.this);
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(intent);

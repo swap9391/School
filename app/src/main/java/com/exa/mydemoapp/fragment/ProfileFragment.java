@@ -131,10 +131,10 @@ public class ProfileFragment extends CommonFragment {
     }
 
     private void setData() {
-        StudentModel studentModel = new StudentModel();
-        int studentId = CommonUtils.asInt(CommonUtils.getSharedPref(Constants.STUDENT_ID, getMyActivity()), 0);
-        if (studentId > 0) {
-            studentModel = getMyActivity().getDbInvoker().getStudentById(studentId);
+        StudentModel studentModel = getMyActivity().getStudentModel();
+
+        if (studentModel.getUserType().equals(getStringById(R.string.user_type_driver))) {
+
         }
         if (studentModel != null) {
             String name = studentModel.getStudentName();

@@ -24,6 +24,7 @@ import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
+import com.exa.mydemoapp.fragment.UsersListFragment;
 
 /**
  * Created by midt-006 on 13/11/17.
@@ -94,7 +95,7 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new AboutSchoolFragment(), null);
                         break;
                     case "School Facilities":
-                        context.setNewsFeedType("School Facilities");
+                        context.setNewsFeedType(context.getStringById(R.string.img_type_facilities));
                         bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
@@ -105,17 +106,17 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new AlbumViewFragment(), null);
                         break;
                     case "Achievements":
-                        context.setNewsFeedType("Achievement");
+                        context.setNewsFeedType(context.getStringById(R.string.img_type_archive));
                         bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Blog":
-                        context.setNewsFeedType("Blog");
+                        context.setNewsFeedType(context.getStringById(R.string.img_type_blog));
                         bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "News":
-                        context.setNewsFeedType("News Feed");
+                        context.setNewsFeedType(context.getStringById(R.string.img_type_news));
                         bundle.putString("FEED", context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
@@ -136,6 +137,9 @@ public class HomeGridAdapter extends BaseAdapter {
                         break;
                     case "Add Reward Points":
                         context.showFragment(new RewardsPointsFragment(), null);
+                        break;
+                    case "Manage Users":
+                        context.showFragment(new UsersListFragment(), null);
                         break;
                     case "Bus Location":
                         Intent intent1 = new Intent(context, MapsActivity.class);

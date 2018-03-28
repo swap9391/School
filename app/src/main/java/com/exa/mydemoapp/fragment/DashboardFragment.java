@@ -42,6 +42,10 @@ public class DashboardFragment extends CommonFragment {
     public String[] nameForGuest;
     public TypedArray imagesForGuest;
 
+    public String[] nameForDriver;
+    public TypedArray imagesForDriver;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -61,6 +65,10 @@ public class DashboardFragment extends CommonFragment {
         nameForStudent = getMyActivity().getResources().getStringArray(R.array.nameForSudent);
         imagesForStudent = getResources().obtainTypedArray(R.array.imagesForStudent);
 
+        nameForDriver = getMyActivity().getResources().getStringArray(R.array.nameForDriver);
+        imagesForDriver = getResources().obtainTypedArray(R.array.imagesForDriver);
+
+
         nameForGuest = getMyActivity().getResources().getStringArray(R.array.nameForGuest);
         imagesForGuest = getResources().obtainTypedArray(R.array.imagesForGuest);
 
@@ -69,10 +77,14 @@ public class DashboardFragment extends CommonFragment {
         if (getMyActivity().isGuest) {
             gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForGuest, imagesForGuest));
         } else {
-            if (AppController.isAdmin(getMyActivity())) {
+            if (getMyActivity().getStudentModel().getUserType().equals(getStringById(R.string.user_type_admin))) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForAdmin, imagesForAdmin));
-            } else {
+            } else if (getMyActivity().getStudentModel().getUserType().equals(getStringById(R.string.user_type_student))) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForStudent, imagesForStudent));
+            } else if (getMyActivity().getStudentModel().getUserType().equals(getStringById(R.string.user_type_driver))) {
+                gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForDriver, imagesForDriver));
+            } else {
+                gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForGuest, imagesForGuest));
             }
         }
         return view;

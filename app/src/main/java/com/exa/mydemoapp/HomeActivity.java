@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -95,10 +96,10 @@ public class HomeActivity extends CommonActivity {
     public boolean isGuest = false;
     private Fragment fromFragment;
     private String newsFeedType;
-    private StudentInfoSingleton studentInfoSingleton;
     Database db;
     DbInvoker dbInvoker;
     public boolean flagCallUserList = false;
+    StudentModel studentModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,12 @@ public class HomeActivity extends CommonActivity {
         Intent intent = getIntent();
         db = new Database(HomeActivity.this);
         dbInvoker = new DbInvoker(this);
+        AWSMobileClient.getInstance().initialize(this).execute();
+        int studentId = CommonUtils.asInt(CommonUtils.getSharedPref(Constants.STUDENT_ID, this), 0);
+        if (studentId > 0) {
+            studentModel = dbInvoker.getStudentById(studentId);
+        }
+
         if (intent != null && intent.getStringExtra(Constants.USER_TYPE) != null && intent.getStringExtra(Constants.USER_TYPE).equals(Constants.USER_TYPE_GUEST)) {
             isGuest = true;
         } else {
@@ -116,7 +123,6 @@ public class HomeActivity extends CommonActivity {
         } else {
             setContentView(R.layout.layout_home);
             //   startNotificationService();
-            studentInfoSingleton = StudentInfoSingleton.getInstance(this);
             FirebaseMessaging.getInstance().subscribeToTopic("test123");
             FirebaseInstanceId.getInstance().getToken();
             String token = FirebaseInstanceId.getInstance().getToken();
@@ -124,6 +130,10 @@ public class HomeActivity extends CommonActivity {
             String fb_reg = CommonUtils.getSharedPref(Constants.FIREBASE_REGISTER, this);
             if (fb_reg == null || !fb_reg.equalsIgnoreCase("TRUE")) {
                 registerToken(token);
+            } else {
+                if (AppController.isAdmin(this)) {
+                    getUserList();
+                }
             }
         }
 
@@ -161,9 +171,7 @@ public class HomeActivity extends CommonActivity {
                 });
 
         showFragment(dashboardFragment, null);
-        if (AppController.isAdmin(this)) {
-            getUserList();
-        }
+
 
         // updateAlbumInfo();
         // updateStudentInfo();
@@ -222,11 +230,7 @@ public class HomeActivity extends CommonActivity {
                 bundle.putString("FEED", getNewsFeedType());
                 showFragment(newsFeedFragment, bundle);
             } else {
-                if (studentInfoSingleton.getStudentModel() != null) {
-                    showFragment(communityFragment, null);
-                } else {
-                    studentInfoSingleton.checkLogin();
-                }
+                showFragment(communityFragment, null);
             }
         } else if (communityFragment != null && communityFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
@@ -239,7 +243,7 @@ public class HomeActivity extends CommonActivity {
             showFragment(usersListFragment, null);
         } else if (usersListFragment != null && usersListFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
-            showFragment(profileFragment, null);
+            showFragment(dashboardFragment, null);
         } else if (rewardsPointsFragment != null && rewardsPointsFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
@@ -433,11 +437,6 @@ public class HomeActivity extends CommonActivity {
         return toolbar;
     }
 
-    public StudentInfoSingleton getStudentInfoSingleton() {
-        return studentInfoSingleton;
-    }
-
-
     private void registerToken(final String token) {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.token, token);
@@ -451,6 +450,9 @@ public class HomeActivity extends CommonActivity {
             @Override
             public void onResponse(FirebaseTokenModel studentData) {
                 CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
+                if (AppController.isAdmin(HomeActivity.this)) {
+                    getUserList();
+                }
             }
 
             @Override
@@ -488,6 +490,13 @@ public class HomeActivity extends CommonActivity {
         }, StudentModel[].class);
     }
 
+    public StudentModel getStudentModel() {
+        return studentModel;
+    }
+
+    public void setStudentModel(StudentModel studentModel) {
+        this.studentModel = studentModel;
+    }
 
     public DbInvoker getDbInvoker() {
         return dbInvoker;
