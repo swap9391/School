@@ -12,6 +12,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.exa.mydemoapp.Common.AppController;
+import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.HomeGridAdapter;
@@ -77,11 +79,12 @@ public class DashboardFragment extends CommonFragment {
         if (getMyActivity().isGuest) {
             gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForGuest, imagesForGuest));
         } else {
-            if (getMyActivity().getStudentModel().getUserType().equals(getStringById(R.string.user_type_admin))) {
+            String userType= CommonUtils.getSharedPref(Constants.USER_TYPE,getMyActivity());
+            if (userType.equals(getStringById(R.string.user_type_admin))) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForAdmin, imagesForAdmin));
-            } else if (getMyActivity().getStudentModel().getUserType().equals(getStringById(R.string.user_type_student))) {
+            } else if (userType.equals(getStringById(R.string.user_type_student))) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForStudent, imagesForStudent));
-            } else if (getMyActivity().getStudentModel().getUserType().equals(getStringById(R.string.user_type_driver))) {
+            } else if (userType.equals(getStringById(R.string.user_type_driver))) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForDriver, imagesForDriver));
             } else {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForGuest, imagesForGuest));

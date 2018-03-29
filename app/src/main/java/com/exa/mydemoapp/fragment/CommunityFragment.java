@@ -73,7 +73,6 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
     int PICK_IMAGE = 102;
     int count = 0;
     String studentName;
-    StudentModel studentModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +85,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
         view = inflater.inflate(R.layout.layout_community, container, false);
         getMyActivity().toolbar.setTitle("Parent Community");
         getMyActivity().init();
+        studentName=CommonUtils.getSharedPref(Constants.STUDENT_NAME,getMyActivity());
         communityModel = new CommunityModel();
         txtMsg = (EditText) view.findViewById(R.id.edit_msg);
         btnSend = (ImageButton) view.findViewById(R.id.btn_send);
@@ -101,12 +101,6 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        studentModel = new StudentModel();
-        int studentId = CommonUtils.asInt(CommonUtils.getSharedPref(Constants.STUDENT_ID, getMyActivity()), 0);
-        if (studentId > 0) {
-            studentModel = getMyActivity().getDbInvoker().getStudentById(studentId);
-        }
-        studentName = studentModel.getStudentName();
         telephonyManager = (TelephonyManager) getMyActivity().getSystemService(Context.TELEPHONY_SERVICE);
         showList();
         return view;

@@ -24,6 +24,7 @@ public interface Constants {
     public static String DATE_FORMAT = "dd-MM-yyyy hh:mm";
     public static String ONLY_DATE_FORMAT = "dd-MM-yyyy";
     public static String USER_NAME = "USER_NAME";
+    public static String STUDENT_NAME = "STUDENT_NAME";
     public static String STUDENT_ID = "STUDENT_ID";
     public static String LAST_VAN_TYPE = "LAST_VAN_TYPE";
     public static int UPDATE_INTERVAL = 3000; // 3 sec
