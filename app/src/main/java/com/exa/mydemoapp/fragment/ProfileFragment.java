@@ -3,6 +3,7 @@ package com.exa.mydemoapp.fragment;
 import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -57,8 +58,6 @@ public class ProfileFragment extends CommonFragment {
     TextView txtAddress;
     @ViewById(R.id.lay_logout)
     LinearLayout layLogout;
-    @ViewById(R.id.lay_manage_user)
-    LinearLayout layManageUser;
     @ViewById(R.id.circularImageView1)
     CircleImageView circleImageView;
     @ViewById(R.id.txt_class_name)
@@ -80,6 +79,8 @@ public class ProfileFragment extends CommonFragment {
     View viewReward;
     @ViewById(R.id.lay_reward)
     LinearLayout layReward;
+    @ViewById(R.id.layCard)
+    CardView cardView;
     List<RewardModel> rewardModelList;
     ProgressDialog progressDialog;
 
@@ -97,10 +98,7 @@ public class ProfileFragment extends CommonFragment {
         getMyActivity().toolbar.setTitle("My Profile");
         setData();
         rewardModelList = new ArrayList<>();
-        if (!AppController.isAdmin(getMyActivity())) {
-            layManageUser.setVisibility(View.GONE);
-        }
-        layManageUser.setOnClickListener(new onManageUserClick());
+
         layLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,9 +130,12 @@ public class ProfileFragment extends CommonFragment {
 
     private void setData() {
         StudentModel studentModel = getMyActivity().getStudentModel();
-
-        if (studentModel.getUserType().equals(getStringById(R.string.user_type_driver))) {
-
+        String userType = CommonUtils.getSharedPref(Constants.USER_TYPE, getMyActivity());
+        if (userType.equals(getStringById(R.string.user_type_driver))) {
+            cardView.setVisibility(View.GONE);
+        }
+        if (userType.equals(getStringById(R.string.user_type_admin))) {
+            cardView.setVisibility(View.GONE);
         }
         if (studentModel != null) {
             String name = studentModel.getStudentName();
@@ -176,13 +177,6 @@ public class ProfileFragment extends CommonFragment {
                 txtPaidFees.setText(paid > 0 ? paidFees : "");
                 txtTotalDues.setText(dues > 0 ? duesPayable : "");
             }
-        }
-    }
-
-    private class onManageUserClick implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            getMyActivity().showFragment(getMyActivity().usersListFragment, null);
         }
     }
 

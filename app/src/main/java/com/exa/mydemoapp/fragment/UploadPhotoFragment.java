@@ -12,6 +12,7 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -416,37 +417,14 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
         if (requestCode == PICK_IMAGE && resultCode == getMyActivity().RESULT_OK
                 && null != data) {
+            System.out.println("++data" + data.getClipData().getItemCount());// Get count of image here.
+            System.out.println("++count" + data.getClipData().getItemCount());
+            List<Uri> listOfUri = new ArrayList<>();
 
-            try {
-
-             /*   Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-                Cursor cursor = getContentResolver().query(selectedImage,
-                        filePathColumn, null, null, null);
-                cursor.moveToFirst();
-
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String picturePath = cursor.getString(columnIndex);
-                cursor.close();
-
-                Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
-
-                setImage(bitmap);*/
-
-
-                System.out.println("++data" + data.getClipData().getItemCount());// Get count of image here.
-                System.out.println("++count" + data.getClipData().getItemCount());
-                List<Uri> listOfUri = new ArrayList<>();
-                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                    listOfUri.add(data.getClipData().getItemAt(i).getUri());
-                }
-                setImage(listOfUri);
-
-
-            } catch (Exception e) {
-                getMyActivity().showToast(e.getMessage());
+            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                listOfUri.add(data.getClipData().getItemAt(i).getUri());
             }
+            setImage(listOfUri);
 
         } else {
 
@@ -494,11 +472,11 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             try {
                 Bitmap bitmap = null;
                 bitmap = MediaStore.Images.Media.getBitmap(getMyActivity().getContentResolver(), selectedImage);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+               // ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 // Bitmap bt=Bitmap.createScaledBitmap(bitmap, 720, 1100, false);
-                Bitmap bt = getMyActivity().BITMAP_RESIZER(bitmap, 300, 350);
+              //  Bitmap bt = getMyActivity().BITMAP_RESIZER(bitmap, 300, 350);
                 //  bt.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] vehicleImage = stream.toByteArray();
+               // byte[] vehicleImage = stream.toByteArray();
                 fileView = getMyActivity().getImageUri(getMyActivity(), bitmap);
 
 
@@ -508,7 +486,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 OutputStream os;
                 try {
                     os = new FileOutputStream(imageFile);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, os);
                     os.flush();
                     os.close();
                 } catch (Exception e) {

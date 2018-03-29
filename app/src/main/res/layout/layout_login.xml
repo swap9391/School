@@ -34,7 +34,7 @@
             <android.support.v7.widget.CardView
                 android:id="@+id/layCard"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
+                android:layout_height="296dp"
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
                 android:layout_marginTop="15dp"
@@ -45,9 +45,8 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:gravity="center_horizontal"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|center_vertical"
                     android:orientation="vertical">
 
                     <android.support.design.widget.TextInputLayout
@@ -63,7 +62,8 @@
                             android:hint="Enter User Name"
                             android:imeOptions="actionNext"
                             android:maxLength="25"
-                            android:maxLines="1" />
+                            android:maxLines="1"
+                            android:singleLine="true" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -80,7 +80,8 @@
                             android:imeOptions="actionDone"
                             android:inputType="textPassword"
                             android:maxLength="25"
-                            android:maxLines="1" />
+                            android:maxLines="1"
+                            android:singleLine="true" />
                     </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>
@@ -92,11 +93,11 @@
     </RelativeLayout>
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:gravity="center_horizontal|center_vertical"
         android:orientation="horizontal"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/kalpataru_logo"
         app:layout_anchor="@+id/layCard"
         app:layout_anchorGravity="top|center|center_horizontal"></ImageView>
 

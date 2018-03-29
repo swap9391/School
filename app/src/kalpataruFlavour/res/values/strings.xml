@@ -69,6 +69,7 @@
         <item>@string/dashboard_annual</item>
         <item>@string/dashboard_reward</item>
         <item>@string/dashboard_bus_loc</item>
+        <item>@string/dashboard_contact_us</item>
     </string-array>
 
     <integer-array name="imagesForAdmin">
@@ -89,6 +90,7 @@
         <item>@drawable/ic_paren_student</item>
         <item>@drawable/ic_rewards</item>
         <item>@drawable/icon_bus_location</item>
+        <item>@drawable/ic_contact_us</item>
     </integer-array>
 
 
@@ -104,20 +106,21 @@
         <item>@string/dashboard_community</item>
         <item>@string/dashboard_staff</item>
         <item>@string/dashboard_bus_loc</item>
+        <item>@string/dashboard_contact_us</item>
     </string-array>
 
     <integer-array name="imagesForStudent">
         <item>@mipmap/ic_launcher</item>
-        <!-- <item>@drawable/ic_annual_calender</item>-->
         <item>@drawable/ic_facility</item>
         <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_gallery</item>
-      <!--  <item>@drawable/ic_archivement</item>-->
+        <!--  <item>@drawable/ic_archivement</item>-->
         <item>@drawable/ic_blog</item>
         <item>@drawable/ic_news_feed</item>
         <item>@drawable/ic_community</item>
         <item>@drawable/ic_teacher</item>
         <item>@drawable/icon_bus_location</item>
+        <item>@drawable/ic_contact_us</item>
     </integer-array>
 
 
@@ -126,18 +129,20 @@
         <item>@string/dashboard_facilities</item>
         <item>@string/dashboard_calender</item>
         <item>@string/dashboard_image_gallery</item>
-      <!--  <item>@string/dashboard_archiv</item>-->
+        <!--  <item>@string/dashboard_archiv</item>-->
         <item>@string/dashboard_blog</item>
+        <item>@string/dashboard_contact_us</item>
     </string-array>
 
 
     <integer-array name="imagesForGuest">
-        <item>@drawable/ic_about_school</item>
+        <item>@mipmap/ic_launcher</item>
         <item>@drawable/ic_facility</item>
         <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_gallery</item>
         <!--<item>@drawable/ic_archivement</item>-->
         <item>@drawable/ic_blog</item>
+        <item>@drawable/ic_contact_us</item>
     </integer-array>
 
     <string-array name="nameForDriver">
@@ -148,17 +153,19 @@
         <!--  <item>@string/dashboard_archiv</item>-->
         <item>@string/dashboard_blog</item>
         <item>@string/dashboard_bus_loc</item>
+        <item>@string/dashboard_contact_us</item>
     </string-array>
 
 
     <integer-array name="imagesForDriver">
-        <item>@drawable/ic_about_school</item>
+        <item>@mipmap/ic_launcher</item>
         <item>@drawable/ic_facility</item>
         <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_gallery</item>
         <!--<item>@drawable/ic_archivement</item>-->
         <item>@drawable/ic_blog</item>
         <item>@drawable/icon_bus_location</item>
+        <item>@drawable/ic_contact_us</item>
     </integer-array>
 
 
@@ -193,6 +200,7 @@
     <string name="dashboard_annual">Annual Event</string>
     <string name="dashboard_bus_loc">Bus Location</string>
     <string name="dashboard_reward">Add Reward Points</string>
+    <string name="dashboard_contact_us">Contact Us</string>
 
     <string name="reward_sports">Sports</string>
     <string name="reward_cultural">Cultural</string>
@@ -231,4 +239,6 @@
     <string name="user_type_teacher">TEACHER</string>
     <string name="user_type_student">STUDENT</string>
     <string name="user_type_driver">DRIVER</string>
+
+    <string name="contact_us_detail">Moshi- Alandi Road,Dudulgaon,Moshi-412 105\n www.kalpaatarukids.com | email- kalpatarukids@gmail.com \n Contact no: +91 9689868788/ +91 9823405434 </string>
 </resources>

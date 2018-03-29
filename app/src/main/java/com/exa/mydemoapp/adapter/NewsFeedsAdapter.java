@@ -72,7 +72,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
             rltLayoutDesign = (RelativeLayout) view.findViewById(R.id.rl_layout_design);
             imgEdit = (ImageButton) view.findViewById(R.id.img_edit);
             if (AppController.isAdmin(context)) {
-                imgEdit.setVisibility(View.VISIBLE);
+                imgEdit.setVisibility(View.GONE);
             } else {
                 imgEdit.setVisibility(View.GONE);
             }

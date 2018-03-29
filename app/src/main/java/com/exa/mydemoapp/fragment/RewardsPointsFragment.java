@@ -262,7 +262,7 @@ public class RewardsPointsFragment extends CommonFragment {
 
             @Override
             public void onResponse(RewardModel studentData) {
-
+              getMyActivity().showFragment(new DashboardFragment(),null);
             }
 
             @Override

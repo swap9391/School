@@ -136,6 +136,8 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 showDatePicker();
             }
         });
+        datePicker.setText(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "dd MMM yyyy"));
+        attendaceModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.ONLY_DATE_FORMAT));
         return view;
     }
 
@@ -154,7 +156,6 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     }
 
     private void bindModel() {
-        attendaceModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.ONLY_DATE_FORMAT));
         attendaceModel.setClassName(spinnerClass.getSelectedItem().toString());
         attendaceModel.setStudentList(getSelectedStudents());
     }
@@ -228,7 +229,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
 
                     @Override
                     public void onResponse(AttendaceModel studentData) {
-
+                        getMyActivity().showFragment(new DashboardFragment(), null);
                     }
 
                     @Override

@@ -42,6 +42,7 @@ import com.exa.mydemoapp.fragment.AnnualEventFragment;
 import com.exa.mydemoapp.fragment.AttendanceFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
 import com.exa.mydemoapp.fragment.CommunityFragment;
+import com.exa.mydemoapp.fragment.ContactUsFragment;
 import com.exa.mydemoapp.fragment.DashboardFragment;
 import com.exa.mydemoapp.fragment.GalleryViewFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
@@ -91,6 +92,7 @@ public class HomeActivity extends CommonActivity {
     public UsersListFragment usersListFragment;
     public RewardsPointsFragment rewardsPointsFragment;
     public RewardGraphFragment rewardGraphFragment;
+    public ContactUsFragment contactUsFragment;
     public List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
     public boolean isGallery = true;
     public boolean isGuest = false;
@@ -123,7 +125,8 @@ public class HomeActivity extends CommonActivity {
         } else {
             setContentView(R.layout.layout_home);
             //   startNotificationService();
-            FirebaseMessaging.getInstance().subscribeToTopic("test123");
+            String subscriberId = CommonUtils.getSharedPref(Constants.USER_NAME, this);
+            FirebaseMessaging.getInstance().subscribeToTopic(subscriberId);
             FirebaseInstanceId.getInstance().getToken();
             String token = FirebaseInstanceId.getInstance().getToken();
 //            CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
@@ -253,6 +256,9 @@ public class HomeActivity extends CommonActivity {
         } else if (rewardGraphFragment != null && rewardGraphFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(profileFragment, null);
+        } else if (contactUsFragment != null && contactUsFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
         } else {
             exitDialog();
         }
@@ -289,6 +295,7 @@ public class HomeActivity extends CommonActivity {
         rewardsPointsFragment = new RewardsPointsFragment();
         rewardGraphFragment = new RewardGraphFragment();
         attendanceFragment = new AttendanceFragment();
+        contactUsFragment = new ContactUsFragment();
     }
 
     public List<ImageRequest> getListAlbumChild() {

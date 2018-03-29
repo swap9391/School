@@ -256,7 +256,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
 
             @Override
             public void onResponse(RewardModel studentData) {
-
+                getMyActivity().showFragment(new DashboardFragment(),null);
             }
 
             @Override

@@ -102,7 +102,8 @@
                     android:hint="Enter Registration Id"
                     android:imeOptions="actionNext"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -117,7 +118,8 @@
                     android:hint="Enter Roll Number"
                     android:imeOptions="actionNext"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -132,7 +134,8 @@
                     android:hint="Enter Full Name"
                     android:imeOptions="actionNext"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -147,8 +150,10 @@
                     android:hint="Enter Contact "
                     android:imeOptions="actionDone"
                     android:inputType="number"
+                    android:maxLength="10"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
 
@@ -189,7 +194,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Enter Address"
                     android:maxLines="2"
-                    android:minLines="2" />
+                    android:minLines="2"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -205,7 +211,8 @@
                     android:imeOptions="actionNext"
                     android:maxLength="5"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -221,7 +228,8 @@
                     android:imeOptions="actionNext"
                     android:maxLength="25"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -238,7 +246,8 @@
                     android:inputType="textPassword"
                     android:maxLength="20"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
 
@@ -256,7 +265,8 @@
                     android:inputType="number"
                     android:maxLength="6"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
@@ -301,7 +311,8 @@
                     android:inputType="number"
                     android:maxLength="6"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
@@ -332,7 +343,8 @@
                     android:inputType="number"
                     android:maxLength="6"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
@@ -363,7 +375,8 @@
                     android:inputType="number"
                     android:maxLength="6"
                     android:maxLines="1"
-                    android:minLines="1" />
+                    android:minLines="1"
+                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
             <View
