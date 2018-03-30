@@ -3,6 +3,7 @@ package com.exa.mydemoapp.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class AboutSchoolFragment extends CommonFragment {
 
         txtSchoolTitle.setText("Kalpatru Kids");
         txtSchoolAddress.setText("Pune");
-        txtSchoolContent.setText(getMyActivity().getResources().getString(R.string.school_content));
+        txtSchoolContent.setText(Html.fromHtml(getMyActivity().getResources().getString(R.string.school_content)));
 
       /*  Glide.with(getMyActivity()).load(R.mipmap.ic_launcher)
                 .thumbnail(0.5f)

@@ -3,13 +3,16 @@ package com.exa.mydemoapp.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.MapsActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.annotation.ViewById;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,6 +29,9 @@ public class ContactUsFragment extends CommonFragment implements OnMapReadyCallb
     View view;
     SupportMapFragment mapFragment;
     private GoogleMap mMap;
+    @ViewById(R.id.txt_address)
+    TextView txtAddress;
+
 
     @Nullable
     @Override
@@ -38,6 +44,7 @@ public class ContactUsFragment extends CommonFragment implements OnMapReadyCallb
                 .findFragmentById(R.id.map);*/
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        txtAddress.setText(Html.fromHtml(getStringById(R.string.contact_us_detail)));
         return view;
     }
 
@@ -52,7 +59,7 @@ public class ContactUsFragment extends CommonFragment implements OnMapReadyCallb
         // Add a marker in Home and move the camera
         LatLng myLocation = new LatLng(18.675890, 73.880187);
         mMap.addMarker(new MarkerOptions().position(myLocation).title(getStringById(R.string.app_name)));
-      //  mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        //  mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 18));
        /* mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
                 .target(googleMap.getCameraPosition().target)

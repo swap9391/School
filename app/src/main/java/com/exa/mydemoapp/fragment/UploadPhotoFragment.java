@@ -256,7 +256,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         }
     }
 
-    private void saveUserInformation() {
+   /* private void saveUserInformation() {
         final String userId = getMyActivity().databaseReference.push().getKey();
         if (!isEdit) {
             bindModel();
@@ -271,14 +271,14 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
             }
             isEdit = false;
-            /*if (imglist.size() > 0) {
+            *//*if (imglist.size() > 0) {
                 uploadImage();
-            }*/
+            }*//*
             if (imageFiles.size() > 0) {
                 uploadImages();
             }
         }
-    }
+    }*/
 
     public void uploadImages() {
         final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
@@ -287,8 +287,9 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         progressDialog.setCancelable(false);
         S3UploadActivity.uploadData(getMyActivity(), new S3FileTransferDelegate() {
             @Override
-            public void onS3FileTransferStateChanged(int id, TransferState state, String url) {
-                imageFiles.remove(0);
+            public void onS3FileTransferStateChanged(int id, TransferState state, String url, Object object) {
+                File file = (File) object;
+                imageFiles.remove(file);
                 ImageModel imageModel = new ImageModel();
                 imageModel.setImgUrl(url);
                 imageRequest.getImages().add(imageModel);
@@ -313,7 +314,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             public void onS3FileTransferError(int id, String fileName, Exception ex) {
                 progressDialog.dismiss();
             }
-        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss"), imageFiles.get(0));
+        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss" + count), imageFiles.get(0));
     }
 
 
@@ -468,20 +469,22 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private void setImage(List<Uri> listOfUri) {
         totalImages = listOfUri.size();
         //        Uri selectedImage1 = data.getData();
+        int countOfImage = 0;
         for (Uri selectedImage : listOfUri) {
+            countOfImage++;
             try {
                 Bitmap bitmap = null;
                 bitmap = MediaStore.Images.Media.getBitmap(getMyActivity().getContentResolver(), selectedImage);
-               // ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                // ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 // Bitmap bt=Bitmap.createScaledBitmap(bitmap, 720, 1100, false);
-              //  Bitmap bt = getMyActivity().BITMAP_RESIZER(bitmap, 300, 350);
+                //  Bitmap bt = getMyActivity().BITMAP_RESIZER(bitmap, 300, 350);
                 //  bt.compress(Bitmap.CompressFormat.PNG, 100, stream);
-               // byte[] vehicleImage = stream.toByteArray();
-                fileView = getMyActivity().getImageUri(getMyActivity(), bitmap);
+                // byte[] vehicleImage = stream.toByteArray();
+                //fileView = getMyActivity().getImageUri(getMyActivity(), bitmap);
 
 
                 File filesDir = getMyActivity().getFilesDir();
-                File imageFile = new File(filesDir, "image" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss") + ".JPG");
+                File imageFile = new File(filesDir, "image" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss" + countOfImage) + ".JPG");
 
                 OutputStream os;
                 try {
@@ -496,7 +499,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 imageFiles.add(imageFile);
 
                 //imglist.add(fileView);
-                bindView(fileView, false);
+                bindView(selectedImage, false);
 
 
             } catch (Exception e) {

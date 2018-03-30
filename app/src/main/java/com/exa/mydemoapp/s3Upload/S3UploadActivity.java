@@ -59,7 +59,7 @@ public class S3UploadActivity {
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
                     // Handle a completed upload.
-                    s3FileTransferDelegate.onS3FileTransferStateChanged(id, state, IUrls.S3_BASE_URL + filename + ".JPG");
+                    s3FileTransferDelegate.onS3FileTransferStateChanged(id, state, IUrls.S3_BASE_URL + filename + ".JPG",file);
                 }
             }
 

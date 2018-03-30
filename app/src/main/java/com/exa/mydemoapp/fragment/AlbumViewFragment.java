@@ -72,9 +72,9 @@ public class AlbumViewFragment extends CommonFragment {
         return view;
     }
 
-    private void getImageData() {
+    /*private void getImageData() {
         String userId = getMyActivity().databaseReference.push().getKey();
-        String studentId =null;
+        String studentId = null;
         DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
         Query query = ref2.orderByChild("imageType").equalTo("Gallery");
@@ -112,18 +112,30 @@ public class AlbumViewFragment extends CommonFragment {
             }
         });
 
-    }
+    }*/
 
 
     private void ShowList(final List<ImageRequest> imageRequestList) {
-        List<ImageRequest> newImagereqList = new ArrayList<>();
+      /*  List<ImageRequest> newImagereqList = new ArrayList<>();
         for (ImageRequest imageRequest : imageRequestList) {
             for (ImageModel imageModel : imageRequest.getImages()) {
                 imageRequest.setImg(imageModel.getImgUrl());
                 newImagereqList.add(imageRequest);
                 break;
             }
+        }*/
+        List<ImageRequest> newImagereqList = new ArrayList<>();
+        for (ImageRequest imageRequest : imageRequestList) {
+            for (int i = 0; i < imageRequest.getImages().size(); i++) {
+                ImageRequest iRequest = new ImageRequest();
+                iRequest.setPlaceName(imageRequest.getPlaceName());
+                iRequest.setImages(imageRequest.getImages());
+                iRequest.setImg(imageRequest.getImages().get(i).getImgUrl());
+                newImagereqList.add(i, iRequest);
+                break;
+            }
         }
+
         mAdapter = new GalleryAdapter(getMyActivity(), newImagereqList, imageRequestList.size(), null);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getMyActivity(), 2);
@@ -170,7 +182,15 @@ public class AlbumViewFragment extends CommonFragment {
                     int count = 0;
                     for (ImageRequest bean : object) {
                         count++;
-                        mapAlbum.put(bean.getPlaceName(), bean);
+                        if (mapAlbum.get(bean.getPlaceName()) != null) {
+                            ArrayList<ImageModel> tempList = new ArrayList<>();
+                            ImageRequest tempImageRequest = new ImageRequest();
+                            bean.getImages().addAll(mapAlbum.get(bean.getPlaceName()).getImages());
+                            mapAlbum.put(bean.getPlaceName(), bean);
+                        } else {
+                            mapAlbum.put(bean.getPlaceName(), bean);
+                        }
+
                         td.put(count, bean);
                     }
                     images = new ArrayList<>(td.values());
