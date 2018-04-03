@@ -52,12 +52,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -80,7 +82,7 @@ public class TrackerService extends Service implements LocationListener {
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mNotificationBuilder;
     private PowerManager.WakeLock mWakelock;
-
+    private Date lastTime;
 
     public TrackerService() {
     }
@@ -146,7 +148,7 @@ public class TrackerService extends Service implements LocationListener {
      * start location tracking.
      */
     private void loadPreviousStatuses() {
-        String transportId = CommonUtils.getSharedPref(getString(R.string.transport_id), this);
+     /*   String transportId = CommonUtils.getSharedPref(getString(R.string.transport_id), this);
         mFirebaseTransportRef = FirebaseDatabase.getInstance().getReference();
         mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(transportId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -164,7 +166,8 @@ public class TrackerService extends Service implements LocationListener {
             public void onCancelled(DatabaseError error) {
                 // TODO: Handle gracefully
             }
-        });
+        });*/
+        startLocationTracking();
     }
 
     private GoogleApiClient.ConnectionCallbacks mLocationRequestCallback = new GoogleApiClient
@@ -230,7 +233,7 @@ public class TrackerService extends Service implements LocationListener {
         locationForStatus.setLongitude((double) status.get("longitude"));
         float distance = location.distanceTo(locationForStatus);
         Log.d(TAG, String.format("Distance from status %s is %sm", statusIndex, distance));
-        return distance < mFirebaseRemoteConfig.getLong("LOCATION_MIN_DISTANCE_CHANGED");
+        return distance < 2.0;
     }
 
     private float getBatteryLevel() {
@@ -302,11 +305,18 @@ public class TrackerService extends Service implements LocationListener {
             // are kept when the locations are the same, the earlier representing
             // the time the location was arrived at, and the latest representing the
             // current time.
+
             mTransportStatuses.set(0, transportStatus);
             // Only need to update 0th status, so we can save bandwidth.
-            String userId = mFirebaseTransportRef.push().getKey();
-
-            mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(transportId).child("0").setValue(transportStatus);
+            if (lastTime==null){
+                lastTime = Calendar.getInstance().getTime();
+                Log.d("Location", location.getLatitude() + "," + location.getLongitude());
+            }
+            if (timeDiffrence(Calendar.getInstance().getTime(),lastTime ) > 1) {
+                Log.d("Location", location.getLatitude() + "," + location.getLongitude());
+                lastTime = Calendar.getInstance().getTime();
+            }
+            //  mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(transportId).child("0").setValue(transportStatus);
             //mFirebaseTransportRef.child("0").setValue(transportStatus);
         } else {
             // Maintain a fixed number of previous statuses.
@@ -316,8 +326,17 @@ public class TrackerService extends Service implements LocationListener {
             mTransportStatuses.addFirst(transportStatus);
             // We push the entire list at once since each key/index changes, to
             // minimize network requests.
+            if (lastTime==null){
+                lastTime = Calendar.getInstance().getTime();
+                Log.d("Location", location.getLatitude() + "," + location.getLongitude());
+            }
+            if (timeDiffrence(Calendar.getInstance().getTime(),lastTime ) > 1) {
+                Log.d("Location", location.getLatitude() + "," + location.getLongitude());
+                lastTime = Calendar.getInstance().getTime();
+            }
 
-            mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(transportId).setValue(mTransportStatuses);
+
+            // mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(transportId).setValue(mTransportStatuses);
         }
 
         if (BuildConfig.DEBUG) {
@@ -355,6 +374,32 @@ public class TrackerService extends Service implements LocationListener {
         Intent intent = new Intent(STATUS_INTENT);
         intent.putExtra(getString(R.string.status), stringId);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private int timeDiffrence(Date date1, Date date2) {
+        int mins = 0, hours = 0;
+
+        try {
+
+            if (date1 != null) {
+                SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss aa");
+                // date1 = format.parse("08:00:12 pm");
+                //date2 = format.parse("05:30:12 pm");
+                long mills = date1.getTime() - date2.getTime();
+                Log.v("Data1", "" + date1.getTime());
+                Log.v("Data2", "" + date2.getTime());
+                hours = (int) (mills / (1000 * 60 * 60));
+                mins = (int) (mills / (1000 * 60)) % 60;
+                int sec=(int) (mills / 1000 ) % 60;
+
+                String diff = hours + ":" + mins; // updated value every1 second
+            } else {
+                return mins;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return mins;
     }
 
 }

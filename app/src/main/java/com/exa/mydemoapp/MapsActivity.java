@@ -90,6 +90,8 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     private Spinner spnVehicle;
     private Button btnSearch;
     private List<String> vehicleList;
+    private List<LatLng> demoList;
+    private int listCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +137,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                 }
             }
         });
+
     }
 
 
@@ -165,6 +168,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                 .bearing(30)
                 .tilt(10)
                 .build()));
+        demoLatLong();
     }
 
 
@@ -251,7 +255,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                     }
                 });
                 valueAnimator.start();
-                handler.postDelayed(this, 3000);
+                handler.postDelayed(this, 30000);
             }
         }, 3000);
 
@@ -363,6 +367,8 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                             Location locationForStatus = new Location("");
                             locationForStatus.setLatitude((double) status.get("lattitude"));
                             locationForStatus.setLongitude((double) status.get("longitude"));
+
+
                             polyLineList.add(new LatLng(locationForStatus.getLatitude(), locationForStatus.getLongitude()));
                             // if (driveStarted == false && polyLineList.size() > 10) {
                             if (driveStarted == false) {
@@ -482,22 +488,24 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                 finish();
                 break;
             case R.id.menu_map_demo:
-                DemoMap();
+                DemoMap(0);
                 break;
         }
         return true;
     }
 
-    private void DemoMap() {
+    private void DemoMap(int count) {
         String requestUrl = null;
         try {
-            final double latitude = 18.675890;
-            double longitude = 73.880187;
+            final double latitude = demoList.get(count).latitude;
+            double longitude = demoList.get(count).longitude;
+
+
             requestUrl = "https://maps.googleapis.com/maps/api/directions/json?" +
                     "mode=driving&"
                     + "transit_routing_preference=less_driving&"
                     + "origin=" + latitude + "," + longitude + "&"
-                    + "destination=" + destination + "&"
+                    + "destination=" + demoList.get(count + 1).latitude + "," + demoList.get(count + 1).longitude + "&"
                     + "key=" + BuildConfig.google_directions_key + "+&sensor=true";
             Log.d(TAG, requestUrl);
 
@@ -530,7 +538,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                 }
                                 LatLngBounds bounds = builder.build();
                                 CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 2);
-                                mMap.animateCamera(mCameraUpdate);
+                                //mMap.animateCamera(mCameraUpdate);
 
                                 polylineOptions = new PolylineOptions();
                                 polylineOptions.color(Color.GRAY);
@@ -539,7 +547,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                 polylineOptions.endCap(new SquareCap());
                                 polylineOptions.jointType(ROUND);
                                 polylineOptions.addAll(polyLineList);
-                                greyPolyLine = mMap.addPolyline(polylineOptions);
+                                // greyPolyLine = mMap.addPolyline(polylineOptions);
 
                                 blackPolylineOptions = new PolylineOptions();
                                 blackPolylineOptions.width(5);
@@ -547,12 +555,13 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                 blackPolylineOptions.startCap(new SquareCap());
                                 blackPolylineOptions.endCap(new SquareCap());
                                 blackPolylineOptions.jointType(ROUND);
-                                blackPolyline = mMap.addPolyline(blackPolylineOptions);
+                                // blackPolyline = mMap.addPolyline(blackPolylineOptions);
 
-                                mMap.addMarker(new MarkerOptions()
-                                        .position(polyLineList.get(polyLineList.size() - 1)));
-
-                                ValueAnimator polylineAnimator = ValueAnimator.ofInt(0, 100);
+                                //destination marker
+                               /* mMap.addMarker(new MarkerOptions()
+                                        .position(polyLineList.get(polyLineList.size() - 1)));*/
+                                //polyline draw with animation
+                               /* ValueAnimator polylineAnimator = ValueAnimator.ofInt(0, 100);
                                 polylineAnimator.setDuration(2000);
                                 polylineAnimator.setInterpolator(new LinearInterpolator());
                                 polylineAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -566,7 +575,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                         blackPolyline.setPoints(p);
                                     }
                                 });
-                                polylineAnimator.start();
+                                polylineAnimator.start();*/
 
                                 int height = 140;
                                 int width = 70;
@@ -583,6 +592,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
+
                                         if (index < polyLineList.size() - 1) {
                                             index++;
                                             next = index + 1;
@@ -590,7 +600,20 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                         if (index < polyLineList.size() - 1) {
                                             startPosition = polyLineList.get(index);
                                             endPosition = polyLineList.get(next);
+                                        } else {
+                                            handler.removeCallbacks(this::run);
+
+                                            if (demoList.size() > listCount) {
+                                                listCount++;
+                                                if (demoList.get(listCount) != null) {
+                                                    DemoMap(listCount);
+                                                }
+                                            } else {
+                                                setFixMarker();
+                                            }
+                                            return;
                                         }
+
                                         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
                                         valueAnimator.setDuration(3000);
                                         valueAnimator.setInterpolator(new LinearInterpolator());
@@ -635,6 +658,20 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void demoLatLong() {
+        demoList = new ArrayList<>();
+        demoList.add(new LatLng(18.575267, 73.809010));
+        demoList.add(new LatLng(18.575633, 73.813323));
+        demoList.add(new LatLng(18.575816, 73.818001));
+        demoList.add(new LatLng(18.575125, 73.823279));
+        demoList.add(new LatLng(18.576772, 73.826305));
+        demoList.add(new LatLng(18.578887, 73.829116));
+        if (demoList.size() > 1) {
+            DemoMap(listCount);
         }
     }
 }
