@@ -153,7 +153,8 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        // mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         mMap.setTrafficEnabled(false);
         mMap.setIndoorEnabled(false);
         mMap.setBuildingsEnabled(false);
@@ -293,6 +294,21 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         }
 
         return poly;
+    }
+
+    private float bearing(Location startPoint, Location endPoint) {
+        double longitude1 = startPoint.getLongitude();
+        double latitude1 = Math.toRadians(startPoint.getLatitude());
+
+        double longitude2 = endPoint.getLongitude();
+        double latitude2 = Math.toRadians(endPoint.getLatitude());
+
+        double longDiff = Math.toRadians(longitude2 - longitude1);
+
+        double y = Math.sin(longDiff) * Math.cos(latitude2);
+        double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
+
+        return (float) Math.toDegrees(Math.atan2(y, x));
     }
 
     private float getBearing(LatLng begin, LatLng end) {
@@ -583,9 +599,11 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                 Bitmap b = bitmapdraw.getBitmap();
                                 Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-                                marker = mMap.addMarker(new MarkerOptions().position(sydney)
-                                        .flat(true)
-                                        .icon(BitmapDescriptorFactory.fromBitmap((smallMarker))));
+                                if (marker == null) {
+                                    marker = mMap.addMarker(new MarkerOptions().position(sydney)
+                                            .flat(true)
+                                            .icon(BitmapDescriptorFactory.fromBitmap((smallMarker))));
+                                }
                                 handler = new Handler();
                                 index = -1;
                                 next = 1;
@@ -620,6 +638,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                             @Override
                                             public void onAnimationUpdate(ValueAnimator valueAnimator) {
+
                                                 v = valueAnimator.getAnimatedFraction();
                                                 lng = v * endPosition.longitude + (1 - v)
                                                         * startPosition.longitude;
@@ -629,18 +648,19 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                                 marker.setPosition(newPos);
                                                 marker.setAnchor(0.5f, 0.5f);
                                                 marker.setRotation(getBearing(startPosition, newPos));
+                                                marker.setVisible(true);
                                                 mMap.moveCamera(CameraUpdateFactory
                                                         .newCameraPosition
                                                                 (new CameraPosition.Builder()
                                                                         .target(newPos)
-                                                                        .zoom(15.5f)
+                                                                        .zoom(16.5f)
                                                                         .build()));
                                             }
                                         });
                                         valueAnimator.start();
                                         handler.postDelayed(this, 3000);
                                     }
-                                }, 3000);
+                                }, 1000);
 
 
                             } catch (Exception e) {
@@ -664,12 +684,12 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
 
     private void demoLatLong() {
         demoList = new ArrayList<>();
-        demoList.add(new LatLng(18.575267, 73.809010));
-        demoList.add(new LatLng(18.575633, 73.813323));
-        demoList.add(new LatLng(18.575816, 73.818001));
-        demoList.add(new LatLng(18.575125, 73.823279));
-        demoList.add(new LatLng(18.576772, 73.826305));
-        demoList.add(new LatLng(18.578887, 73.829116));
+        demoList.add(new LatLng(18.530745, 73.847019));
+        demoList.add(new LatLng(18.524380, 73.853885));
+        demoList.add(new LatLng(18.520710, 73.855558));
+        demoList.add(new LatLng(18.515342, 73.856266));
+        demoList.add(new LatLng(18.511313, 73.858026));
+        demoList.add(new LatLng(18.500918, 73.858523));
         if (demoList.size() > 1) {
             DemoMap(listCount);
         }
