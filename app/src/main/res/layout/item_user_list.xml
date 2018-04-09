@@ -80,13 +80,179 @@
                 android:id="@+id/img_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_below="@+id/txt_time_stamp"
                 android:layout_margin="3dp"
+                android:layout_toLeftOf="@+id/img_fees_arrow"
                 android:src="@drawable/ic_edit" />
 
-        </RelativeLayout>
+            <Button
+                android:id="@+id/img_fees_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/txt_time_stamp"
+                android:drawableRight="@drawable/ic_arrow_down"
+                android:text="Fees" />
 
+            <RelativeLayout
+                android:id="@+id/relativeLayout_fees"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_edit"
+                android:visibility="gone">
+
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="7dp"
+                    android:background="@color/caldroid_gray" />
+
+
+                <TextView
+                    android:id="@+id/caption_total_fees"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider1"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:ems="10"
+                    android:text="Total fees"
+                    android:textSize="19sp"
+                    android:textStyle="bold|italic" />
+
+                <TextView
+                    android:id="@+id/txt_total_fees"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_toRightOf="@+id/caption_total_fees"
+                    android:ems="10"
+                    android:text="0"
+                    android:textSize="19sp" />
+
+
+                <TextView
+                    android:id="@+id/caption_first_installment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/caption_total_fees"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:ems="10"
+                    android:text="First Installment"
+                    android:textSize="19sp"
+                    android:textStyle="bold|italic" />
+
+                <TextView
+                    android:id="@+id/txt_first_installment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_total_fees"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_toRightOf="@+id/caption_first_installment"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/green"
+                    android:textSize="19sp" />
+
+                <TextView
+                    android:id="@+id/caption_second_installment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/caption_first_installment"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:ems="10"
+                    android:text="Second Installment"
+                    android:textSize="19sp"
+                    android:textStyle="bold|italic" />
+
+                <TextView
+                    android:id="@+id/txt_second_installment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_first_installment"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_toRightOf="@+id/caption_second_installment"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/green"
+                    android:textSize="19sp" />
+
+                <TextView
+                    android:id="@+id/caption_third_installment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/caption_second_installment"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:ems="10"
+                    android:text="Third Installment"
+                    android:textSize="19sp"
+                    android:textStyle="bold|italic" />
+
+                <TextView
+                    android:id="@+id/txt_third_installment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_second_installment"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_toRightOf="@+id/caption_third_installment"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/green"
+                    android:textSize="19sp" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/caption_third_installment"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="7dp"
+                    android:background="@color/caldroid_gray" />
+
+                <TextView
+                    android:id="@+id/caption_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:ems="10"
+                    android:text="Balance to pay"
+                    android:textSize="19sp"
+                    android:textStyle="bold|italic" />
+
+                <TextView
+                    android:id="@+id/txt_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_toRightOf="@+id/caption_balance"
+                    android:ems="10"
+                    android:gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="@color/caldroid_light_red"
+                    android:textSize="19sp" />
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 

@@ -137,7 +137,9 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
             }
         });
         datePicker.setText(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "dd MMM yyyy"));
-        attendaceModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.ONLY_DATE_FORMAT));
+        // attendaceModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.ONLY_DATE_FORMAT));
+        long timestamp = System.currentTimeMillis() / 1000;
+        attendaceModel.setDateStamp("" + timestamp);
         return view;
     }
 

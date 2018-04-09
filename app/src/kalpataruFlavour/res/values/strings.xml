@@ -65,10 +65,12 @@
         <item>@string/dashboard_upload</item>
         <item>@string/dashboard_attendance</item>
         <!-- <item>@string/dashboard_add_homework</item>
-         <item>@string/dashboard_homework_list</item>-->
+         -->
+        <item>@string/dashboard_homework_list</item>
         <item>@string/dashboard_annual</item>
         <item>@string/dashboard_reward</item>
         <item>@string/dashboard_bus_loc</item>
+        <item>@string/dashboard_fees</item>
         <item>@string/dashboard_contact_us</item>
     </string-array>
 
@@ -85,11 +87,14 @@
         <item>@drawable/ic_manage_users</item>
         <item>@drawable/ic_upload_photo</item>
         <item>@drawable/ic_attendance</item>
+
         <!--  <item>@drawable/ic_annual_calender</item>
-          <item>@drawable/ic_annual_calender</item>-->
+         -->
+        <item>@drawable/ic_homework</item>
         <item>@drawable/ic_add_event</item>
         <item>@drawable/ic_rewards</item>
         <item>@drawable/icon_bus_location</item>
+        <item>@drawable/ic_fees</item>
         <item>@drawable/ic_contact_us</item>
     </integer-array>
 
@@ -100,12 +105,14 @@
         <item>@string/dashboard_facilities</item>
         <item>@string/dashboard_calender</item>
         <item>@string/dashboard_image_gallery</item>
+        <item>@string/dashboard_homework_list</item>
         <!--<item>@string/dashboard_archiv</item>-->
         <item>@string/dashboard_blog</item>
         <item>@string/dashboard_news</item>
         <item>@string/dashboard_community</item>
         <item>@string/dashboard_staff</item>
         <item>@string/dashboard_bus_loc</item>
+        <item>@string/dashboard_fees</item>
         <item>@string/dashboard_contact_us</item>
     </string-array>
 
@@ -114,12 +121,13 @@
         <item>@drawable/ic_facility</item>
         <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_gallery</item>
-        <!--  <item>@drawable/ic_archivement</item>-->
+        <item>@drawable/ic_homework</item>
         <item>@drawable/ic_blog</item>
         <item>@drawable/ic_news_feed</item>
         <item>@drawable/ic_community</item>
         <item>@drawable/ic_teacher</item>
         <item>@drawable/icon_bus_location</item>
+        <item>@drawable/ic_fees</item>
         <item>@drawable/ic_contact_us</item>
     </integer-array>
 
@@ -201,6 +209,7 @@
     <string name="dashboard_bus_loc">Bus Location</string>
     <string name="dashboard_reward">Add Reward Points</string>
     <string name="dashboard_contact_us">Contact Us</string>
+    <string name="dashboard_fees">Fees Structure</string>
 
     <string name="reward_sports">Sports</string>
     <string name="reward_cultural">Cultural</string>
@@ -243,4 +252,6 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="user_type_driver">DRIVER</string>
 
     <string name="contact_us_detail"><![CDATA[<b>Moshi- Alandi Road</b>,Dudulgaon,Moshi-412 105\n www.kalpaatarukids.com | email- kalpatarukids@gmail.com \n Contact no: +91 9689868788/ +91 9823405434 ]]></string>
+
+    <string name="Rs">\u20B9  </string>
 </resources>

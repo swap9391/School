@@ -220,6 +220,9 @@ public class LoginActivity extends CommonActivity {
                 Log.e("Tag", studentData.getStudentName());
                 /*String password = studentData.getStudentPassword().substring(0, 10);
                 if (password.equals(finalEncryptedText1)) {*/
+                if (studentData.getUserType().equals(getStringById(R.string.user_type_student))) {
+                    dbInvoker.insertUpdateUser(studentData);
+                }
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getStudentUserName());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getId().toString());
