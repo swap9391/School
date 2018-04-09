@@ -22,7 +22,7 @@ import com.exa.mydemoapp.service.LocationUpdateService;
 import com.exa.mydemoapp.service.ServiceCallbacks;
 
 import static com.exa.mydemoapp.Common.Constants.LAST_VAN_TYPE;
-
+//not used
 public class UpdateBusLocation extends CommonActivity implements
         ServiceCallbacks {
 

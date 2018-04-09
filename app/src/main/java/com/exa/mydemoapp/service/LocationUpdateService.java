@@ -33,7 +33,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-
+//not used
 public class LocationUpdateService extends Service implements
         LocationListener,
         GoogleApiClient.ConnectionCallbacks,
