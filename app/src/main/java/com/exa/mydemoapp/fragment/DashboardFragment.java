@@ -40,7 +40,6 @@ public class DashboardFragment extends CommonFragment {
 
     public TypedArray imagesForStudent;
 
-
     public String[] nameForGuest;
     public TypedArray imagesForGuest;
 

@@ -22,6 +22,7 @@ import com.exa.mydemoapp.fragment.CalenderViewFragment;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.ContactUsFragment;
 import com.exa.mydemoapp.fragment.FeeStructureFragment;
+import com.exa.mydemoapp.fragment.HomeWorkFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
@@ -149,6 +150,9 @@ public class HomeGridAdapter extends BaseAdapter {
                     case "Bus Location":
                         Intent intent1 = new Intent(context, MapsActivity.class);
                         context.startActivity(intent1);
+                        break;
+                    case "Home Work":
+                        context.showFragment(new HomeWorkFragment(), null);
                         break;
                     case "Contact Us":
                         context.showFragment(new ContactUsFragment(), null);
