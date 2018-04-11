@@ -7,17 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
-import com.exa.mydemoapp.model.ImageRequest;
-import com.exa.mydemoapp.model.RewardModel;
+import com.exa.mydemoapp.model.StudentRewardsModel;
 
-import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.PieChart;
-import org.eazegraph.lib.communication.IOnBarClickedListener;
 import org.eazegraph.lib.communication.IOnItemFocusChangedListener;
-import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.PieModel;
 
 import java.util.ArrayList;
@@ -30,7 +25,7 @@ import java.util.List;
 public class RewardGraphFragment extends CommonFragment {
     View view;
     PieChart pieChart;
-    List<RewardModel> rewardModelList;
+    List<StudentRewardsModel> rewardModelList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,7 +36,7 @@ public class RewardGraphFragment extends CommonFragment {
         rewardModelList = new ArrayList<>();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            rewardModelList = (ArrayList<RewardModel>) bundle.getSerializable("mylist");
+            rewardModelList = (ArrayList<StudentRewardsModel>) bundle.getSerializable("mylist");
         }
         loadData();
         pieChart.startAnimation();
@@ -61,7 +56,7 @@ public class RewardGraphFragment extends CommonFragment {
     private void loadData() {
         int sportsPoint = 0, culturePoint = 0, interSchoolPoint = 0, acadamicPoint = 0, otherPoint = 0;
 
-        for (RewardModel rewardModel : rewardModelList) {
+        for (StudentRewardsModel rewardModel : rewardModelList) {
             if (rewardModel.getRewardType().equals(getStringById(R.string.reward_sports))) {
                 sportsPoint = sportsPoint + rewardModel.getPoints();
             } else if (rewardModel.getRewardType().equals(getStringById(R.string.reward_cultural))) {

@@ -14,7 +14,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
 
 import com.exa.mydemoapp.Common.Constants;
-import com.exa.mydemoapp.model.LocationModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,17 +29,15 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 /**
  * Created by midt-006 on 17/1/18.
  */
+//not used
 public class BusLocationActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -183,7 +180,7 @@ public class BusLocationActivity extends FragmentActivity implements OnMapReadyC
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
-        getImageData();
+        //getImageData();
 
         /* startService(new Intent(this, LocationUpdateService.class));
         bindService(new Intent(this, LocationUpdateService.class), serviceConnection,
@@ -368,7 +365,7 @@ public class BusLocationActivity extends FragmentActivity implements OnMapReadyC
         return brng;
     }
 
-    public void getImageData() {
+/*    public void getImageData() {
         DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.LOCATION_TABLE);
         ref2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -389,6 +386,6 @@ public class BusLocationActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
-    }
+    }*/
 
 }

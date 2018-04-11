@@ -37,6 +37,11 @@
         <item>B Division</item>
     </string-array>
 
+    <string-array name="payment_mode">
+        <item>Cash</item>
+        <item>Cheque</item>
+        <item>NEFT</item>
+    </string-array>
     <string-array name="fees_type">
         <item>First Installment</item>
         <item>Second Installment</item>

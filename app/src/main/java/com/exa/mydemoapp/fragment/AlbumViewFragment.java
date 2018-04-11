@@ -5,31 +5,22 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.volley.Request;
-import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
-import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.ImageModel;
-import com.exa.mydemoapp.model.ImageRequest;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.AlbumImagesModel;
+import com.exa.mydemoapp.model.AlbumMasterModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,13 +33,13 @@ import java.util.Map;
  */
 
 public class AlbumViewFragment extends CommonFragment {
-    private ArrayList<ImageRequest> images;
+    private ArrayList<AlbumMasterModel> images;
     private GalleryAdapter mAdapter;
     @ViewById(R.id.recycler_view)
     private RecyclerView recyclerView;
     View view;
     ProgressDialog progressDialog;
-    List<ImageRequest> listAlbumChild;
+    List<AlbumMasterModel> listAlbumChild;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,23 +72,23 @@ public class AlbumViewFragment extends CommonFragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, ImageRequest> td = new HashMap<String, ImageRequest>();
-                Map<String, ImageRequest> mapAlbum = new HashMap<String, ImageRequest>();
+                Map<String, AlbumMasterModel> td = new HashMap<String, AlbumMasterModel>();
+                Map<String, AlbumMasterModel> mapAlbum = new HashMap<String, AlbumMasterModel>();
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
-                    if (imageRequest.getVisiblity().equalsIgnoreCase("TRUE")) {
-                        if (!imageRequest.getStudentId().equals("NA") && !imageRequest.getStudentId().equals(studentId)) {
+                    AlbumMasterModel albumImagesModel = Snapshot.getValue(AlbumMasterModel.class);
+                    if (albumImagesModel.getVisiblity().equalsIgnoreCase("TRUE")) {
+                        if (!albumImagesModel.getStudentId().equals("NA") && !albumImagesModel.getStudentId().equals(studentId)) {
 
                         } else {
-                            mapAlbum.put(imageRequest.getPlaceName(), imageRequest);
-                            td.put(Snapshot.getKey(), imageRequest);
+                            mapAlbum.put(albumImagesModel.getPlaceName(), albumImagesModel);
+                            td.put(Snapshot.getKey(), albumImagesModel);
                         }
                     }
                 }
 
                 images = new ArrayList<>(td.values());
                 List<String> albumNames = new ArrayList<String>(mapAlbum.keySet());
-                List<ImageRequest> listAlbum = new ArrayList<ImageRequest>();
+                List<AlbumMasterModel> listAlbum = new ArrayList<AlbumMasterModel>();
                 for (String string : albumNames) {
                     listAlbum.add(mapAlbum.get(string));
                 }
@@ -115,28 +106,28 @@ public class AlbumViewFragment extends CommonFragment {
     }*/
 
 
-    private void ShowList(final List<ImageRequest> imageRequestList) {
-      /*  List<ImageRequest> newImagereqList = new ArrayList<>();
-        for (ImageRequest imageRequest : imageRequestList) {
-            for (ImageModel imageModel : imageRequest.getImages()) {
-                imageRequest.setImg(imageModel.getImgUrl());
-                newImagereqList.add(imageRequest);
+    private void ShowList(final List<AlbumMasterModel> albumImagesModelList) {
+      /*  List<AlbumMasterModel> newImagereqList = new ArrayList<>();
+        for (AlbumMasterModel albumImagesModel : albumImagesModelList) {
+            for (ImageModel imageModel : albumImagesModel.getImages()) {
+                albumImagesModel.setImg(imageModel.getImgUrl());
+                newImagereqList.add(albumImagesModel);
                 break;
             }
         }*/
-        List<ImageRequest> newImagereqList = new ArrayList<>();
-        for (ImageRequest imageRequest : imageRequestList) {
-            for (int i = 0; i < imageRequest.getImages().size(); i++) {
-                ImageRequest iRequest = new ImageRequest();
-                iRequest.setPlaceName(imageRequest.getPlaceName());
-                iRequest.setImages(imageRequest.getImages());
-                iRequest.setImg(imageRequest.getImages().get(i).getImgUrl());
+        List<AlbumMasterModel> newImagereqList = new ArrayList<>();
+        for (AlbumMasterModel albumImagesModel : albumImagesModelList) {
+            for (int i = 0; i < albumImagesModel.getAlbumImagesModels().size(); i++) {
+                AlbumMasterModel iRequest = new AlbumMasterModel();
+                iRequest.setAlbumTitle(albumImagesModel.getAlbumTitle());
+                iRequest.setAlbumImagesModels(albumImagesModel.getAlbumImagesModels());
+                iRequest.setImg(albumImagesModel.getAlbumImagesModels().get(i).getImageUrl());
                 newImagereqList.add(i, iRequest);
                 break;
             }
         }
 
-        mAdapter = new GalleryAdapter(getMyActivity(), newImagereqList, imageRequestList.size(), null);
+        mAdapter = new GalleryAdapter(getMyActivity(), newImagereqList, albumImagesModelList.size(), null);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getMyActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -148,10 +139,10 @@ public class AlbumViewFragment extends CommonFragment {
             @Override
             public void onClick(View view, int position) {
 
-                ImageRequest imageRequest = newImagereqList.get(position);
-                List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
+                AlbumMasterModel albumImagesModel = newImagereqList.get(position);
+                List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
 
-                listAlbumChild.add(imageRequest);
+                listAlbumChild.add(albumImagesModel);
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("mylist", (Serializable) listAlbumChild);
@@ -167,35 +158,35 @@ public class AlbumViewFragment extends CommonFragment {
     }
 
     private void getImageList() {
-        Map<Integer, ImageRequest> td = new HashMap<>();
-        Map<String, ImageRequest> mapAlbum = new HashMap<>();
+        Map<Integer, AlbumMasterModel> td = new HashMap<>();
+        Map<String, AlbumMasterModel> mapAlbum = new HashMap<>();
         String studentId = "0";
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(IJson.studentId, studentId);
         hashMap.put(IJson.imageType, getStringById(R.string.img_type_gallery));
         // hashMap.put(IJson.password, "" + studentId);
 
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_LIST, hashMap, new VolleyResponseListener<ImageRequest>() {
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_LIST, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
             @Override
-            public void onResponse(ImageRequest[] object) {
-                if (object[0] instanceof ImageRequest) {
+            public void onResponse(AlbumMasterModel[] object) {
+                if (object[0] instanceof AlbumMasterModel) {
                     int count = 0;
-                    for (ImageRequest bean : object) {
+                    for (AlbumMasterModel bean : object) {
                         count++;
-                        if (mapAlbum.get(bean.getPlaceName()) != null) {
-                            ArrayList<ImageModel> tempList = new ArrayList<>();
-                            ImageRequest tempImageRequest = new ImageRequest();
-                            bean.getImages().addAll(mapAlbum.get(bean.getPlaceName()).getImages());
-                            mapAlbum.put(bean.getPlaceName(), bean);
+                        if (mapAlbum.get(bean.getAlbumTitle()) != null) {
+                            ArrayList<AlbumImagesModel> tempList = new ArrayList<>();
+                            AlbumMasterModel tempAlbumImagesModel = new AlbumMasterModel();
+                            bean.getAlbumImagesModels().addAll(mapAlbum.get(bean.getAlbumTitle()).getAlbumImagesModels());
+                            mapAlbum.put(bean.getAlbumTitle(), bean);
                         } else {
-                            mapAlbum.put(bean.getPlaceName(), bean);
+                            mapAlbum.put(bean.getAlbumTitle(), bean);
                         }
 
                         td.put(count, bean);
                     }
                     images = new ArrayList<>(td.values());
                     List<String> albumNames = new ArrayList<String>(mapAlbum.keySet());
-                    List<ImageRequest> listAlbum = new ArrayList<ImageRequest>();
+                    List<AlbumMasterModel> listAlbum = new ArrayList<AlbumMasterModel>();
                     for (String string : albumNames) {
                         listAlbum.add(mapAlbum.get(string));
                     }
@@ -205,14 +196,14 @@ public class AlbumViewFragment extends CommonFragment {
             }
 
             @Override
-            public void onResponse(ImageRequest object) {
+            public void onResponse(AlbumMasterModel object) {
 
             }
 
             @Override
             public void onError(String message) {
             }
-        }, ImageRequest[].class);
+        }, AlbumMasterModel[].class);
 
     }
 

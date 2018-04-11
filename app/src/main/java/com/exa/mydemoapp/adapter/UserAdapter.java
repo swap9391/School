@@ -15,10 +15,11 @@ import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
-import com.exa.mydemoapp.SignUpFragment;
-import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.fragment.SignUpFragment;
+import com.exa.mydemoapp.model.FeesInstallmentsModel;
+import com.exa.mydemoapp.model.UserModel;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -28,10 +29,10 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
 
-    private List<StudentModel> listUser;
+    private List<UserModel> listUser;
     private HomeActivity context;
 
-    public UserAdapter(List<StudentModel> listUser, HomeActivity context) {
+    public UserAdapter(List<UserModel> listUser, HomeActivity context) {
         this.listUser = listUser;
         this.context = context;
     }
@@ -98,17 +99,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        StudentModel selectedItem = listUser.get(position);
+        UserModel selectedItem = listUser.get(position);
 
-        holder.txtName.setText(selectedItem.getStudentName());
+        holder.txtName.setText(selectedItem.getFirstName() + " " + selectedItem.getFirstName());
         holder.txtUserType.setText("User Type :" + selectedItem.getUserType());
-        holder.txtRegNo.setText("Reg.No :" + selectedItem.getRegistrationId());
-        Date date = CommonUtils.toDate(selectedItem.getDateStamp(), Constants.DATE_FORMAT);
+        holder.txtRegNo.setText("Reg.No :" + selectedItem.getUserInfoModel().getRegistrationId());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(selectedItem.getUserInfoModel().getRegistrationDate());
+        Date date = calendar.getTime();
         holder.txtTimeStamp.setText(CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT));
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //  ImageRequest bean = listAlbumChild.get(holder.currentPage);
+                //  AlbumMasterModel bean = listAlbumChild.get(holder.currentPage);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("studentData", selectedItem);
                 context.showFragment(new SignUpFragment(), bundle);
@@ -117,9 +120,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         Drawable downArrow = context.getResources().getDrawable(R.drawable.ic_arrow_down);
         Drawable upArrow = context.getResources().getDrawable(R.drawable.ic_arrow_up);
         setData(holder, selectedItem);
-        if(selectedItem.getUserType().equals(context.getStringById(R.string.user_type_student))){
+        if (selectedItem.getUserType().equals(context.getStringById(R.string.user_type_student))) {
             holder.btnFees.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.btnFees.setVisibility(View.GONE);
         }
 
@@ -141,31 +144,42 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
     }
 
 
-    private void setData(MyViewHolder holder, StudentModel studentModel) {
+    private void setData(MyViewHolder holder, UserModel userModel) {
 
-        if (studentModel != null) {
+        if (userModel != null) {
 
-            if (studentModel.getUserType().equals("STUDENT")) {
-                String totalFees = studentModel.getTotalFees() + "";
-                int paid = CommonUtils.asInt(studentModel.getInstallment1(), 0)
-                        + CommonUtils.asInt(studentModel.getInstallment2(), 0)
-                        + CommonUtils.asInt(studentModel.getInstallment3(), 0);
-                String paidFees = "Paid :" + paid;
-                int dues = studentModel.getTotalFees() - paid;
+            if (userModel.getUserType().equals("STUDENT")) {
+                String totalFees = userModel.getStudentFeesModel().getTotalFees() + "";
+                double paid = 0.0;
+                for (FeesInstallmentsModel feesInstallmentsModel : userModel.getStudentFeesModel().getFeesInstallmentsModels()) {
+                    paid = paid + feesInstallmentsModel.getInstallmentAmount();
+                    switch (feesInstallmentsModel.getInstallmentNo()) {
+                        case "1":
+                            holder.txtFirstInstallment.setText(context.getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
+                            break;
+                        case "2":
+                            holder.txtSecondInstallment.setText(context.getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
+                            break;
+                        case "3":
+                            holder.txtThirdInstallment.setText(context.getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
+                            break;
+                    }
 
-                String dueDate = "";
-                if (studentModel.getDateInsvestment2() != null) {
-                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment2(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
-                } else if (studentModel.getDateInsvestment3() != null) {
-                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment3(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
                 }
+                String paidFees = "Paid :" + paid;
+                double dues = userModel.getStudentFeesModel().getTotalFees() - paid;
 
-                String duesPayable = "Total Dues :" + dues + " " + dueDate;
+                /*String dueDate = "";
+                if (userModel.getDateInsvestment2() != null) {
+                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(userModel.getDateInsvestment2(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
+                } else if (userModel.getDateInsvestment3() != null) {
+                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(userModel.getDateInsvestment3(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
+                }*/
+
+                // String duesPayable = "Total Dues :" + dues + " " + dueDate;
 
                 holder.txtTotalFees.setText(totalFees != null ? context.getStringById(R.string.Rs) + " " + totalFees : context.getStringById(R.string.Rs) + "0");
-                holder.txtFirstInstallment.setText(studentModel.getInstallment1() != null ? context.getStringById(R.string.Rs) + " " + studentModel.getInstallment1() : context.getStringById(R.string.Rs) + "0");
-                holder.txtSecondInstallment.setText(studentModel.getInstallment2() != null ? context.getStringById(R.string.Rs) + " " + studentModel.getInstallment2() : context.getStringById(R.string.Rs) + "0");
-                holder.txtThirdInstallment.setText(studentModel.getInstallment3() != null ? context.getStringById(R.string.Rs) + " " + studentModel.getInstallment3() : context.getStringById(R.string.Rs) + "0");
+
                 holder.txtBalance.setText(dues > 0 ? context.getStringById(R.string.Rs) + dues : context.getStringById(R.string.Rs) + "0");
             }
         }

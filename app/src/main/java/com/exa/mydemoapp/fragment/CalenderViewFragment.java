@@ -18,8 +18,8 @@ import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.model.AnnualCalenderMasterModel;
 import com.exa.mydemoapp.model.DateModel;
-import com.exa.mydemoapp.model.EventModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -47,7 +47,7 @@ public class CalenderViewFragment extends Fragment {
     private CaldroidFragment caldroidFragment;
     private CaldroidFragment dialogCaldroidFragment;
     private TextView textview;
-    List<EventModel> listEvent = new ArrayList<>();
+    List<AnnualCalenderMasterModel> listEvent = new ArrayList<>();
     List<DateModel> listDate;
     ProgressDialog progressDialog;
 
@@ -138,9 +138,9 @@ public class CalenderViewFragment extends Fragment {
                 countWeekendDays(year, month);
                 if (Connectivity.isConnected(getMyActivity())) {
                     textview.setText("");
-                    if (listEvent.size()>0){
+                    if (listEvent.size() > 0) {
                         initCalender();
-                    }else {
+                    } else {
                         getCalenderEvents();
                     }
                 } else {
@@ -219,9 +219,11 @@ public class CalenderViewFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int count = 0;
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    EventModel bean = Snapshot.getValue(EventModel.class);
+                    AnnualCalenderMasterModel bean = Snapshot.getValue(AnnualCalenderMasterModel.class);
                     listEvent.add(bean);
-                    Date date = CommonUtils.toDate(bean.getEventDate(), Constants.DATE_FORMAT);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(bean.getEventDate());
+                    Date date = calendar.getTime();
                     DateModel dateModel = new DateModel();
                     dateModel.setPosition(count);
                     dateModel.setDate(date);
@@ -272,12 +274,12 @@ public class CalenderViewFragment extends Fragment {
 
     private void getCalenderEvents() {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put(IJson.classId, "All" );
-        hashMap.put(IJson.divisionId, "" );
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_GET_EVENTS, hashMap, new VolleyResponseListener<EventModel>() {
+        hashMap.put(IJson.classId, "All");
+        hashMap.put(IJson.divisionId, "");
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_GET_EVENTS, hashMap, new VolleyResponseListener<AnnualCalenderMasterModel>() {
             @Override
-            public void onResponse(EventModel[] object) {
-                for (EventModel rewardModel : object) {
+            public void onResponse(AnnualCalenderMasterModel[] object) {
+                for (AnnualCalenderMasterModel rewardModel : object) {
                     listEvent.add(rewardModel);
                 }
                 if (listEvent.size() > 0) {
@@ -286,21 +288,24 @@ public class CalenderViewFragment extends Fragment {
             }
 
             @Override
-            public void onResponse(EventModel object) {
+            public void onResponse(AnnualCalenderMasterModel object) {
             }
+
             @Override
             public void onError(String message) {
             }
-        }, EventModel[].class);
+        }, AnnualCalenderMasterModel[].class);
 
     }
 
 
     private void initCalender() {
-        int count=0;
-        listDate= new ArrayList<>();
-        for (EventModel bean : listEvent) {
-            Date date = CommonUtils.toDate(bean.getEventDate(), Constants.DATE_FORMAT);
+        int count = 0;
+        listDate = new ArrayList<>();
+        for (AnnualCalenderMasterModel bean : listEvent) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(bean.getEventDate());
+            Date date = calendar.getTime();
             DateModel dateModel = new DateModel();
             dateModel.setPosition(count);
             dateModel.setDate(date);

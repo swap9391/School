@@ -2,15 +2,9 @@ package com.exa.mydemoapp.Common;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.util.Log;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.exa.mydemoapp.HomeActivity;
-import com.exa.mydemoapp.LoginActivity;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +17,7 @@ import com.google.firebase.database.ValueEventListener;
  */
 
 public class StudentInfoSingleton {
-    private StudentModel studentModel;
+    private UserModel userModel;
     private static StudentInfoSingleton studentInfoSingleton;
     private Activity activity;
     ProgressDialog progressDialog;
@@ -39,12 +33,12 @@ public class StudentInfoSingleton {
         return studentInfoSingleton;
     }
 
-    public StudentModel getStudentModel() {
-        return studentModel;
+    public UserModel getUserModel() {
+        return userModel;
     }
 
-    public void setStudentModel(StudentModel studentModel) {
-        this.studentModel = studentModel;
+    public void setUserModel(UserModel userModel) {
+        this.userModel = userModel;
     }
 
     public void checkLogin() {
@@ -58,8 +52,8 @@ public class StudentInfoSingleton {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    StudentModel studentData = Snapshot.getValue(StudentModel.class);
-                    studentInfoSingleton.setStudentModel(studentData);
+                    UserModel studentData = Snapshot.getValue(UserModel.class);
+                    studentInfoSingleton.setUserModel(studentData);
                 }
             }
 

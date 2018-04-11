@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.volley.Request;
-import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
@@ -22,7 +21,7 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.UserAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.database.DbInvoker;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
@@ -46,7 +45,7 @@ public class UsersListFragment extends CommonFragment {
     public UserAdapter mAdapter;
     @ViewById(R.id.recyclerView)
     private RecyclerView recyclerView;
-    private List<StudentModel> listStudent;
+    private List<UserModel> listStudent;
     private View view;
     ProgressDialog progressDialog;
     DbInvoker dbInvoker;
@@ -103,15 +102,15 @@ public class UsersListFragment extends CommonFragment {
         String userId = getMyActivity().databaseReference.push().getKey();
         DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.STUDENT);
-        Query query = ref2.orderByChild("schoolName").equalTo(studentInfoSingleton.getStudentModel().getSchoolName());
+        Query query = ref2.orderByChild("schoolName").equalTo(studentInfoSingleton.getUserModel().getEmail());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    StudentModel imageRequest = Snapshot.getValue(StudentModel.class);
-                    if (imageRequest.getVisiblity().equalsIgnoreCase("TRUE")) {
+                    UserModel imageRequest = Snapshot.getValue(UserModel.class);
+                  /*  if (imageRequest.getVisiblity().equalsIgnoreCase("TRUE")) {
                         listStudent.add(imageRequest);
-                    }
+                    }*/
                 }
 
                 mAdapter = new UserAdapter(listStudent, getMyActivity());
@@ -160,14 +159,14 @@ public class UsersListFragment extends CommonFragment {
     public void getUserList() {
         HashMap<String, String> hashMap = new HashMap<>();
         // hashMap.put(IJson.password, "" + studentId);
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<StudentModel>() {
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
-            public void onResponse(StudentModel[] object) {
+            public void onResponse(UserModel[] object) {
                 getMyActivity().getDbInvoker().deleteStudents();
-                for (StudentModel studentModel : object) {
-                    getMyActivity().getDbInvoker().insertUpdateUser(studentModel);
+                for (UserModel userModel : object) {
+                    getMyActivity().getDbInvoker().insertUpdateUser(userModel);
                 }
-                /*if (object[0] instanceof StudentModel) {
+                /*if (object[0] instanceof UserModel) {
                  for (S)
                 }*/
                 initAdapter();
@@ -175,14 +174,14 @@ public class UsersListFragment extends CommonFragment {
             }
 
             @Override
-            public void onResponse(StudentModel object) {
+            public void onResponse(UserModel object) {
 
             }
 
             @Override
             public void onError(String message) {
             }
-        }, StudentModel[].class);
+        }, UserModel[].class);
     }
 
 }

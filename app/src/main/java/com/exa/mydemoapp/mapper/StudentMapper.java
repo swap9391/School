@@ -4,24 +4,24 @@ import android.database.Cursor;
 
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.database.DbMapper;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.UserModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class StudentMapper extends DbMapper<StudentModel> {
+public class StudentMapper extends DbMapper<UserModel> {
 
     @Override
-    protected Collection<StudentModel> doMap(Cursor rs) {
-        List<StudentModel> lst = new ArrayList<>();
+    protected Collection<UserModel> doMap(Cursor rs) {
+        List<UserModel> lst = new ArrayList<>();
         while (rs.moveToNext()) {
             /* public static final String sel_student_data = "Select localId, _id,registrationDate,schoolName,className,divisionId," +
             "registrationId,studentName,studentAddress,studentUserName,studentPassword,userType,studentBloodGrp," +
             "gender,totalFees,installmentType,installment1,installment2,installment3,rollNumber,contactNumber," +
             "dateInsvestment2,dateInsvestment3,subscribed,visiblity" +
             " From student_data Where 1=1";*/
-            StudentModel bean = new StudentModel();
+            UserModel bean = new UserModel();
             bean.setLocalId(getInt(rs, 0));
             bean.setId(getInt(rs, 1));
             bean.setDateStamp(getString(rs, 2));

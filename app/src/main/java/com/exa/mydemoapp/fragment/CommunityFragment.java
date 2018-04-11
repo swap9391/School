@@ -34,12 +34,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
-import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.model.AlbumMasterModel;
 import com.exa.mydemoapp.model.CommunityModel;
-import com.exa.mydemoapp.model.ImageRequest;
-import com.exa.mydemoapp.model.StudentModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -214,12 +212,12 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
                         viewHolder.frameLayout.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                List<ImageRequest> imageRequestList = new ArrayList<>();
-                                ImageRequest imageRequest = new ImageRequest();
-                                imageRequest.setImg(model.getImg());
-                                imageRequestList.add(imageRequest);
+                                List<AlbumMasterModel> albumImagesModelList = new ArrayList<>();
+                                AlbumMasterModel albumImagesModel = new AlbumMasterModel();
+                                albumImagesModel.setImg(model.getImg());
+                                albumImagesModelList.add(albumImagesModel);
                                 Bundle bundle = new Bundle();
-                                bundle.putSerializable("images", (Serializable) imageRequestList);
+                                bundle.putSerializable("images", (Serializable) albumImagesModelList);
                                 bundle.putInt("position", 0);
                                 bundle.putString("frag", "community");
                                 getMyActivity().setGallery(false);

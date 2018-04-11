@@ -18,14 +18,13 @@ import com.exa.mydemoapp.Common.PagerContainer;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
-import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.AlbumMasterModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import javax.crypto.spec.SecretKeySpec;
 
 /*
   Created by Swapnil Jadhav on 22/6/17.
@@ -33,8 +32,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyViewHolder> {
 
-    private List<ImageRequest> allImages;
-    private List<ImageRequest> coverImages;
+    private List<AlbumMasterModel> allImages;
+    private List<AlbumMasterModel> coverImages;
     private int lastCheckedPosition = -1;
     private HomeActivity context;
 
@@ -42,7 +41,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
     ImageButton imgEdit;
     String feed;
 
-    public NewsFeedsAdapter(List<ImageRequest> allImages, List<ImageRequest> coverImages, HomeActivity context, String feed) {
+    public NewsFeedsAdapter(List<AlbumMasterModel> allImages, List<AlbumMasterModel> coverImages, HomeActivity context, String feed) {
         this.allImages = allImages;
         this.coverImages = coverImages;
         this.context = context;
@@ -91,7 +90,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
             switch (view.getId()) {
                 case R.id.rl_layout_design:
                    /* lastCheckedPosition = getAdapterPosition();
-                    ImageRequest imageRequest = allImages.get(lastCheckedPosition);
+                    AlbumMasterModel imageRequest = allImages.get(lastCheckedPosition);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("imageData", imageRequest);
                     context.showFragment(context.uploadPhotoFragment, bundle);*/
@@ -112,27 +111,29 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        ImageRequest selectedItem = coverImages.get(position);
+        AlbumMasterModel selectedItem = coverImages.get(position);
 
-        holder.txtDesignTitle.setText(selectedItem.getPlaceName());
-        holder.txtDiscription.setText(selectedItem.getDescription());
-        Date date = CommonUtils.toDate(selectedItem.getDateStamp(), Constants.DATE_FORMAT);
+        holder.txtDesignTitle.setText(selectedItem.getAlbumTitle());
+        holder.txtDiscription.setText(selectedItem.getAlbumDescription());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(selectedItem.getCreatedAt());
+        Date date = calendar.getTime();
         holder.txtTimeStamp.setText(CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT));
-        ImageRequest imageRequest = coverImages.get(position);
-        final List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
-            for (ImageRequest img : allImages) {
-                if (imageRequest.getPlaceName().equals(img.getPlaceName())) {
+        AlbumMasterModel albumImagesModel = coverImages.get(position);
+        final List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
+            for (AlbumMasterModel img : allImages) {
+                if (albumImagesModel.getAlbumType().equals(img.getAlbumType())) {
                     listAlbumChild.add(img);
                 }
             }
 
-        if (selectedItem.getImages() != null && selectedItem.getImages().size() > 0) {
+        if (selectedItem.getAlbumImagesModels() != null && selectedItem.getAlbumImagesModels().size() > 0) {
 
         }else {
             holder.mContainer.setVisibility(View.GONE);
         }
 
-        slidingImageAdapter = new SlidingImageAdapter(context, listAlbumChild.get(0).getImages(), feed);
+        slidingImageAdapter = new SlidingImageAdapter(context, listAlbumChild.get(0).getAlbumImagesModels(), feed);
         holder.mPager.setAdapter(slidingImageAdapter);
 
         holder.indicator.setViewPager(holder.mPager);
@@ -165,7 +166,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //  ImageRequest bean = listAlbumChild.get(holder.currentPage);
+                //  AlbumMasterModel bean = listAlbumChild.get(holder.currentPage);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("imageData", (Serializable) listAlbumChild);
                 context.showFragment(new UploadPhotoFragment(), bundle);

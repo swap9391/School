@@ -3,8 +3,6 @@ package com.exa.mydemoapp.mapper;
 import android.database.Cursor;
 
 import com.exa.mydemoapp.database.DbMapper;
-import com.exa.mydemoapp.model.LoginDataModel;
-import com.exa.mydemoapp.model.StudentModel;
 
 import java.util.ArrayList;
 import java.util.Collection;

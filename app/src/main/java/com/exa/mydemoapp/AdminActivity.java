@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 
 import com.exa.mydemoapp.Common.CommonActivity;
-import com.exa.mydemoapp.fragment.AttendanceFragment;
+import com.exa.mydemoapp.fragment.SignUpFragment;
 
 /**
  * Created by midt-078 on 27/3/18.

@@ -15,8 +15,8 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.RewardModel;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.StudentRewardsModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -55,7 +55,7 @@ public class ProfileFragment extends CommonFragment {
     LinearLayout layReward;
     @ViewById(R.id.layCard)
     CardView cardView;
-    List<RewardModel> rewardModelList;
+    List<StudentRewardsModel> rewardModelList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class ProfileFragment extends CommonFragment {
     }
 
     private void setData() {
-        StudentModel studentModel = getMyActivity().getStudentModel();
+        UserModel userModel = getMyActivity().getUserModel();
         String userType = CommonUtils.getSharedPref(Constants.USER_TYPE, getMyActivity());
         if (userType.equals(getStringById(R.string.user_type_driver))) {
             cardView.setVisibility(View.GONE);
@@ -110,21 +110,21 @@ public class ProfileFragment extends CommonFragment {
         if (userType.equals(getStringById(R.string.user_type_admin))) {
             cardView.setVisibility(View.GONE);
         }
-        if (studentModel != null) {
-            String name = studentModel.getStudentName();
-            String address = studentModel.getStudentAddress();
-            String bloodGrp = "Blood Group " + studentModel.getStudentBloodGrp();
+        if (userModel != null) {
+            String name = userModel.getFirstName() + " " + userModel.getLastName();
+            String address = userModel.getUserInfoModel().getAddress();
+            String bloodGrp = "Blood Group " + userModel.getUserInfoModel().getBloodGroup();
 
-            if (studentModel.getGender().equalsIgnoreCase("Boy")) {
+            if (userModel.getUserInfoModel().getGender().equalsIgnoreCase("Boy")) {
                 circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
             } else {
                 circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_girl));
             }
             txtName.setText(name != null ? name : "");
             txtAddress.setText(address != null ? address : "");
-            if (studentModel.getUserType().equals("STUDENT") || studentModel.getUserType().equals("STUDENT")) {
-                String className = "Class " + studentModel.getClassName();
-                String division = "Division " + studentModel.getDivision();
+            if (userModel.getUserType().equals("STUDENT") || userModel.getUserType().equals("STUDENT")) {
+                String className = "Class " + userModel.getUserInfoModel().getClassName();
+                String division = "Division " + userModel.getUserInfoModel().getDivisionName();
                 txtClassName.setText(className != null ? className : "");
                 txtDivision.setText(division != null ? division : "");
             }
@@ -135,28 +135,28 @@ public class ProfileFragment extends CommonFragment {
     private void getRewards() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(IJson.studentId, "" + CommonUtils.getSharedPref(Constants.STUDENT_ID, getMyActivity()));
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_GET_REWARDS, hashMap, new VolleyResponseListener<RewardModel>() {
+        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_GET_REWARDS, hashMap, new VolleyResponseListener<StudentRewardsModel>() {
             @Override
-            public void onResponse(RewardModel[] object) {
+            public void onResponse(StudentRewardsModel[] object) {
 
-                for (RewardModel rewardModel : object) {
+                for (StudentRewardsModel rewardModel : object) {
                     rewardModelList.add(rewardModel);
                 }
-                /*if (object[0] instanceof StudentModel) {
+                /*if (object[0] instanceof UserModel) {
                  for (S)
                 }*/
 
             }
 
             @Override
-            public void onResponse(RewardModel object) {
+            public void onResponse(StudentRewardsModel object) {
 
             }
 
             @Override
             public void onError(String message) {
             }
-        }, RewardModel[].class);
+        }, StudentRewardsModel[].class);
 
     }
 

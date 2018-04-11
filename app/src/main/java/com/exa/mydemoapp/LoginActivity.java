@@ -24,16 +24,11 @@ import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.database.Database;
 import com.exa.mydemoapp.database.DbInvoker;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -51,7 +46,7 @@ public class LoginActivity extends CommonActivity {
     EditText edtPassword;
     @ViewById(R.id.floating_login)
     LinearLayout yourframelayout;
-    StudentModel studentModel;
+    UserModel userModel;
     ProgressDialog progressDialog;
     StudentInfoSingleton studentInfoSingleton;
     String appVersion;
@@ -75,7 +70,7 @@ public class LoginActivity extends CommonActivity {
 
         initViewBinding(view);
         init();
-        studentModel = new StudentModel();
+        userModel = new UserModel();
         btnGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,11 +106,11 @@ public class LoginActivity extends CommonActivity {
     }
 
     private void bindModel() {
-        studentModel.setStudentUserName(edtUserName.getText().toString().trim());
-        studentModel.setStudentPassword(edtPassword.getText().toString().trim());
+        userModel.setUsername(edtUserName.getText().toString().trim());
+        userModel.setPassword(edtPassword.getText().toString().trim());
     }
 
-    public void checkLogin() {
+   /* public void checkLogin() {
         String encryptedText = null;
         try {
             encryptedText = CommonUtils.encrypt(edtPassword.getText().toString().trim());
@@ -124,7 +119,7 @@ public class LoginActivity extends CommonActivity {
         }
         DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
         DatabaseReference ref2 = ref1.child(Constants.STUDENT);
-        Query query = ref2.orderByChild("studentUserName").equalTo(studentModel.getStudentUserName());
+        Query query = ref2.orderByChild("studentUserName").equalTo(userModel.getStudentUserName());
         String finalEncryptedText = encryptedText.substring(0, 10);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -135,13 +130,13 @@ public class LoginActivity extends CommonActivity {
                     return;
                 }
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    StudentModel studentData = Snapshot.getValue(StudentModel.class);
+                    UserModel studentData = Snapshot.getValue(UserModel.class);
                     String password = studentData.getStudentPassword().substring(0, 10);
                     if (password.equals(finalEncryptedText)) {
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getStudentUserName());
                         CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
                         studentInfoSingleton = StudentInfoSingleton.getInstance(LoginActivity.this);
-                        studentInfoSingleton.setStudentModel(studentData);
+                        studentInfoSingleton.setUserModel(studentData);
                         AppController.isAdmin(LoginActivity.this);
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
@@ -162,39 +157,39 @@ public class LoginActivity extends CommonActivity {
             }
         });
 
-    }
+    }*/
 
   /*  private void saveLogin() {
 
-       *//* studentModel.setId(102);
-        studentModel.setStudentUserName("vaibhav");
-        studentModel.setStudentPassword("123456");
-        studentModel.setDateInsvestment2("12/02/2018");
-        studentModel.setDateInsvestment3("12/04/2018");
-        studentModel.setContactNumber("123456789");
-        studentModel.setTotalFees(1123);
-        studentModel.setRollNumber("12");
-        studentModel.setGender("male");
-        studentModel.setInstallmentType("1st");
-        studentModel.setRegistrationId("NREf434");
-        studentModel.setVisiblity("TRUE");
-        studentModel.setStudentAddress("Sangvi");
-        studentModel.setStudentName("Vaibhav J");
-        studentModel.setClassName("9th");
-        studentModel.setDivision("A");
-        studentModel.setSchoolName("NKVS");
-        studentModel.setInstallment1("12000");
-        studentModel.setUserType("STUDENT");
-        studentModel.setStudentBloodGrp("B+ve");
-        studentModel.setSubscribed("TRUE");
-        studentModel.setDateStamp("12/03/2018");
+       *//* userModel.setId(102);
+        userModel.setStudentUserName("vaibhav");
+        userModel.setStudentPassword("123456");
+        userModel.setDateInsvestment2("12/02/2018");
+        userModel.setDateInsvestment3("12/04/2018");
+        userModel.setContactNumber("123456789");
+        userModel.setTotalFees(1123);
+        userModel.setRollNumber("12");
+        userModel.setGender("male");
+        userModel.setInstallmentType("1st");
+        userModel.setRegistrationId("NREf434");
+        userModel.setVisiblity("TRUE");
+        userModel.setStudentAddress("Sangvi");
+        userModel.setStudentName("Vaibhav J");
+        userModel.setClassName("9th");
+        userModel.setDivision("A");
+        userModel.setSchoolName("NKVS");
+        userModel.setInstallment1("12000");
+        userModel.setUserType("STUDENT");
+        userModel.setStudentBloodGrp("B+ve");
+        userModel.setSubscribed("TRUE");
+        userModel.setDateStamp("12/03/2018");
 
-        dbInvoker.insertUpdateUser(studentModel);*//*
-        List<StudentModel> studentModelList = new ArrayList<>();
+        dbInvoker.insertUpdateUser(userModel);*//*
+        List<UserModel> studentModelList = new ArrayList<>();
         studentModelList = dbInvoker.getUserList();
         studentModelList= dbInvoker.getStudentListByClass("9th");
-        StudentModel studentModel = new StudentModel();
-        studentModel= dbInvoker.getStudentById(102);
+        UserModel userModel = new UserModel();
+        userModel= dbInvoker.getStudentById(102);
     }*/
 
     private void Login() {
@@ -208,25 +203,24 @@ public class LoginActivity extends CommonActivity {
         }
 
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.studentUserName, "" + studentModel.getStudentUserName());
+        hashMap.put(IJson.studentUserName, "" + userModel.getUsername());
         hashMap.put(IJson.studentPassword, "" + encryptedText.trim());
-        CallWebService.getWebserviceObject(this, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<StudentModel>() {
+        CallWebService.getWebserviceObject(this, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
-            public void onResponse(StudentModel[] object) {
+            public void onResponse(UserModel[] object) {
             }
 
             @Override
-            public void onResponse(StudentModel studentData) {
-                Log.e("Tag", studentData.getStudentName());
+            public void onResponse(UserModel studentData) {
                 /*String password = studentData.getStudentPassword().substring(0, 10);
                 if (password.equals(finalEncryptedText1)) {*/
                 if (studentData.getUserType().equals(getStringById(R.string.user_type_student))) {
                     dbInvoker.insertUpdateUser(studentData);
                 }
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getStudentUserName());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getUsername());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getId().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_NAME, studentData.getStudentName());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getPkeyId().toString());
+                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_NAME, studentData.getFirstName());
                 AppController.isAdmin(LoginActivity.this);
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(intent);
@@ -242,7 +236,7 @@ public class LoginActivity extends CommonActivity {
             public void onError(String message) {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
-        }, StudentModel.class);
+        }, UserModel.class);
 
     }
 

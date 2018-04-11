@@ -2,7 +2,6 @@ package com.exa.mydemoapp;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,18 +21,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
-import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.database.Database;
 import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
@@ -49,14 +41,14 @@ import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.ProfileFragment;
 import com.exa.mydemoapp.fragment.RewardGraphFragment;
 import com.exa.mydemoapp.fragment.RewardsPointsFragment;
+import com.exa.mydemoapp.fragment.SignUpFragment;
 import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
-import com.exa.mydemoapp.model.FirebaseTokenModel;
-import com.exa.mydemoapp.model.ImageRequest;
-import com.exa.mydemoapp.model.RewardModel;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.AlbumMasterModel;
+import com.exa.mydemoapp.model.FirebaseRegistrationModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.tracker.TrackerService;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
@@ -93,7 +85,7 @@ public class HomeActivity extends CommonActivity {
     public RewardsPointsFragment rewardsPointsFragment;
     public RewardGraphFragment rewardGraphFragment;
     public ContactUsFragment contactUsFragment;
-    public List<ImageRequest> listAlbumChild = new ArrayList<ImageRequest>();
+    public List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
     public boolean isGallery = true;
     public boolean isGuest = false;
     private Fragment fromFragment;
@@ -101,7 +93,7 @@ public class HomeActivity extends CommonActivity {
     Database db;
     DbInvoker dbInvoker;
     public boolean flagCallUserList = false;
-    StudentModel studentModel;
+    UserModel userModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +102,9 @@ public class HomeActivity extends CommonActivity {
         db = new Database(HomeActivity.this);
         dbInvoker = new DbInvoker(this);
         AWSMobileClient.getInstance().initialize(this).execute();
-        int studentId = CommonUtils.asInt(CommonUtils.getSharedPref(Constants.STUDENT_ID, this), 0);
-        if (studentId > 0) {
-            studentModel = dbInvoker.getStudentById(studentId);
+        String studentId = CommonUtils.getSharedPref(Constants.STUDENT_ID, this);
+        if (studentId != null) {
+            userModel = dbInvoker.getStudentById(studentId);
         }
 
         if (intent != null && intent.getStringExtra(Constants.USER_TYPE) != null && intent.getStringExtra(Constants.USER_TYPE).equals(Constants.USER_TYPE_GUEST)) {
@@ -298,11 +290,11 @@ public class HomeActivity extends CommonActivity {
         contactUsFragment = new ContactUsFragment();
     }
 
-    public List<ImageRequest> getListAlbumChild() {
+    public List<AlbumMasterModel> getListAlbumChild() {
         return listAlbumChild;
     }
 
-    public void setListAlbumChild(List<ImageRequest> listAlbumChild) {
+    public void setListAlbumChild(List<AlbumMasterModel> listAlbumChild) {
         this.listAlbumChild = listAlbumChild;
     }
 
@@ -448,14 +440,14 @@ public class HomeActivity extends CommonActivity {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.token, token);
         hashMap.put(IJson.userId, "" + CommonUtils.getSharedPref(Constants.STUDENT_ID, HomeActivity.this));
-        CallWebService.getWebserviceObject(HomeActivity.this, Request.Method.POST, IUrls.URL_FIREBASE_REG, hashMap, new VolleyResponseListener<FirebaseTokenModel>() {
+        CallWebService.getWebserviceObject(HomeActivity.this, Request.Method.POST, IUrls.URL_FIREBASE_REG, hashMap, new VolleyResponseListener<FirebaseRegistrationModel>() {
             @Override
-            public void onResponse(FirebaseTokenModel[] object) {
+            public void onResponse(FirebaseRegistrationModel[] object) {
 
             }
 
             @Override
-            public void onResponse(FirebaseTokenModel studentData) {
+            public void onResponse(FirebaseRegistrationModel studentData) {
                 CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
                 if (AppController.isAdmin(HomeActivity.this)) {
                     getUserList();
@@ -466,43 +458,43 @@ public class HomeActivity extends CommonActivity {
             public void onError(String message) {
                 Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
             }
-        }, FirebaseTokenModel.class);
+        }, FirebaseRegistrationModel.class);
     }
 
 
     public void getUserList() {
         HashMap<String, String> hashMap = new HashMap<>();
         // hashMap.put(IJson.password, "" + studentId);
-        CallWebService.getWebservice(HomeActivity.this, Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<StudentModel>() {
+        CallWebService.getWebservice(HomeActivity.this, Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
-            public void onResponse(StudentModel[] object) {
+            public void onResponse(UserModel[] object) {
                 dbInvoker.deleteStudents();
-                for (StudentModel studentModel : object) {
-                    dbInvoker.insertUpdateUser(studentModel);
+                for (UserModel userModel : object) {
+                    dbInvoker.insertUpdateUser(userModel);
                 }
-                /*if (object[0] instanceof StudentModel) {
+                /*if (object[0] instanceof UserModel) {
                  for (S)
                 }*/
 
             }
 
             @Override
-            public void onResponse(StudentModel object) {
+            public void onResponse(UserModel object) {
 
             }
 
             @Override
             public void onError(String message) {
             }
-        }, StudentModel[].class);
+        }, UserModel[].class);
     }
 
-    public StudentModel getStudentModel() {
-        return studentModel;
+    public UserModel getUserModel() {
+        return userModel;
     }
 
-    public void setStudentModel(StudentModel studentModel) {
-        this.studentModel = studentModel;
+    public void setUserModel(UserModel userModel) {
+        this.userModel = userModel;
     }
 
     public DbInvoker getDbInvoker() {

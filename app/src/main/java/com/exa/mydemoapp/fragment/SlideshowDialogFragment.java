@@ -31,7 +31,7 @@ import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
-import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.AlbumMasterModel;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,7 +46,7 @@ import java.util.List;
 
 public class SlideshowDialogFragment extends DialogFragment {
     private String TAG = SlideshowDialogFragment.class.getSimpleName();
-    private ArrayList<ImageRequest> images;
+    private ArrayList<AlbumMasterModel> images;
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
     private TextView lblCount, lblTitle;
@@ -74,7 +74,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         selectedPosition = getArguments().getInt("position");
         fragmentFrom = getArguments().getString("frag");
         isGuest = getArguments().getBoolean("Guest");
-        images = (ArrayList<ImageRequest>) getArguments().getSerializable("images");
+        images = (ArrayList<AlbumMasterModel>) getArguments().getSerializable("images");
 
 
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
@@ -98,15 +98,15 @@ public class SlideshowDialogFragment extends DialogFragment {
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageRequest image = images.get(selectedPosition);
-                shareImage(currentImage, image.getUniqKey());
+                AlbumMasterModel image = images.get(selectedPosition);
+                shareImage(currentImage, image.getAlbumTitle());
             }
         });
         btnDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Connectivity.isConnected(getMyActivity())) {
-                    ImageRequest image = images.get(selectedPosition);
+                    AlbumMasterModel image = images.get(selectedPosition);
                     downloadImage(image.getImg());
                 } else {
                     getMyActivity().showToast("Please connect to internet !");
@@ -120,12 +120,12 @@ public class SlideshowDialogFragment extends DialogFragment {
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ImageRequest image = images.get(selectedPosition);
-                    deleteImage(image);
+                    AlbumMasterModel image = images.get(selectedPosition);
+                    //  deleteImage(image);
                 }
             });
         }
-        List<ImageRequest> requestList = new ArrayList<>();
+        List<AlbumMasterModel> requestList = new ArrayList<>();
         requestList.add(images.get(0));
         getMyActivity().setListAlbumChild(requestList);
 
@@ -166,8 +166,8 @@ public class SlideshowDialogFragment extends DialogFragment {
         if (position >= 0) {
             lblCount.setText((position + 1) + " of " + images.size());
         }
-        ImageRequest image = images.get(position);
-        lblTitle.setText(image.getPlaceName() == null ? "" : image.getPlaceName());
+        AlbumMasterModel image = images.get(position);
+        lblTitle.setText(image.getAlbumTitle() == null ? "" : image.getAlbumTitle());
         //  lblDate.setText(image.getDescription());
     }
 
@@ -200,7 +200,7 @@ public class SlideshowDialogFragment extends DialogFragment {
                 }
             });
             currentImage = imageViewPreview;
-            final ImageRequest image = images.get(position);
+            final AlbumMasterModel image = images.get(position);
 
 
             Glide.with(getActivity()).load(image.getImg())
@@ -298,18 +298,17 @@ public class SlideshowDialogFragment extends DialogFragment {
         }
     }
 
-    private void deleteImage(ImageRequest imageRequest) {
+   /* private void deleteImage(AlbumMasterModel albumImagesModel) {
 
         try {
             AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.app_name), getString(R.string.delete_msg));
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    imageRequest.setVisiblity("FALSE");
-                    getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
+                    getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(albumImagesModel.getUniqKey()).setValue(albumImagesModel);
                     CommonUtils.showToast(getMyActivity(), "Photo deleted successfully!");
-                    images.remove(imageRequest);
-                    List<ImageRequest> requestList = new ArrayList<>();
+                    images.remove(albumImagesModel);
+                    List<AlbumMasterModel> requestList = new ArrayList<>();
                     requestList.add(images.get(0));
                     getMyActivity().setListAlbumChild(requestList);
                     getMyActivity().performBackForDesign();
@@ -324,6 +323,6 @@ public class SlideshowDialogFragment extends DialogFragment {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
-    }
+    }*/
 
 }

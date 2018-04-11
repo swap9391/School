@@ -12,7 +12,6 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -37,21 +36,16 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.android.volley.Request;
 import com.bumptech.glide.Glide;
-import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.Common.FloatingActionButton;
-import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
-import com.exa.mydemoapp.LoginActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.BaseModel;
-import com.exa.mydemoapp.model.ImageModel;
-import com.exa.mydemoapp.model.ImageRequest;
-import com.exa.mydemoapp.model.LocationModel;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.AlbumImagesModel;
+import com.exa.mydemoapp.model.AlbumMasterModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
 import com.exa.mydemoapp.s3Upload.S3UploadActivity;
 import com.exa.mydemoapp.service.LocationUpdateService;
@@ -89,13 +83,13 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private int REQUEST_CAMERA = 101, PICK_IMAGE = 102;
     Uri imageUri;
     int count = 0;
-    ImageRequest imageRequest;
+    AlbumMasterModel albumImagesModel;
     LocationUpdateService myservice;
     private boolean bound = false;
     View view;
     boolean isEdit = false;
     List<String> listEventType;
-    ArrayList<ImageRequest> imageRequestArrayList;
+    ArrayList<AlbumMasterModel> albumImagesModelArrayList;
     @ViewById(R.id.lattitude)
     TextView lat;
     @ViewById(R.id.longitude)
@@ -117,7 +111,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
 
     private List<String> listClass;
-    private List<StudentModel> listStudents;
+    private List<UserModel> listStudents;
     private List<String> listStudentName;
     ProgressDialog progressDialog;
     int totalImages;
@@ -176,17 +170,17 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
 
         Bundle bundle = getArguments();
-        imageRequestArrayList = new ArrayList<>();
+        albumImagesModelArrayList = new ArrayList<>();
 
         if (bundle != null) {
-            imageRequestArrayList = (ArrayList<ImageRequest>) bundle.getSerializable("imageData");
+            albumImagesModelArrayList = (ArrayList<AlbumMasterModel>) bundle.getSerializable("imageData");
         }
-        if (imageRequestArrayList != null && imageRequestArrayList.size() > 0) {
-            imageRequest = imageRequestArrayList.get(0);
+        if (albumImagesModelArrayList != null && albumImagesModelArrayList.size() > 0) {
+            albumImagesModel = albumImagesModelArrayList.get(0);
             bindView();
             isEdit = true;
         } else {
-            imageRequest = new ImageRequest();
+            albumImagesModel = new AlbumMasterModel();
             isEdit = false;
         }
 
@@ -206,7 +200,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 bindModel();
 
               /*  try {
-                    if (Validator.validateForNulls(imageRequest, getMyActivity())) {
+                    if (Validator.validateForNulls(albumImagesModel, getMyActivity())) {
                         // Do something that you want to
                         Log.d(TAG, "Validations Successful");
                     }
@@ -228,28 +222,26 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     }
 
     private void bindModel() {
-        imageRequest.setPlaceName(edt_title.getText().toString().trim());
-        imageRequest.setDescription(edt_description.getText().toString().trim());
-        imageRequest.setUserName(edt_user.getText().toString().trim());
-        imageRequest.setImageType(spinnerType.getSelectedItem().toString());
-        imageRequest.setClassName(spnClass.getSelectedItem().toString());
+        albumImagesModel.setAlbumTitle(edt_title.getText().toString().trim());
+        albumImagesModel.setAlbumDescription(edt_description.getText().toString().trim());
+        albumImagesModel.setCreatedBy(edt_user.getText().toString().trim());
+        albumImagesModel.setAlbumType(spinnerType.getSelectedItem().toString());
+        albumImagesModel.setClassName(spnClass.getSelectedItem().toString());
         if (listStudentName != null && listStudentName.size() > 0) {
-            String studentId = listStudents.get(spinnerStudentName.getSelectedItemPosition()).getUniqKey();
+            String studentId = listStudents.get(spinnerStudentName.getSelectedItemPosition()).getPkeyId();
             if (studentId != null) {
-                imageRequest.setStudentId(studentId);
+                albumImagesModel.setStudentId(studentId);
             }
         } else {
-            imageRequest.setStudentId("NA");
+            albumImagesModel.setStudentId("NA");
         }
-        imageRequest.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
-
     }
 
     private void bindView() {
-        edt_title.setText(imageRequest.getPlaceName());
-        edt_description.setText(imageRequest.getDescription());
-        edt_user.setText(imageRequest.getUserName());
-        int eventPosition = listEventType.indexOf(imageRequest.getImageType());
+        edt_title.setText(albumImagesModel.getAlbumTitle());
+        edt_description.setText(albumImagesModel.getAlbumDescription());
+        edt_user.setText(albumImagesModel.getCreatedBy());
+        int eventPosition = listEventType.indexOf(albumImagesModel.getAlbumType());
         spinnerType.setSelection(eventPosition);
         if (isEdit) {
             edt_title.setEnabled(false);
@@ -260,14 +252,14 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         final String userId = getMyActivity().databaseReference.push().getKey();
         if (!isEdit) {
             bindModel();
-            imageRequest.setUniqKey(userId);
-            getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(userId).setValue(imageRequest);
+            albumImagesModel.setUniqKey(userId);
+            getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(userId).setValue(albumImagesModel);
             Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
         } else {
             bindModel();
-            for (ImageRequest imageRequest1 : imageRequestArrayList) {
-                imageRequest.setUniqKey(imageRequest1.getUniqKey());
-                getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
+            for (AlbumMasterModel imageRequest1 : albumImagesModelArrayList) {
+                albumImagesModel.setUniqKey(imageRequest1.getUniqKey());
+                getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(albumImagesModel.getUniqKey()).setValue(albumImagesModel);
                 Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
             }
             isEdit = false;
@@ -290,9 +282,9 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             public void onS3FileTransferStateChanged(int id, TransferState state, String url, Object object) {
                 File file = (File) object;
                 imageFiles.remove(file);
-                ImageModel imageModel = new ImageModel();
-                imageModel.setImgUrl(url);
-                imageRequest.getImages().add(imageModel);
+                AlbumImagesModel imageModel = new AlbumImagesModel();
+                imageModel.setImageUrl(url);
+                albumImagesModel.getAlbumImagesModels().add(imageModel);
                 progressDialog.dismiss();
                 count = imageFiles.size();
                 if (count > 0) {
@@ -331,7 +323,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
                         Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
-                        imageRequest.setImg(downloadUrl.toString());
+                        albumImagesModel.setImg(downloadUrl.toString());
                         saveUserInformation();
                         progressDialog.dismiss();
                         Log.e("Result", "");
@@ -538,7 +530,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     }
 
     private void ClearView() {
-        imageRequest = new ImageRequest();
+        albumImagesModel = new AlbumMasterModel();
         LinearLayout layout1 = (LinearLayout) view.findViewById(R.id.lay1);
         layout1.removeAllViews();
         edt_title.getText().clear();
@@ -553,25 +545,25 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     }
 
     private boolean check() {
-        if (imageRequest.getClassName() == null || imageRequest.getClassName().equals("")) {
+        if (albumImagesModel.getClassName() == null || albumImagesModel.getClassName().equals("")) {
             getMyActivity().showToast("Please Select Class Name");
             return false;
         }
-        if (!imageRequest.getClassName().equalsIgnoreCase("All")) {
-            if (imageRequest.getStudentId() == null || imageRequest.getStudentId().equals("")) {
+        if (!albumImagesModel.getClassName().equalsIgnoreCase("All")) {
+            if (albumImagesModel.getStudentId() == null || albumImagesModel.getStudentId().equals("")) {
                 getMyActivity().showToast("Please Select Student Name");
                 return false;
             }
         }
-        if (imageRequest.getUserName() == null || imageRequest.getUserName().equals("")) {
+        if (albumImagesModel.getCreatedBy() == null || albumImagesModel.getCreatedBy().equals("")) {
             getMyActivity().showToast("Please Enter User Name");
             return false;
         }
-        if (imageRequest.getPlaceName() == null || imageRequest.getPlaceName().equals("")) {
+        if (albumImagesModel.getAlbumTitle() == null || albumImagesModel.getAlbumTitle().equals("")) {
             getMyActivity().showToast("Please Enter Place Name");
             return false;
         }
-        if (imageRequest.getDescription() == null || imageRequest.getDescription().equals("")) {
+        if (albumImagesModel.getAlbumDescription() == null || albumImagesModel.getAlbumDescription().equals("")) {
             getMyActivity().showToast("Please Enter Description");
             return false;
         }
@@ -632,14 +624,14 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         getMyActivity().databaseReference.child("place_data").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, ImageRequest> td = new HashMap<String, ImageRequest>();
+                Map<String, AlbumMasterModel> td = new HashMap<String, AlbumMasterModel>();
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
-                    td.put(Snapshot.getKey(), imageRequest);
+                    AlbumMasterModel albumImagesModel = Snapshot.getValue(AlbumMasterModel.class);
+                    td.put(Snapshot.getKey(), albumImagesModel);
                 }
-                ArrayList<ImageRequest> values = new ArrayList<>(td.values());
+                ArrayList<AlbumMasterModel> values = new ArrayList<>(td.values());
                 List<String> keys = new ArrayList<String>(td.keySet());
-                for (ImageRequest job : values) {
+                for (AlbumMasterModel job : values) {
                     Log.d("firebase", job.getImg().toString());
                 }
             }
@@ -652,36 +644,10 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
     }
 
-    private void getData() {
-        //Query phoneQuery =databaseReference.orderByChild("lattitude");
-        getMyActivity().databaseReference.child("location_db").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, LocationModel> td = new HashMap<String, LocationModel>();
-                for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    LocationModel locationModel = Snapshot.getValue(LocationModel.class);
-                    lat.setText(locationModel.getLattitude().toString());
-                    longit.setText(locationModel.getLongitude().toString());
-                    td.put(Snapshot.getKey(), locationModel);
-                }
-
-                ArrayList<LocationModel> values = new ArrayList<>(td.values());
-                List<String> keys = new ArrayList<String>(td.keySet());
-
-                for (LocationModel job : values) {
-                    Log.d("firebase", job.getLattitude().toString());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Exception", "onCancelled", databaseError.toException());
-            }
-        });
-    }
 
 
-    public ServiceConnection serviceConnection = new ServiceConnection() {
+
+   /* public ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -690,20 +656,19 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             myservice = binder.getService();
             bound = true;
             myservice.setCallbacks(UploadPhotoFragment.this);
-          /*  myService.setCallbacks(DashboardFragment.this); // register
-            myService.setCount(DashboardFragment.this);*/
+          *//*  myService.setCallbacks(DashboardFragment.this); // register
+            myService.setCount(DashboardFragment.this);*//*
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             bound = false;
         }
-    };
+    };*/
 
     @Override
     public void doSomething() {
         Log.e("Update", "Updated");
-        getData();
     }
 
     public void getStudents(String className) {
@@ -717,9 +682,9 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progressDialog.dismiss();
                 for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    StudentModel studentData = Snapshot.getValue(StudentModel.class);
+                    UserModel studentData = Snapshot.getValue(UserModel.class);
                     listStudents.add(studentData);
-                    listStudentName.add(studentData.getStudentName() + " " + studentData.getRollNumber());
+                    listStudentName.add(studentData.getFirstName() + " " + studentData.getLastName() + " " + studentData.getUserInfoModel().getRegistrationId());
                 }
                 if (listStudents != null && listStudents.size() > 0) {
                     spinnerStudentName.setVisibility(View.VISIBLE);
@@ -744,26 +709,23 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     }
 
     private void save() {
-        BaseModel baseModel = new BaseModel();
-        //baseModel.setId(getMyActivity().getStudentInfoSingleton().getStudentModel().getId());
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.imgTitle, "" + imageRequest.getPlaceName());
-        hashMap.put(IJson.description, "" + imageRequest.getDescription());
-        hashMap.put(IJson.userName, "" + imageRequest.getUserName());
-        hashMap.put(IJson.imageType, "" + imageRequest.getImageType());
-        hashMap.put(IJson.dateStamp, "" + imageRequest.getDateStamp());
-        hashMap.put(IJson.classId, "" + imageRequest.getClassName());
+        hashMap.put(IJson.imgTitle, "" + albumImagesModel.getAlbumTitle());
+        hashMap.put(IJson.description, "" + albumImagesModel.getAlbumDescription());
+        hashMap.put(IJson.userName, "" + albumImagesModel.getCreatedBy());
+        hashMap.put(IJson.imageType, "" + albumImagesModel.getAlbumType());
+        hashMap.put(IJson.classId, "" + albumImagesModel.getClassName());
         hashMap.put(IJson.studentId, "0");
-        hashMap.put(IJson.images, imageRequest.getImages());
+        hashMap.put(IJson.images, albumImagesModel.getAlbumImagesModels());
 
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<ImageRequest>() {
+        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
             @Override
-            public void onResponse(ImageRequest[] object) {
+            public void onResponse(AlbumMasterModel[] object) {
 
             }
 
             @Override
-            public void onResponse(ImageRequest studentData) {
+            public void onResponse(AlbumMasterModel studentData) {
                 getMyActivity().showFragment(new DashboardFragment(), null);
             }
 
@@ -771,7 +733,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
             }
-        }, ImageRequest.class);
+        }, AlbumMasterModel.class);
 
     }
 

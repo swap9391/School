@@ -20,13 +20,11 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.exa.mydemoapp.Common.AppController;
-import com.exa.mydemoapp.Common.CommonUtils;
-import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
-import com.exa.mydemoapp.model.ImageModel;
-import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.AlbumImagesModel;
+import com.exa.mydemoapp.model.AlbumMasterModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,14 +34,14 @@ import java.util.List;
 public class SlidingImageAdapter extends PagerAdapter {
 
 
-    private List<ImageModel> listImages;
+    private List<AlbumImagesModel> listImages;
     private LayoutInflater inflater;
     private HomeActivity context;
     private ProgressBar progressBar;
     private ImageButton imgDelete;
     private String feed;
 
-    public SlidingImageAdapter(HomeActivity context, List<ImageModel> listImages, String feed) {
+    public SlidingImageAdapter(HomeActivity context, List<AlbumImagesModel> listImages, String feed) {
         this.context = context;
         this.listImages = listImages;
         inflater = LayoutInflater.from(context);
@@ -76,7 +74,7 @@ public class SlidingImageAdapter extends PagerAdapter {
             imgDelete.setVisibility(View.GONE);
         }
         imageView.setTag(R.id.image, position);
-        String path = listImages.get(position).getImgUrl();
+        String path = listImages.get(position).getImageUrl();
         if (position > 0) {
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -106,12 +104,12 @@ public class SlidingImageAdapter extends PagerAdapter {
             @Override
             public void onClick(View v) {
 
-                ImageRequest imageRequest = new ImageRequest();
-                List<ImageRequest> imageRequestList = new ArrayList<>();
-                imageRequest.setImg(listImages.get(position).getImgUrl());
-                imageRequestList.add(imageRequest);
+                AlbumMasterModel albumImagesModel = new AlbumMasterModel();
+                List<AlbumMasterModel> albumImagesModelList = new ArrayList<>();
+                albumImagesModel.setImg(listImages.get(position).getImageUrl());
+                albumImagesModelList.add(albumImagesModel);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("images", (Serializable) imageRequestList);
+                bundle.putSerializable("images", (Serializable) albumImagesModelList);
                 bundle.putInt("position", 0);
                 bundle.putString("frag", "community");
                 context.setGallery(false);

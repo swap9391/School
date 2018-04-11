@@ -1,40 +1,17 @@
 package com.exa.mydemoapp.fragment;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.exa.mydemoapp.Common.CommonUtils;
-import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.RewardModel;
-import com.exa.mydemoapp.model.StudentModel;
-import com.exa.mydemoapp.webservice.CallWebService;
-import com.exa.mydemoapp.webservice.IJson;
-import com.exa.mydemoapp.webservice.IUrls;
-import com.exa.mydemoapp.webservice.VolleyResponseListener;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import com.exa.mydemoapp.model.FeesInstallmentsModel;
+import com.exa.mydemoapp.model.UserModel;
 
 /**
  * Created by midt-078 on 12/2/18.
@@ -72,31 +49,42 @@ public class FeeStructureFragment extends CommonFragment {
     }
 
     private void setData() {
-        StudentModel studentModel = getMyActivity().getStudentModel();
+        UserModel userModel = getMyActivity().getUserModel();
 
-        if (studentModel != null) {
+        if (userModel != null) {
 
-            if (studentModel.getUserType().equals("STUDENT")) {
-                String totalFees = studentModel.getTotalFees() + "";
-                int paid = CommonUtils.asInt(studentModel.getInstallment1(), 0)
-                        + CommonUtils.asInt(studentModel.getInstallment2(), 0)
-                        + CommonUtils.asInt(studentModel.getInstallment3(), 0);
-                String paidFees = "Paid :" + paid;
-                int dues = studentModel.getTotalFees() - paid;
+            if (userModel.getUserType().equals("STUDENT")) {
+                String totalFees = userModel.getStudentFeesModel().getTotalFees() + "";
+                double paid = 0.0;
+                for (FeesInstallmentsModel feesInstallmentsModel : userModel.getStudentFeesModel().getFeesInstallmentsModels()) {
+                    paid = paid + feesInstallmentsModel.getInstallmentAmount();
+                    switch (feesInstallmentsModel.getInstallmentNo()){
+                        case "1":
+                            txtFirstInstallment.setText(getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
+                            break;
+                        case "2":
+                            txtSecondInstallment.setText(getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
+                            break;
+                        case "3":
+                            txtThirdInstallment.setText(getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
+                            break;
+                    }
 
-                String dueDate = "";
-                if (studentModel.getDateInsvestment2() != null) {
-                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment2(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
-                } else if (studentModel.getDateInsvestment3() != null) {
-                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(studentModel.getDateInsvestment3(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
                 }
+                String paidFees = "Paid :" + paid;
+                double dues = userModel.getStudentFeesModel().getTotalFees() - paid;
 
-                String duesPayable = "Total Dues :" + dues + " " + dueDate;
+                /*String dueDate = "";
+                if (userModel.getDateInsvestment2() != null) {
+                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(userModel.getDateInsvestment2(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
+                } else if (userModel.getDateInsvestment3() != null) {
+                    dueDate = "\nNext payment date: " + CommonUtils.formatDateForDisplay(CommonUtils.toDate(userModel.getDateInsvestment3(), "dd-MM-yyyy hh:mm"), "dd/MM/yyy");
+                }*/
+
+               // String duesPayable = "Total Dues :" + dues + " " + dueDate;
 
                 txtTotalFees.setText(totalFees != null ? getStringById(R.string.Rs) + " " + totalFees : getStringById(R.string.Rs) + "0");
-                txtFirstInstallment.setText(studentModel.getInstallment1() != null ? getStringById(R.string.Rs) + " " + studentModel.getInstallment1() : getStringById(R.string.Rs) + "0");
-                txtSecondInstallment.setText(studentModel.getInstallment2() != null ? getStringById(R.string.Rs) + " " + studentModel.getInstallment2() : getStringById(R.string.Rs) + "0");
-                txtThirdInstallment.setText(studentModel.getInstallment3() != null ? getStringById(R.string.Rs) + " " + studentModel.getInstallment3() : getStringById(R.string.Rs) + "0");
+
                 txtBalance.setText(dues > 0 ? getStringById(R.string.Rs) + dues : getStringById(R.string.Rs) + "0");
             }
         }

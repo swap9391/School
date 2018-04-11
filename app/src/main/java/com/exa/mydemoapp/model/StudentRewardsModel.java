@@ -1,36 +1,20 @@
 package com.exa.mydemoapp.model;
 
+import com.exa.mydemoapp.database.BasicBean;
+
 import java.io.Serializable;
 
 /**
- * Created by root on 1/6/17.
+ * Created by midt-078 on 11/4/18.
  */
 
-public class RewardModel implements Serializable {
-    private String uniqKey;
-    String dateStamp;
-    String studentId;
-    String className;
-    String rewardType;
-    String description;
-    int points;
-
-
-    public String getUniqKey() {
-        return uniqKey;
-    }
-
-    public void setUniqKey(String uniqKey) {
-        this.uniqKey = uniqKey;
-    }
-
-    public String getDateStamp() {
-        return dateStamp;
-    }
-
-    public void setDateStamp(String dateStamp) {
-        this.dateStamp = dateStamp;
-    }
+public class StudentRewardsModel extends BasicBean implements Serializable {
+    private String studentId;
+    private String className;
+    private String divisionName;
+    private String rewardType;
+    private String description;
+    private int points;
 
     public String getStudentId() {
         return studentId;
@@ -46,6 +30,14 @@ public class RewardModel implements Serializable {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getDivisionName() {
+        return divisionName;
+    }
+
+    public void setDivisionName(String divisionName) {
+        this.divisionName = divisionName;
     }
 
     public String getRewardType() {

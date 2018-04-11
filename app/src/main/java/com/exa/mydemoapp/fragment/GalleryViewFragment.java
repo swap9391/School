@@ -12,8 +12,7 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.ImageModel;
-import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.AlbumMasterModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import java.util.List;
  */
 
 public class GalleryViewFragment extends CommonFragment {
-    private ArrayList<ImageRequest> images;
+    private ArrayList<AlbumMasterModel> images;
     private GalleryAdapter mAdapter;
     @ViewById(R.id.recycler_view)
     private RecyclerView recyclerView;
@@ -45,20 +44,20 @@ public class GalleryViewFragment extends CommonFragment {
         images = new ArrayList<>();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            images = (ArrayList<ImageRequest>) bundle.getSerializable("mylist");
+            images = (ArrayList<AlbumMasterModel>) bundle.getSerializable("mylist");
         }
         ShowList(images);
         return view;
     }
 
-    private void ShowList(List<ImageRequest> imageRequestList) {
-        List<ImageRequest> newImagereqList = new ArrayList<>();
-        for (ImageRequest imageRequest : imageRequestList) {
-            for (int i = 0; i < imageRequest.getImages().size(); i++) {
-                ImageRequest iRequest = new ImageRequest();
-                iRequest.setPlaceName(imageRequest.getPlaceName());
-                iRequest.setImages(imageRequest.getImages());
-                iRequest.setImg(imageRequest.getImages().get(i).getImgUrl());
+    private void ShowList(List<AlbumMasterModel> albumImagesModelList) {
+        List<AlbumMasterModel> newImagereqList = new ArrayList<>();
+        for (AlbumMasterModel albumImagesModel : albumImagesModelList) {
+            for (int i = 0; i < albumImagesModel.getAlbumImagesModels().size(); i++) {
+                AlbumMasterModel iRequest = new AlbumMasterModel();
+                iRequest.setAlbumTitle(albumImagesModel.getAlbumTitle());
+                iRequest.setAlbumImagesModels(albumImagesModel.getAlbumImagesModels());
+                iRequest.setImg(albumImagesModel.getAlbumImagesModels().get(i).getImageUrl());
                 newImagereqList.add(i, iRequest);
             }
         }

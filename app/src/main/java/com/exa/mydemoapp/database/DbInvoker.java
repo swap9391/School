@@ -10,8 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.exa.mydemoapp.mapper.StudentMapper;
-import com.exa.mydemoapp.model.LoginDataModel;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.UserModel;
 
 
 public class DbInvoker {
@@ -130,38 +129,34 @@ public class DbInvoker {
 
     }
 
-    public void insertLoginModel(LoginDataModel bean) {
+    public void insertUpdateUser(UserModel bean) {
         insertUpdateBean(bean);
     }
 
-    public void insertUpdateUser(StudentModel bean) {
-        insertUpdateBean(bean);
-    }
-
-    public List<StudentModel> getStudentListByClass(String className) {
+    public List<UserModel> getStudentListByClass(String className) {
         String sql = SQLs.sel_student_data + " and className=" + "'" + className + "'" + " ORDER BY localId ASC";
         String[] params = {""};
-        return (List<StudentModel>) executeSelect(sql, params,
+        return (List<UserModel>) executeSelect(sql, params,
                 new StudentMapper());
     }
 
-    public List<StudentModel> getUserList() {
+    public List<UserModel> getUserList() {
         String sql = SQLs.sel_student_data + " ORDER BY localId ASC";
         String[] params = {""};
-        return (List<StudentModel>) executeSelect(sql, params,
+        return (List<UserModel>) executeSelect(sql, params,
                 new StudentMapper());
     }
 
-    public List<StudentModel> getUserListByStudent(String className) {
+    public List<UserModel> getUserListByStudent(String className) {
         String sql = SQLs.sel_student_data + " and userType='STUDENT' and className='" + className + "' ORDER BY localId ASC";
         String[] params = {""};
-        return (List<StudentModel>) executeSelect(sql, params,
+        return (List<UserModel>) executeSelect(sql, params,
                 new StudentMapper());
     }
 
-    public StudentModel getStudentById(Integer id) {
+    public UserModel getStudentById(String studentId) {
         String[] params = {""};
-        String sql = SQLs.sel_student_data + " and _id=" + id;
+        String sql = SQLs.sel_student_data + " and _id='" + studentId + "'";
         return executeSelectOne(sql, params,
                 new StudentMapper());
     }

@@ -18,7 +18,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.exa.mydemoapp.AdminActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
@@ -27,9 +26,9 @@ import com.exa.mydemoapp.adapter.StudentAttendaceAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.listner.AttendanceListner;
-import com.exa.mydemoapp.model.AttendaceModel;
-import com.exa.mydemoapp.model.StudentAttendanceModel;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.AttendanceMasterModel;
+import com.exa.mydemoapp.model.StudentAttendanceDetailsModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -40,9 +39,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by midt-078 on 14/2/18.
@@ -61,12 +58,12 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     @ViewById(R.id.date_picker_event)
     private Button datePicker;
 
-    private List<StudentModel> listStudent;
-    private List<StudentAttendanceModel> selectedStudents;
+    private List<UserModel> listStudent;
+    private List<StudentAttendanceDetailsModel> selectedStudents;
     HashMap<String, Object> selectedStudentMap = new HashMap<>();
     private DbInvoker dbInvoker;
     StudentAttendaceAdapter mAdapter;
-    AttendaceModel attendaceModel;
+    AttendanceMasterModel attendanceMasterModel;
     int lastClassName;
 
     @Override
@@ -80,7 +77,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_attendance, container, false);
         dbInvoker = new DbInvoker(getMyActivity());
-        attendaceModel = new AttendaceModel();
+        attendanceMasterModel = new AttendanceMasterModel();
         listStudent = new ArrayList<>();
         getMyActivity().toolbar.setTitle("Add Attendance");
         setHasOptionsMenu(true);
@@ -137,14 +134,14 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
             }
         });
         datePicker.setText(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "dd MMM yyyy"));
-        // attendaceModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.ONLY_DATE_FORMAT));
+        // attendanceMasterModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.ONLY_DATE_FORMAT));
         long timestamp = System.currentTimeMillis() / 1000;
-        attendaceModel.setDateStamp("" + timestamp);
+        attendanceMasterModel.setAttendanceDate(timestamp);
         return view;
     }
 
 
-    private void initAdapter(List<StudentAttendanceModel> listStudent) {
+    private void initAdapter(List<StudentAttendanceDetailsModel> listStudent) {
         //if (listStudent != null && listStudent.size() > 0) {
         mAdapter = new StudentAttendaceAdapter(listStudent, getMyActivity(), this);
         LinearLayoutManager mLayoutManager =
@@ -158,39 +155,39 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     }
 
     private void bindModel() {
-        attendaceModel.setClassName(spinnerClass.getSelectedItem().toString());
-        attendaceModel.setStudentList(getSelectedStudents());
+        attendanceMasterModel.setClassName(spinnerClass.getSelectedItem().toString());
+        attendanceMasterModel.setStudentList(getSelectedStudents());
     }
 
-    public List<StudentAttendanceModel> getSelectedStudents() {
+    public List<StudentAttendanceDetailsModel> getSelectedStudents() {
         return selectedStudents;
     }
 
-    public void setSelectedStudents(List<StudentAttendanceModel> selectedStudents) {
+    public void setSelectedStudents(List<StudentAttendanceDetailsModel> selectedStudents) {
         this.selectedStudents = selectedStudents;
     }
 
 
     @Override
-    public void present(StudentAttendanceModel bean, int position) {
-        getSelectedStudents().get(position).setPresent("true");
+    public void present(StudentAttendanceDetailsModel bean, int position) {
+        getSelectedStudents().get(position).setPresent(true);
     }
 
     @Override
-    public void absent(StudentAttendanceModel bean, int position) {
-        getSelectedStudents().get(position).setPresent("false");
+    public void absent(StudentAttendanceDetailsModel bean, int position) {
+        getSelectedStudents().get(position).setPresent(false);
     }
 
     private boolean check() {
-        if (attendaceModel.getDateStamp() == null || attendaceModel.getDateStamp().isEmpty()) {
-            getMyActivity().showToast("Please Select Data");
+        if (attendanceMasterModel.getAttendanceDate() <= 0) {
+            getMyActivity().showToast("Please Select Date");
             return false;
         }
-        if (attendaceModel.getClassName() == null || attendaceModel.getClassName().isEmpty()) {
+        if (attendanceMasterModel.getClassName() == null || attendanceMasterModel.getClassName().isEmpty()) {
             getMyActivity().showToast("Please Select Class");
             return false;
         }
-        if (attendaceModel.getStudentList() == null || attendaceModel.getStudentList().size() <= 0) {
+        if (attendanceMasterModel.getStudentList() == null || attendanceMasterModel.getStudentList().size() <= 0) {
             getMyActivity().showToast("Please Select Atleast One Student");
             return false;
         }
@@ -204,12 +201,12 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                List<StudentAttendanceModel> studentAttendanceModels = new ArrayList<>();
-                for (StudentAttendanceModel bean : getSelectedStudents()) {
+                List<StudentAttendanceDetailsModel> studentAttendanceModels = new ArrayList<>();
+                for (StudentAttendanceDetailsModel bean : getSelectedStudents()) {
                     if (inStatus.equals("STATUS_IN")) {
-                        bean.setIn(inStatus);
+                        bean.setStudentIn(true);
                     } else {
-                        bean.setOut(inStatus);
+                        bean.setStudentIn(true);
                     }
                     studentAttendanceModels.add(bean);
 
@@ -217,20 +214,20 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
 
 
                 HashMap<String, Object> hashMap = new HashMap<>();
-                hashMap.put(IJson.classId, "" + attendaceModel.getClassName());
-                hashMap.put(IJson.dateStamp, "" + attendaceModel.getDateStamp());
+                hashMap.put(IJson.classId, "" + attendanceMasterModel.getClassName());
+                hashMap.put(IJson.dateStamp, "" + attendanceMasterModel.getAttendanceDate());
                 hashMap.put(IJson.studentList, studentAttendanceModels);
-                if (attendaceModel.getId() != null && attendaceModel.getId().intValue() > 0) {
-                    hashMap.put(IJson.id, attendaceModel.getId());
+                if (attendanceMasterModel.getPkeyId() != null && !attendanceMasterModel.getPkeyId().isEmpty()) {
+                    hashMap.put(IJson.id, attendanceMasterModel.getPkeyId());
                 }
 
-                CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_ATTENDANCE, hashMap, new VolleyResponseListener<AttendaceModel>() {
+                CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_ATTENDANCE, hashMap, new VolleyResponseListener<AttendanceMasterModel>() {
                     @Override
-                    public void onResponse(AttendaceModel[] object) {
+                    public void onResponse(AttendanceMasterModel[] object) {
                     }
 
                     @Override
-                    public void onResponse(AttendaceModel studentData) {
+                    public void onResponse(AttendanceMasterModel studentData) {
                         getMyActivity().showFragment(new DashboardFragment(), null);
                     }
 
@@ -238,7 +235,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                     public void onError(String message) {
                         Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
                     }
-                }, AttendaceModel.class);
+                }, AttendanceMasterModel.class);
 
 
             }
@@ -256,21 +253,21 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.dateStamp, CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.ONLY_DATE_FORMAT));
         hashMap.put(IJson.classId, className);
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_GET_ATTENDANCE, hashMap, new VolleyResponseListener<AttendaceModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_GET_ATTENDANCE, hashMap, new VolleyResponseListener<AttendanceMasterModel>() {
 
             @Override
-            public void onResponse(AttendaceModel[] object) {
+            public void onResponse(AttendanceMasterModel[] object) {
 
             }
 
             @Override
-            public void onResponse(AttendaceModel object) {
+            public void onResponse(AttendanceMasterModel object) {
 
-                attendaceModel = object;
-                for (StudentAttendanceModel attendanceModel : object.getStudentList()) {
-                    StudentModel studentModel = dbInvoker.getStudentById(attendanceModel.getStudentId());
-                    attendanceModel.setStudentName(studentModel.getStudentName());
-                    attendanceModel.setStudentId(studentModel.getId());
+                attendanceMasterModel = object;
+                for (StudentAttendanceDetailsModel attendanceModel : object.getStudentList()) {
+                    UserModel userModel = dbInvoker.getStudentById(attendanceModel.getStudentId());
+                    attendanceModel.setStudentName(userModel.getFirstName()+" "+userModel.getLastName());
+                    attendanceModel.setStudentId(userModel.getPkeyId());
                     selectedStudents.add(attendanceModel);
                 }
 
@@ -283,16 +280,16 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 if (message != null && message.isEmpty()) {
                     Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
                 }
-             /*   StudentModel studentModel0 = new StudentModel();
+             /*   UserModel studentModel0 = new UserModel();
                 studentModel0.setId(1);
                 studentModel0.setStudentName("Swapnil");
-                StudentModel studentModel1 = new StudentModel();
+                UserModel studentModel1 = new UserModel();
                 studentModel1.setId(2);
                 studentModel1.setStudentName("Vaibhav");
-                StudentModel studentModel2 = new StudentModel();
+                UserModel studentModel2 = new UserModel();
                 studentModel2.setId(3);
                 studentModel2.setStudentName("Manohar");
-                StudentModel studentModel3 = new StudentModel();
+                UserModel studentModel3 = new UserModel();
                 studentModel3.setId(4);
                 studentModel3.setStudentName("Uday");
                 listStudent.add(studentModel0);
@@ -301,16 +298,16 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 listStudent.add(studentModel3);
 */
                 listStudent = dbInvoker.getUserListByStudent(className);
-                for (StudentModel studentModel : listStudent) {
-                    StudentAttendanceModel attendanceModel = new StudentAttendanceModel();
-                    attendanceModel.setStudentName(studentModel.getStudentName());
-                    attendanceModel.setStudentId(studentModel.getId());
+                for (UserModel userModel : listStudent) {
+                    StudentAttendanceDetailsModel attendanceModel = new StudentAttendanceDetailsModel();
+                    attendanceModel.setStudentName(userModel.getFirstName()+" "+userModel.getLastName());
+                    attendanceModel.setStudentId(userModel.getPkeyId());
                     selectedStudents.add(attendanceModel);
                 }
 
                 initAdapter(selectedStudents);
             }
-        }, AttendaceModel.class);
+        }, AttendanceMasterModel.class);
 
 
     }
@@ -348,7 +345,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
             }
             Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
             String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.ONLY_DATE_FORMAT);
-            attendaceModel.setDateStamp(formatedDate);
+            //attendanceMasterModel.setDateStamp(formatedDate);
             datePicker.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
         }
     };

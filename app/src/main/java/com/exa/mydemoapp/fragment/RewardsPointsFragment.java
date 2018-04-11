@@ -1,12 +1,9 @@
 package com.exa.mydemoapp.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,27 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
-import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
-import com.exa.mydemoapp.Common.StudentInfoSingleton;
 import com.exa.mydemoapp.HomeActivity;
-import com.exa.mydemoapp.LoginActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.ImageRequest;
-import com.exa.mydemoapp.model.RewardModel;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.StudentRewardsModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,9 +58,8 @@ public class RewardsPointsFragment extends CommonFragment {
     List<String> listClass;
     List<String> listStudentName;
     List<String> listRewardType;
-    List<StudentModel> listStudentClassWise;
-    ProgressDialog progressDialog;
-    RewardModel rewardModel;
+    List<UserModel> listStudentClassWise;
+    StudentRewardsModel rewardModel;
 
 
     @Override
@@ -90,7 +76,7 @@ public class RewardsPointsFragment extends CommonFragment {
         getMyActivity().init();
         initViewBinding(view);
 
-        rewardModel = new RewardModel();
+        rewardModel = new StudentRewardsModel();
 
         listStudentName = new ArrayList<>();
 
@@ -116,8 +102,8 @@ public class RewardsPointsFragment extends CommonFragment {
                 if (!listClass.get(position).equals("All")) {
                     listStudentClassWise = getMyActivity().getDbInvoker().getStudentListByClass(listClass.get(position));
                     if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
-                        for (StudentModel bean : listStudentClassWise) {
-                            listStudentName.add(bean.getStudentName() + " " + bean.getRegistrationId());
+                        for (UserModel bean : listStudentClassWise) {
+                            listStudentName.add(bean.getFirstName() + " " + bean.getUserInfoModel().getRegistrationId());
                         }
                         spinnerStudentName.setVisibility(View.VISIBLE);
                         txtStudentSpinnerTitle.setVisibility(View.VISIBLE);
@@ -144,14 +130,13 @@ public class RewardsPointsFragment extends CommonFragment {
     private void bindModel() {
         rewardModel.setClassName(spnClass.getSelectedItem().toString());
         if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
-            String studentId = listStudentClassWise.get(spinnerStudentName.getSelectedItemPosition()).getId().toString();
+            String studentId = listStudentClassWise.get(spinnerStudentName.getSelectedItemPosition()).getPkeyId();
             if (studentId != null) {
                 rewardModel.setStudentId(studentId);
             }
         }
         rewardModel.setDescription(edt_description.getText().toString().trim());
         rewardModel.setRewardType(spinnerRewardType.getSelectedItem().toString());
-        rewardModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
         rewardModel.setPoints(CommonUtils.asInt(edt_points.getText().toString(), 0));
     }
 
@@ -255,13 +240,13 @@ public class RewardsPointsFragment extends CommonFragment {
         hashMap.put(IJson.points, "" + rewardModel.getPoints());
         hashMap.put(IJson.description, "" + rewardModel.getDescription());
 
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<RewardModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<StudentRewardsModel>() {
             @Override
-            public void onResponse(RewardModel[] object) {
+            public void onResponse(StudentRewardsModel[] object) {
             }
 
             @Override
-            public void onResponse(RewardModel studentData) {
+            public void onResponse(StudentRewardsModel studentData) {
               getMyActivity().showFragment(new DashboardFragment(),null);
             }
 
@@ -269,17 +254,8 @@ public class RewardsPointsFragment extends CommonFragment {
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
             }
-        }, RewardModel.class);
+        }, StudentRewardsModel.class);
 
-    }
-
-    private void saveUserInformation() {
-        final String userId = getMyActivity().databaseReference.push().getKey();
-        bindModel();
-        rewardModel.setUniqKey(userId);
-        getMyActivity().databaseReference.child(Constants.MAIN_TABLE).child(Constants.REWARD_TABLE).child(userId).setValue(rewardModel);
-        Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-        getMyActivity().showFragment(getMyActivity().dashboardFragment, null);
     }
 
 

@@ -24,14 +24,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.database.DbInvoker;
-import com.exa.mydemoapp.model.LocationModel;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.tracker.TrackerActivity;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -338,7 +336,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                 .build()));
     }
 
-    public void getVanType() {
+    /*public void getVanType() {
         DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
         Query ref2 = ref1.child(Constants.LOCATION_TABLE).orderByKey().limitToLast(1);
         ref2.addValueEventListener(new ValueEventListener() {
@@ -363,7 +361,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                 Log.e("Exception", "onCancelled", databaseError.toException());
             }
         });
-    }
+    }*/
 
     private void loadPreviousStatuses(String vehicleNumber) {
         LinkedList<Map<String, Object>> mTransportStatuses = new LinkedList<>();
@@ -438,7 +436,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
 
     }
 
-    public void getDriveData() {
+    /*public void getDriveData() {
         DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
         //Query ref2 = ref1.child(Constants.LOCATION_TABLE).orderByKey().limitToLast(20);
         DatabaseReference ref2 = ref1.child(Constants.LOCATION_TABLE);
@@ -465,7 +463,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
             }
         });
 
-    }
+    }*/
 
 
     @Override
@@ -480,13 +478,13 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_map, menu);
-        StudentModel studentModel = new StudentModel();
+        UserModel userModel = new UserModel();
         DbInvoker dbInvoker = new DbInvoker(MapsActivity.this);
-        int studentId = CommonUtils.asInt(CommonUtils.getSharedPref(Constants.STUDENT_ID, this), 0);
-        if (studentId > 0) {
-            studentModel = dbInvoker.getStudentById(studentId);
+        String studentId = CommonUtils.getSharedPref(Constants.STUDENT_ID, this);
+        if (studentId != null) {
+            userModel = dbInvoker.getStudentById(studentId);
         }
-        if (studentModel.getUserType().equals(getStringById(R.string.user_type_student))) {
+        if (userModel.getUserType().equals(getStringById(R.string.user_type_student))) {
             menu.findItem(R.id.menu_tracker).setVisible(false);
             menu.findItem(R.id.menu_map_demo).setVisible(false);
         }

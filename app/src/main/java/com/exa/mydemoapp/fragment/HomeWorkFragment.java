@@ -1,7 +1,6 @@
 package com.exa.mydemoapp.fragment;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -18,22 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.exa.mydemoapp.Common.CommonUtils;
-import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.HomeWorkModel;
-import com.exa.mydemoapp.model.RewardModel;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.DailyHomeworkModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,7 +44,7 @@ public class HomeWorkFragment extends CommonFragment {
 
     List<String> listClass;
     List<String> listRewardType;
-    HomeWorkModel homeWorkModel;
+    DailyHomeworkModel homeWorkModel;
 
 
     @Override
@@ -69,7 +61,7 @@ public class HomeWorkFragment extends CommonFragment {
         getMyActivity().init();
         initViewBinding(view);
 
-        homeWorkModel = new HomeWorkModel();
+        homeWorkModel = new DailyHomeworkModel();
 
 
         listClass = Arrays.asList(getResources().getStringArray(R.array.class_type));
@@ -87,7 +79,7 @@ public class HomeWorkFragment extends CommonFragment {
                     listStudentClassWise = getMyActivity().getDbInvoker().getStudentListByClass(listClass.get(position));
                     if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
                         listStudentClassWise = new ArrayList<>();
-                        for (StudentModel bean : listStudentClassWise) {
+                        for (UserModel bean : listStudentClassWise) {
                             listStudentName.add(bean.getStudentName() + " " + bean.getRegistrationId());
                         }
                         spinnerStudentName.setVisibility(View.VISIBLE);
@@ -113,19 +105,19 @@ public class HomeWorkFragment extends CommonFragment {
     }
 
     private void bindModel() {
-        homeWorkModel.setClassId(spnClass.getSelectedItem().toString());
-        homeWorkModel.setSubject(edtSubject.getText().toString().trim());
+        homeWorkModel.setClassName(spnClass.getSelectedItem().toString());
+        homeWorkModel.setSubjectName(edtSubject.getText().toString().trim());
         homeWorkModel.setDescription(edt_description.getText().toString().trim());
-        homeWorkModel.setDataStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
+        //homeWorkModel.setHomeworkDate(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
     }
 
 
     private boolean check() {
-        if (homeWorkModel.getClassId() == null || homeWorkModel.getClassId().equals("")) {
+        if (homeWorkModel.getClassName() == null || homeWorkModel.getClassName().equals("")) {
             getMyActivity().showToast("Please Select Class Name");
             return false;
         }
-        if (homeWorkModel.getSubject() == null || homeWorkModel.getSubject().equals("")) {
+        if (homeWorkModel.getSubjectName() == null || homeWorkModel.getSubjectName().equals("")) {
             getMyActivity().showToast("Please Select Subject Name");
             return false;
         }
@@ -185,18 +177,18 @@ public class HomeWorkFragment extends CommonFragment {
 
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.classId, "" + homeWorkModel.getClassId());
-        hashMap.put(IJson.subject, "" + homeWorkModel.getSubject());
-        hashMap.put(IJson.dateStamp, "" + homeWorkModel.getDataStamp());
+        hashMap.put(IJson.classId, "" + homeWorkModel.getClassName());
+        hashMap.put(IJson.subject, "" + homeWorkModel.getSubjectName());
+        hashMap.put(IJson.dateStamp, "" + homeWorkModel.getHomeworkDate());
         hashMap.put(IJson.description, "" + homeWorkModel.getDescription());
 
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<RewardModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<DailyHomeworkModel>() {
             @Override
-            public void onResponse(RewardModel[] object) {
+            public void onResponse(DailyHomeworkModel[] object) {
             }
 
             @Override
-            public void onResponse(RewardModel studentData) {
+            public void onResponse(DailyHomeworkModel studentData) {
 
             }
 
@@ -204,7 +196,7 @@ public class HomeWorkFragment extends CommonFragment {
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
             }
-        }, RewardModel.class);
+        }, DailyHomeworkModel.class);
 
     }
 

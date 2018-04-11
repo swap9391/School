@@ -20,7 +20,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.AlbumMasterModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -161,7 +161,7 @@ public class CommonActivity extends AppCompatActivity {
         });
     }
 
-    protected void initViewBinding(View fragmentView) {
+    public void initViewBinding(View fragmentView) {
         Field[] fields = this.getClass().getDeclaredFields();
         if (fields != null && fields.length > 0) {
             for (Field field : fields) {
@@ -184,65 +184,7 @@ public class CommonActivity extends AppCompatActivity {
         }
     }
 
-    public void updateAlbumInfo() {
-        try {
-            init();
 
-            DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
-            DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
-            Query query = ref2.orderByChild("placeName").equalTo("Sports Day");
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                        ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
-                        imageRequest.setPlaceName("Sports Day 2017");
-                        databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
-                        //Toast.makeText(CommonActivity.this, "Information Updated...", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e("Exception", "onCancelled", databaseError.toException());
-                }
-            });
-
-        } catch (Exception e) {
-            showToast(e.getMessage());
-        }
-
-    }
-
-    public void updateStudentInfo() {
-        try {
-            init();
-
-            DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
-            DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
-            Query query = ref2.orderByChild("imageType").equalTo("Gallery");
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                        ImageRequest imageRequest = Snapshot.getValue(ImageRequest.class);
-                        imageRequest.setStudentId("NA");
-                        databaseReference.child(Constants.MAIN_TABLE).child(Constants.IMAGE_TABLE).child(imageRequest.getUniqKey()).setValue(imageRequest);
-                        //Toast.makeText(CommonActivity.this, "Information Updated...", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e("Exception", "onCancelled", databaseError.toException());
-                }
-            });
-
-        } catch (Exception e) {
-            showToast(e.getMessage());
-        }
-
-    }
 
     public String getStringById(int id) {
         return getResources().getString(id);

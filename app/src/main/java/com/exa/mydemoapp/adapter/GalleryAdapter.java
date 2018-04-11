@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.exa.mydemoapp.R;
-import com.exa.mydemoapp.model.ImageRequest;
+import com.exa.mydemoapp.model.AlbumMasterModel;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHolder> {
 
-    private List<ImageRequest> images;
+    private List<AlbumMasterModel> images;
     private Context mContext;
     private int count;
     private String fragment;
@@ -55,7 +55,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
     }
 
 
-    public GalleryAdapter(Context context, List<ImageRequest> images, int count, String fragment) {
+    public GalleryAdapter(Context context, List<AlbumMasterModel> images, int count, String fragment) {
         mContext = context;
         this.images = images;
         this.count = count;
@@ -77,14 +77,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ImageRequest image = images.get(position);
+        AlbumMasterModel image = images.get(position);
 
         if (count <= 0) {
             // holder.relativeLayoutCount.setVisibility(View.GONE);
             holder.txtImageFooter.setVisibility(View.GONE);
         } else {
             holder.txtImageFooter.setVisibility(View.VISIBLE);
-            holder.txtImageFooter.setText(image.getPlaceName());
+            holder.txtImageFooter.setText(image.getAlbumTitle());
         }
         if (image.getImg() != null) {
             Glide.with(mContext).load(image.getImg())
@@ -97,8 +97,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
         if (fragment != null && fragment.equalsIgnoreCase("Staff")) {
             holder.cardView.setVisibility(View.VISIBLE);
             holder.txtImageFooter.setVisibility(View.GONE);
-            holder.txtName.setText(image.getPlaceName());
-            holder.txtDescription.setText(image.getDescription());
+            holder.txtName.setText(image.getAlbumTitle());
+            holder.txtDescription.setText(image.getAlbumDescription());
         }
     }
 

@@ -13,8 +13,7 @@ import android.widget.TextView;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.listner.AttendanceListner;
-import com.exa.mydemoapp.model.StudentAttendanceModel;
-import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.StudentAttendanceDetailsModel;
 
 import java.util.List;
 
@@ -24,12 +23,12 @@ import java.util.List;
 
 public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttendaceAdapter.MyViewHolder> {
 
-    private List<StudentAttendanceModel> listUser;
+    private List<StudentAttendanceDetailsModel> listUser;
     private Activity context;
     private int lastCheckedPosition = -1;
     private AttendanceListner attendanceListner;
 
-    public StudentAttendaceAdapter(List<StudentAttendanceModel> listUser, Activity context, AttendanceListner attendanceListner) {
+    public StudentAttendaceAdapter(List<StudentAttendanceDetailsModel> listUser, Activity context, AttendanceListner attendanceListner) {
         this.listUser = listUser;
         this.context = context;
         this.attendanceListner = attendanceListner;
@@ -77,25 +76,24 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        StudentAttendanceModel selectedItem = listUser.get(position);
+        StudentAttendanceDetailsModel selectedItem = listUser.get(position);
         DbInvoker dbInvoker = new DbInvoker(context);
 
         holder.txtName.setText(selectedItem.getStudentName());
         // StudentAttendanceModel bean = listUser.get(lastCheckedPosition);
 
-        if (selectedItem.getIn() != null && selectedItem.getIn().equals("STATUS_IN")) {
+        if (selectedItem.isStudentIn()) {
             holder.txtInOutStatus.setText("IN");
+            holder.chkAttendance.setChecked(true);
         }
-        if (selectedItem.getOut() != null && selectedItem.getOut().equals("STATUS_OUT")) {
+        if (selectedItem.isStudentOut()) {
             holder.txtInOutStatus.setText("OUT");
         }
-        if (selectedItem.getIn() == null) {
-            holder.chkAttendance.setChecked(true);
-        }
 
-        if (selectedItem.getPresent() != null && selectedItem.getPresent().equals("true")) {
+
+        if (selectedItem.isPresent()) {
             holder.chkAttendance.setChecked(true);
-        } else if (selectedItem.getPresent() != null && selectedItem.getPresent().equals("false")) {
+        } else if (!selectedItem.isPresent()) {
             holder.chkAttendance.setChecked(false);
         } else {
             holder.chkAttendance.setChecked(true);
