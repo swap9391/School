@@ -78,12 +78,12 @@ public class DashboardFragment extends CommonFragment {
         if (getMyActivity().isGuest) {
             gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForGuest, imagesForGuest));
         } else {
-            String userType= CommonUtils.getSharedPref(Constants.USER_TYPE,getMyActivity());
-            if (userType.equals(getStringById(R.string.user_type_admin))) {
+            String userType = CommonUtils.getSharedPref(Constants.USER_TYPE, getMyActivity());
+            if (userType.equals(Constants.USER_TYPE_ADMIN)) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForAdmin, imagesForAdmin));
-            } else if (userType.equals(getStringById(R.string.user_type_student))) {
+            } else if (userType.equals(Constants.USER_TYPE_STUDENT)) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForStudent, imagesForStudent));
-            } else if (userType.equals(getStringById(R.string.user_type_driver))) {
+            } else if (userType.equals(Constants.USER_TYPE_DRIVER)) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForDriver, imagesForDriver));
             } else {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForGuest, imagesForGuest));

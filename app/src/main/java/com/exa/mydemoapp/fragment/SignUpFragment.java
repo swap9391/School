@@ -286,7 +286,7 @@ public class SignUpFragment extends CommonFragment {
         userModel.getUserInfoModel().setAddress(edtAddress.getText().toString().trim());
         userModel.getUserInfoModel().setBloodGroup(edtBloodGrp.getText().toString().trim());
         userModel.setUsername(edtUsername.getText().toString().trim());
-        userModel.setContactNumber(CommonUtils.asInt(edtContactNumber.getText().toString().trim(), 0));
+        userModel.setContactNumber(edtContactNumber.getText().toString().trim());
         userModel.setUserType(spnUserType.getSelectedItem().toString().trim());
         userModel.setPassword(edtPassword.getText().toString().trim());
         userModel.getUserInfoModel().setSchoolName(spnSchoolName.getSelectedItem().toString());
@@ -400,11 +400,11 @@ public class SignUpFragment extends CommonFragment {
             getMyActivity().showToast("Please Enter Full Name");
             return false;
         }
-        if (userModel.getContactNumber() <= 0) {
+        if (userModel.getContactNumber() != null && userModel.getContactNumber().isEmpty()) {
             getMyActivity().showToast("Please Enter Contact Number");
             return false;
         }
-        if (userModel.getContactNumber() > 0 && userModel.getContactNumber() < 10) {
+        if (userModel.getContactNumber() != null && userModel.getContactNumber().length() < 10) {
             getMyActivity().showToast("Please Enter Valid Contact Number");
             return false;
         }
@@ -533,6 +533,10 @@ public class SignUpFragment extends CommonFragment {
             }
 
             @Override
+            public void onResponse() {
+            }
+
+            @Override
             public void onResponse(UserModel object) {
 
                 getMyActivity().flagCallUserList = true;
@@ -565,9 +569,9 @@ public class SignUpFragment extends CommonFragment {
         OtpDialogFrag dialog = new OtpDialogFrag(new OtpListner() {
             @Override
             public void onResult(boolean flag) {
-                 if (flag){
-                     uploadImages();
-                 }
+                if (flag) {
+                    uploadImages();
+                }
             }
         }, userModel.getContactNumber() + "");
         dialog.show(getMyActivity().getFragmentManager(), "FeesDialog");

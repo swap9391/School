@@ -131,8 +131,6 @@ public class DbInvoker {
 
     public void insertUpdateUser(UserModel bean) {
         insertUpdateBean(bean);
-
-
     }
 
     public List<UserModel> getStudentListByClass(String className) {
@@ -158,13 +156,13 @@ public class DbInvoker {
 
     public UserModel getStudentById(String studentId) {
         String[] params = {""};
-        String sql = SQLs.sel_student_data + " and _id='" + studentId + "'";
+        String sql = SQLs.sel_student_data + " and pkeyId='" + studentId + "'";
         return executeSelectOne(sql, params,
                 new UserMapper());
     }
 
     /*public List<IdValue> getCodeValue(int codeTypeId) {
-        String sql = SQLs.sel_class_name+" and _id="+codeTypeId;
+        String sql = SQLs.sel_class_name+" and pkeyId="+codeTypeId;
         String[] params = new String[] { ""  };
         return (List<IdValue>) executeSelect(sql, params, new IdValueMapper());
     }*/
@@ -184,7 +182,7 @@ public class DbInvoker {
 
 /*
     public List<DivisionName> getDivisionNameByClass(int classId) {
-        String sql = SQLs.sel_division_name+" and class_id="+classId+" ORDER BY division_name ASC";
+        String sql = SQLs.sel_division_name+" and classpkeyId="+classId+" ORDER BY division_name ASC";
         String[] params = { "" };
         return (List<DivisionName>) executeSelect(sql, params,
                 new DivisionNameMapper());
@@ -193,7 +191,7 @@ public class DbInvoker {
 
     public DivisionName getDivisionNameById(int id) {
         String[] params = { "" };
-        String sql = SQLs.sel_division_name+" and _id="+id;
+        String sql = SQLs.sel_division_name+" and pkeyId="+id;
         return  executeSelectOne(sql, params,
                 new DivisionNameMapper());
     }
@@ -202,7 +200,7 @@ public class DbInvoker {
 /*
     public void deleteDivisionById(int Id) {
         String[] params = new String[0];
-        String sql = SQLs.del_division_name+" WHERE _id="+Id;
+        String sql = SQLs.del_division_name+" WHERE pkeyId="+Id;
         executeSQL(sql, params);
 
     }
@@ -236,7 +234,7 @@ public class DbInvoker {
 
     public UserBean getUserById(int id) {
         String[] params = { "" };
-        String sql = SQLs.sel_user_data+" and _id="+id+" and user_type='TEACHER'";
+        String sql = SQLs.sel_user_data+" and pkeyId="+id+" and user_type='TEACHER'";
         return  executeSelectOne(sql, params,
                 new UserMapper());
     }
@@ -245,7 +243,7 @@ public class DbInvoker {
 
     public void deleteUserById(int Id) {
         String[] params = new String[0];
-        String sql = SQLs.del_user_data+" WHERE _id="+Id;
+        String sql = SQLs.del_user_data+" WHERE pkeyId="+Id;
         executeSQL(sql, params);
 
     }
@@ -260,20 +258,20 @@ public class DbInvoker {
 
     public AttendanceBean getAttendanceById(int id) {
         String[] params = { "" };
-        String sql = SQLs.sel_attendance+" and _id="+id;
+        String sql = SQLs.sel_attendance+" and pkeyId="+id;
         return  executeSelectOne(sql, params,
                 new AttendanceMapper());
     }
     public AttendanceBean getAttendanceByUserId(int userId,String date) {
         String[] params = { "" };
-        String sql = SQLs.sel_attendance+" and user_id="+userId+" and attendance_date = "+date;
+        String sql = SQLs.sel_attendance+" and userpkeyId="+userId+" and attendance_date = "+date;
         return  executeSelectOne(sql, params,
                 new AttendanceMapper());
     }
 
     public List<AttendanceBean> getAttendanceByUser(int userId) {
         String[] params = { "" };
-        String sql = SQLs.sel_attendance+" and user_id="+userId;
+        String sql = SQLs.sel_attendance+" and userpkeyId="+userId;
         return (List<AttendanceBean>) executeSelect(sql, params,
                 new AttendanceMapper());
     }
@@ -293,7 +291,7 @@ public class DbInvoker {
 
     public ImageFileBean getImageFileById( int id) {
         String[] params = { "" };
-        String sql = SQLs.sel_image_file + " and _id="+id;
+        String sql = SQLs.sel_image_file + " and pkeyId="+id;
         return (ImageFileBean) executeSelectOne(sql, params,
                 new ImageFileMapper());
     }
@@ -301,7 +299,7 @@ public class DbInvoker {
 
     public void deleteIamgeById(int Id) {
         String[] params = new String[0];
-        String sql = SQLs.del_image_file+" WHERE _id="+Id;
+        String sql = SQLs.del_image_file+" WHERE pkeyId="+Id;
         executeSQL(sql, params);
 
     }
@@ -309,14 +307,14 @@ public class DbInvoker {
 
     public void deleteAttendanceById(int Id) {
         String[] params = new String[0];
-        String sql = SQLs.del_attendance+" WHERE _id="+Id;
+        String sql = SQLs.del_attendance+" WHERE pkeyId="+Id;
         executeSQL(sql, params);
 
     }
 
     public void deleteAttendanceByUser(int Id,String date) {
         String[] params = new String[0];
-        String sql = SQLs.del_attendance+" WHERE user_id="+Id+" and attendance_date = "+date;
+        String sql = SQLs.del_attendance+" WHERE userpkeyId="+Id+" and attendance_date = "+date;
         executeSQL(sql, params);
 
     }

@@ -8,6 +8,7 @@ public interface VolleyResponseListener<T> {
 
     void onResponse(T[] object);
     void onResponse(T object);
+    void onResponse();
 
     void onError(String message);
 

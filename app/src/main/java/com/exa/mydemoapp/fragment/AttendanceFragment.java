@@ -230,7 +230,9 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                     public void onResponse(AttendanceMasterModel studentData) {
                         getMyActivity().showFragment(new DashboardFragment(), null);
                     }
-
+                    @Override
+                    public void onResponse() {
+                    }
                     @Override
                     public void onError(String message) {
                         Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
@@ -259,7 +261,9 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
             public void onResponse(AttendanceMasterModel[] object) {
 
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onResponse(AttendanceMasterModel object) {
 

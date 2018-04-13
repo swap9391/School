@@ -138,6 +138,10 @@ public class OtpDialogFrag extends DialogFragment implements View.OnClickListene
             }
 
             @Override
+            public void onResponse() {
+            }
+
+            @Override
             public void onError(String message) {
                 if (message != null && !message.isEmpty()) {
                     getMyActivity().showToast(message);

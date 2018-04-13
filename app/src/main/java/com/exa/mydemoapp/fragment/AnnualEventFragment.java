@@ -175,6 +175,9 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(AnnualCalenderMasterModel object) {
             }
+            @Override
+            public void onResponse() {
+            }
 
             @Override
             public void onError(String message) {
@@ -244,7 +247,9 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             public void onResponse(AnnualCalenderMasterModel studentData) {
                 getMyActivity().showFragment(new DashboardFragment(),null);
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();

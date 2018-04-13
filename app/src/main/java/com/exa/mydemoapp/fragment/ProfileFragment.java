@@ -147,7 +147,9 @@ public class ProfileFragment extends CommonFragment {
                 }*/
 
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onResponse(StudentRewardsModel object) {
 

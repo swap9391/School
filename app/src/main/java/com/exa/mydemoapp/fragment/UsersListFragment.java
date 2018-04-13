@@ -172,6 +172,9 @@ public class UsersListFragment extends CommonFragment {
                 initAdapter();
 
             }
+            @Override
+            public void onResponse() {
+            }
 
             @Override
             public void onResponse(UserModel object) {

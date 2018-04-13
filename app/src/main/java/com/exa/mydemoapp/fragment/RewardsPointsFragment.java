@@ -249,7 +249,9 @@ public class RewardsPointsFragment extends CommonFragment {
             public void onResponse(StudentRewardsModel studentData) {
               getMyActivity().showFragment(new DashboardFragment(),null);
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();

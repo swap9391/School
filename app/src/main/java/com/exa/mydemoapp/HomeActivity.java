@@ -448,7 +448,9 @@ public class HomeActivity extends CommonActivity {
             public void onResponse(FirebaseRegistrationModel[] object) {
 
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onResponse(FirebaseRegistrationModel studentData) {
                 CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
@@ -480,7 +482,9 @@ public class HomeActivity extends CommonActivity {
                 }*/
 
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onResponse(UserModel object) {
 

@@ -119,11 +119,15 @@ public class CallWebService {
 
                             if (key.equalsIgnoreCase(Constants.RESPONSE_SUCCESS)) {
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                                jsonObjectResult = jsonObject.getJSONObject(Constants.RESPONSE_INFO);
-                                GsonBuilder gsonBuilder = new GsonBuilder();
-                                Gson gson = gsonBuilder.create();
-                                Object object = gson.fromJson(String.valueOf(jsonObjectResult), aClass);
-                                volleyResponseListener.onResponse(object);
+                                if (!jsonObject.isNull(Constants.RESPONSE_INFO)) {
+                                    jsonObjectResult = jsonObject.getJSONObject(Constants.RESPONSE_INFO);
+                                    GsonBuilder gsonBuilder = new GsonBuilder();
+                                    Gson gson = gsonBuilder.create();
+                                    Object object = gson.fromJson(String.valueOf(jsonObjectResult), aClass);
+                                    volleyResponseListener.onResponse(object);
+                                }else {
+                                    volleyResponseListener.onResponse();
+                                }
                             } else if (key.equalsIgnoreCase(Constants.RESPONSE_ERROR)) {
                                 progressDialog.dismiss();
                                 volleyResponseListener.onError(message.toString());
@@ -139,7 +143,7 @@ public class CallWebService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.dismiss();
-                if (!error.getMessage().isEmpty()) {
+                if (error.getMessage() != null && !error.getMessage().isEmpty()) {
                     volleyResponseListener.onError(error.getMessage());
                 }
             }

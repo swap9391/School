@@ -111,7 +111,9 @@ public class NewsFeedFragment extends CommonFragment {
 
                 }
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onResponse(AlbumMasterModel object) {
 

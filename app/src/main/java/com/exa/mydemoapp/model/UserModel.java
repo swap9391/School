@@ -21,7 +21,7 @@ public class UserModel extends BasicBean implements Serializable {
     private String lastName;
     private String profilePicUrl;
     private String email;
-    private int contactNumber;
+    private String contactNumber;
     private boolean contactNumberVerified;
     private long lastLoginAt;
     private String busRoute;
@@ -100,11 +100,11 @@ public class UserModel extends BasicBean implements Serializable {
         this.email = email;
     }
 
-    public int getContactNumber() {
+    public String getContactNumber() {
         return contactNumber;
     }
 
-    public void setContactNumber(int contactNumber) {
+    public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
     }
 
@@ -208,7 +208,7 @@ public class UserModel extends BasicBean implements Serializable {
     @Override
     public void dbBinding(ContentHolder holder) {
         super.dbBinding(holder);
-        holder.setTable("student_data");
+        holder.setTable("user_data");
         holder.getValues().put("pkeyId", getPkeyId());
         holder.getValues().put("username", getUsername());
         holder.getValues().put("password", getPassword());
@@ -218,7 +218,7 @@ public class UserModel extends BasicBean implements Serializable {
         holder.getValues().put("lastName", getLastName());
         holder.getValues().put("profilePicUrl", getProfilePicUrl());
         holder.getValues().put("email", getEmail());
-        holder.getValues().put("contactNumber", "" + getContactNumber());
+        holder.getValues().put("contactNumber",  getContactNumber());
         holder.getValues().put("busRoute", getBusRoute());
         holder.getValues().put("sessionKey", getSessionKey());
 

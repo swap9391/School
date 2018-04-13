@@ -83,7 +83,9 @@ public class StaffInfoFragment extends CommonFragment {
             public void onResponse(AlbumMasterModel object) {
 
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onError(String message) {
             }

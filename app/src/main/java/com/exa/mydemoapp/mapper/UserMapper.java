@@ -40,7 +40,7 @@ public class UserMapper extends DbMapper<UserModel> {
             bean.setLastName(getString(rs, 7));
             bean.setProfilePicUrl(getString(rs, 8));
             bean.setEmail(getString(rs, 9));
-            bean.setContactNumber(getInt(rs, 10));
+            bean.setContactNumber(getString(rs, 10));
             bean.setBusRoute(getString(rs, 11));
             bean.setSessionKey(getString(rs, 12));
             lst.add(bean);

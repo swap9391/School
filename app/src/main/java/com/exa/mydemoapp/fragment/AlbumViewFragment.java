@@ -194,6 +194,9 @@ public class AlbumViewFragment extends CommonFragment {
 
                 }
             }
+            @Override
+            public void onResponse() {
+            }
 
             @Override
             public void onResponse(AlbumMasterModel object) {

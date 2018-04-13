@@ -286,7 +286,9 @@ public class CalenderViewFragment extends Fragment {
                     initCalender();
                 }
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onResponse(AnnualCalenderMasterModel object) {
             }

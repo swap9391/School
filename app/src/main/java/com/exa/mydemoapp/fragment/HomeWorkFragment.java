@@ -191,7 +191,9 @@ public class HomeWorkFragment extends CommonFragment {
             public void onResponse(DailyHomeworkModel studentData) {
 
             }
-
+            @Override
+            public void onResponse() {
+            }
             @Override
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
