@@ -2,9 +2,12 @@ package com.exa.mydemoapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -29,6 +32,7 @@ import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
@@ -108,6 +112,24 @@ public class LoginActivity extends CommonActivity {
     private void bindModel() {
         userModel.setUsername(edtUserName.getText().toString().trim());
         userModel.setPassword(edtPassword.getText().toString().trim());
+        String token = FirebaseInstanceId.getInstance().getToken();
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        String imei = telephonyManager.getDeviceId();
+
+        userModel.getUserDevice().setDeviceType("Android");
+        userModel.getUserDevice().setDeviceName(CommonUtils.getDeviceName());
+        userModel.getUserDevice().setDeviceUid(imei);
+        userModel.getUserDevice().setDeviceToken(token);
     }
 
    /* public void checkLogin() {
@@ -159,9 +181,9 @@ public class LoginActivity extends CommonActivity {
 
     }*/
 
-  /*  private void saveLogin() {
+    /*  private void saveLogin() {
 
-       *//* userModel.setId(102);
+     *//* userModel.setId(102);
         userModel.setStudentUserName("vaibhav");
         userModel.setStudentPassword("123456");
         userModel.setDateInsvestment2("12/02/2018");
@@ -193,18 +215,12 @@ public class LoginActivity extends CommonActivity {
     }*/
 
     private void Login() {
-        String encryptedText = null;
-        String finalEncryptedText = null;
-        try {
-            encryptedText = CommonUtils.encrypt(edtPassword.getText().toString().trim());
-            // finalEncryptedText = encryptedText.substring(0, 10);
-        } catch (Exception e) {
-            Log.e("Error", e.getMessage());
-        }
-
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.studentUserName, "" + userModel.getUsername());
-        hashMap.put(IJson.studentPassword, "" + encryptedText.trim());
+        hashMap.put(IJson.username, userModel.getUsername());
+        hashMap.put(IJson.password, userModel.getPassword());
+        hashMap.put(IJson.loginFrom, userModel.getLoginFrom());
+        hashMap.put(IJson.deviceDetails, userModel.getUserDevice());
+
         CallWebService.getWebserviceObject(this, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
             public void onResponse(UserModel[] object) {
@@ -212,24 +228,15 @@ public class LoginActivity extends CommonActivity {
 
             @Override
             public void onResponse(UserModel studentData) {
-                /*String password = studentData.getStudentPassword().substring(0, 10);
-                if (password.equals(finalEncryptedText1)) {*/
                 if (studentData.getUserType().equals(getStringById(R.string.user_type_student))) {
                     dbInvoker.insertUpdateUser(studentData);
                 }
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getUsername());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getPkeyId().toString());
-                CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_NAME, studentData.getFirstName());
-                AppController.isAdmin(LoginActivity.this);
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
-                // Toast.makeText(getApplicationContext(), getStringById(R.string.login_success), Toast.LENGTH_SHORT).show();
-
-                /*} else {
-                    Toast.makeText(getApplicationContext(), getStringById(R.string.valid_password), Toast.LENGTH_SHORT).show();
-                }*/
             }
 
             @Override

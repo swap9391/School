@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by midt-078 on 11/4/18.
  */
 
-public class UserDevice extends BasicBean implements Serializable {
+public class UserDevice  implements Serializable {
     private String deviceUid;
     private String deviceToken;
     private String deviceName;

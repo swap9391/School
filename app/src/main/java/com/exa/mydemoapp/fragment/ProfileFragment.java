@@ -78,7 +78,7 @@ public class ProfileFragment extends CommonFragment {
                 getMyActivity().logoOut();
             }
         });
-        if (!AppController.isAdmin(getMyActivity())) {
+        if (!getMyActivity().isAdmin) {
             getRewards();
 
             layReward.setOnClickListener(new View.OnClickListener() {

@@ -3,13 +3,13 @@ package com.exa.mydemoapp.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,27 +19,32 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.bumptech.glide.Glide;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.listner.DialogResultListner;
+import com.exa.mydemoapp.model.AlbumImagesModel;
 import com.exa.mydemoapp.model.FeesInstallmentsModel;
+import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
+import com.exa.mydemoapp.s3Upload.S3UploadActivity;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 /**
  * Created by midt-078 on 11/4/18.
  */
 
-public class AddFeesDialogFragment extends DialogFragment {
+public class AddFeesDialogFragment extends DialogFragment implements View.OnClickListener {
 
     @ViewById(R.id.lblInstallmentType)
     TextView txtInstallmentType;
@@ -80,9 +85,10 @@ public class AddFeesDialogFragment extends DialogFragment {
     }
 
     @SuppressLint("ValidFragment")
-    public AddFeesDialogFragment(HomeActivity activity, DialogResultListner dialogResultListner) {
+    public AddFeesDialogFragment(HomeActivity activity,FeesInstallmentsModel feesInstallmentsModel, DialogResultListner dialogResultListner) {
         this.activity = activity;
         this.dialogResultListner = dialogResultListner;
+        this.feesInstallmentsModel=feesInstallmentsModel;
     }
 
     @Override
@@ -94,7 +100,6 @@ public class AddFeesDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.layout_add_fees, container, false);
         activity.initViewBinding(v);
-        feesInstallmentsModel = new FeesInstallmentsModel();
 
         listFees = Arrays.asList(getResources().getStringArray(R.array.fees_type));
         ArrayAdapter<String> feesAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, listFees);
@@ -147,12 +152,8 @@ public class AddFeesDialogFragment extends DialogFragment {
         });
 
 
-        imgCheque.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        imgCheque.setOnClickListener(this);
+        btnAdd.setOnClickListener(this);
 
         return v;
     }
@@ -231,7 +232,6 @@ public class AddFeesDialogFragment extends DialogFragment {
     }
 
 
-
     private void bindModel() {
         feesInstallmentsModel.setInstallmentNo(spnFeesType.getSelectedItem().toString());
         feesInstallmentsModel.setPaymentMode(spnPaymentMode.getSelectedItem().toString());
@@ -245,5 +245,80 @@ public class AddFeesDialogFragment extends DialogFragment {
         }
 
     }
+
+    private boolean check() {
+        if (feesInstallmentsModel.getInstallmentNo() == null && feesInstallmentsModel.getInstallmentNo().isEmpty()) {
+            activity.showToast("Please select installment type");
+            return false;
+        }
+        if (feesInstallmentsModel.getPaymentMode() == null && feesInstallmentsModel.getPaymentMode().isEmpty()) {
+            activity.showToast("Please select payment mode");
+            return false;
+        }
+        if (feesInstallmentsModel.getInstallmentAmount() <= 0) {
+            activity.showToast("Please enter installment amount");
+            return false;
+        }
+        if (feesInstallmentsModel.getInstallmentNo() != null
+                && feesInstallmentsModel.getInstallmentNo().equals("Cheque")
+                && feesInstallmentsModel.getChequeBankName() == null
+                && feesInstallmentsModel.getChequeBankName().isEmpty()
+                ) {
+            activity.showToast("Please enter bank name");
+            return false;
+        }
+        if (feesInstallmentsModel.getInstallmentNo() != null
+                && feesInstallmentsModel.getInstallmentNo().equals("Cheque")
+                && feesInstallmentsModel.getChequeNo() == null
+                && feesInstallmentsModel.getChequeNo().isEmpty()
+                ) {
+            activity.showToast("Please enter cheque number");
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_add:
+                bindModel();
+                if (check()) {
+                    uploadImages();
+                }
+                break;
+            case R.id.img_cheque:
+                startCamera();
+                break;
+        }
+    }
+
+    private void uploadImages() {
+        final ProgressDialog progressDialog = new ProgressDialog(activity);
+        progressDialog.setTitle("Uploading... ");
+        progressDialog.show();
+        progressDialog.setCancelable(false);
+        S3UploadActivity.uploadData(activity, new S3FileTransferDelegate() {
+            @Override
+            public void onS3FileTransferStateChanged(int id, TransferState state, String url, Object object) {
+                File file = (File) object;
+                feesInstallmentsModel.setChequeImage(url);
+                dialogResultListner.getResult(feesInstallmentsModel);
+            }
+
+            @Override
+            public void onS3FileTransferProgressChanged(int id, String fileName, int percentage) {
+                progressDialog.setTitle("Uploading.. " + percentage + "%    ");
+            }
+
+            @Override
+            public void onS3FileTransferError(int id, String fileName, Exception ex) {
+                progressDialog.dismiss();
+            }
+        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss" + edtChequeNumber.getText().toString()), new File(fileView.toString()));
+    }
+
+
 
 }

@@ -6,11 +6,13 @@ package com.exa.mydemoapp.webservice;
 
 public interface IUrls {
     //String BASE_URL = "http://192.168.0.104:8080/SchoolServices/";
-    String BASE_URL = "http://kalpatarukids.com:8080/klpschoolservices/";
+   // String BASE_URL = "http://kalpatarukids.com:8080/klpschoolservices/";
     String S3_BASE_URL = "https://s3.ap-south-1.amazonaws.com/kk2018photos/";
+    String BASE_URL = " http://app.kalpatarukids.com:8080/kalpatarukidsdev/api/";
 
     String SIGN_UP = BASE_URL + "signup";
-    String URL_LOGIN = BASE_URL + "login";
+ //   String URL_LOGIN = BASE_URL + "login";
+ String URL_LOGIN = BASE_URL + "signin";
     String URL_IMAGE_UPLOAD = BASE_URL + "uploadimages";
     String URL_IMAGE_LIST = BASE_URL + "getimages";
     String URL_USER_LIST = BASE_URL + "getuserlist";

@@ -1,13 +1,18 @@
 package com.exa.mydemoapp.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,12 +26,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.android.volley.Request;
+import com.bumptech.glide.Glide;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
@@ -38,13 +47,19 @@ import com.exa.mydemoapp.fragment.CommonFragment;
 import com.exa.mydemoapp.fragment.DatePickerFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
 import com.exa.mydemoapp.listner.DialogResultListner;
+import com.exa.mydemoapp.listner.OtpListner;
+import com.exa.mydemoapp.model.AlbumImagesModel;
 import com.exa.mydemoapp.model.FeesInstallmentsModel;
 import com.exa.mydemoapp.model.UserModel;
+import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
+import com.exa.mydemoapp.s3Upload.S3UploadActivity;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -95,6 +110,11 @@ public class SignUpFragment extends CommonFragment {
     TextView txtClassName;
     @ViewById(R.id.txt_division)
     TextView txtDivision;
+    @ViewById(R.id.txt_add_fee_installment)
+    TextView txtAddFees;
+    @ViewById(R.id.img_profile)
+    ImageView imgProfile;
+    File fileProfile;
 
     boolean isEdit = false;
     private View view;
@@ -202,6 +222,23 @@ public class SignUpFragment extends CommonFragment {
             }
         });
 
+
+        txtAddFees.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFeesDialog();
+            }
+        });
+
+        imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto, PICK_IMAGE);//one can be replaced with any action code
+            }
+        });
+
         return view;
     }
 
@@ -286,7 +323,7 @@ public class SignUpFragment extends CommonFragment {
                                 public void onClick(DialogInterface dialog, int which) {
                                     bindModel();
                                     if (check()) {
-                                        save();
+                                        showOtpDialog();
                                     }
                                 }
                             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -469,20 +506,19 @@ public class SignUpFragment extends CommonFragment {
     };*/
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.schoolName, userModel.getUserInfoModel().getSchoolName());
-        if (userModel.getUserType().equals("STUDENT") || userModel.getUserType().equals("TEACHER")) {
-            hashMap.put(IJson.className, userModel.getUserInfoModel().getClassName());
-            hashMap.put(IJson.division, userModel.getUserInfoModel().getDivisionName());
-        }
-        hashMap.put(IJson.studentName, userModel.getFirstName());
-        hashMap.put(IJson.studentAddress, userModel.getUserInfoModel().getAddress());
-        hashMap.put(IJson.studentUserName, userModel.getUsername());
-        hashMap.put(IJson.studentPassword, userModel.getPassword());
+        hashMap.put(IJson.username, userModel.getUsername());
+        hashMap.put(IJson.password, userModel.getPassword());
         hashMap.put(IJson.userType, userModel.getUserType());
-        hashMap.put(IJson.studentBloodGrp, userModel.getUserInfoModel().getBloodGroup());
-        hashMap.put(IJson.gender, userModel.getUserInfoModel().getGender());
+        hashMap.put(IJson.firstName, userModel.getFirstName());
+        hashMap.put(IJson.middleName, userModel.getMiddleName());
+        hashMap.put(IJson.lastName, userModel.getLastName());
+        hashMap.put(IJson.profilePicUrl, userModel.getProfilePicUrl());
+        hashMap.put(IJson.email, userModel.getEmail());
         hashMap.put(IJson.contactNumber, userModel.getContactNumber());
-
+        hashMap.put(IJson.contactNumberVerified, userModel.isContactNumberVerified());
+        hashMap.put(IJson.busRoute, userModel.getBusRoute());
+        hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
+        hashMap.put(IJson.userInfoModel, userModel.getUserInfoModel());
         if (userModel.getPkeyId() != null) {
             hashMap.put(IJson.id, userModel.getPkeyId().toString());
         }
@@ -498,13 +534,7 @@ public class SignUpFragment extends CommonFragment {
 
             @Override
             public void onResponse(UserModel object) {
-                /*if (!isEdit) {
-                    Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-                    // getMyActivity().showFragment(getMyActivity().profileFragment, null);
-                } else {
-                    Toast.makeText(getMyActivity(), "Information Saved...", Toast.LENGTH_LONG).show();
-                    getMyActivity().showFragment(new UsersListFragment(), null);
-                }*/
+
                 getMyActivity().flagCallUserList = true;
                 getMyActivity().performBackForDesign();
 
@@ -520,15 +550,103 @@ public class SignUpFragment extends CommonFragment {
     }
 
     private void showFeesDialog() {
-        AddFeesDialogFragment dialog = new AddFeesDialogFragment(getMyActivity(), new DialogResultListner() {
+        FeesInstallmentsModel feesInstallmentsModel = new FeesInstallmentsModel();
+        AddFeesDialogFragment dialog = new AddFeesDialogFragment(getMyActivity(), feesInstallmentsModel, new DialogResultListner() {
             @Override
             public void getResult(FeesInstallmentsModel feesInstallmentsModel) {
                 userModel.getStudentFeesModel().getFeesInstallmentsModels().add(feesInstallmentsModel);
+                bindFeesView(feesInstallmentsModel);
             }
         });
         dialog.show(getMyActivity().getFragmentManager(), "FeesDialog");
     }
 
+    private void showOtpDialog() {
+        OtpDialogFrag dialog = new OtpDialogFrag(new OtpListner() {
+            @Override
+            public void onResult(boolean flag) {
+                 if (flag){
+                     uploadImages();
+                 }
+            }
+        }, userModel.getContactNumber() + "");
+        dialog.show(getMyActivity().getFragmentManager(), "FeesDialog");
+    }
+
+    private void bindFeesView(FeesInstallmentsModel feesInstallmentsModel) {
+        LinearLayout layout1 = (LinearLayout) view.findViewById(R.id.layout_fees);
+        LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f
+        );
+        textParam.setMargins(5, 5, 5, 5);
+
+        TextView txtInstallmentType = new TextView(getMyActivity());
+        TextView txtInstallmentAmount = new TextView(getMyActivity());
+
+        txtInstallmentType.setLayoutParams(textParam);
+        txtInstallmentAmount.setLayoutParams(textParam);
+        txtInstallmentType.setText(feesInstallmentsModel.getInstallmentNo());
+        txtInstallmentAmount.setText(getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
+
+        layout1.addView(txtInstallmentType);
+        layout1.addView(txtInstallmentAmount);
+
+    }
+
+
+    private void uploadImages() {
+        final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
+        progressDialog.setTitle("Uploading... ");
+        progressDialog.show();
+        progressDialog.setCancelable(false);
+        S3UploadActivity.uploadData(getMyActivity(), new S3FileTransferDelegate() {
+            @Override
+            public void onS3FileTransferStateChanged(int id, TransferState state, String url, Object object) {
+                File file = (File) object;
+                save();
+            }
+
+            @Override
+            public void onS3FileTransferProgressChanged(int id, String fileName, int percentage) {
+                progressDialog.setTitle("Uploading.. " + percentage + "%    ");
+            }
+
+            @Override
+            public void onS3FileTransferError(int id, String fileName, Exception ex) {
+                progressDialog.dismiss();
+            }
+        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss" + userModel.getUsername()), fileProfile);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE && resultCode == getMyActivity().RESULT_OK
+                && null != data) {
+            Uri selectedImage = data.getData();
+            Glide.with(this)
+                    .load(selectedImage)
+                    .asBitmap()
+                    .override(300, 300)
+                    .fitCenter()
+                    .into(imgProfile);
+            fileProfile = new File(selectedImage.toString());
+        } else {
+
+            Log.i("SonaSys", "resultCode: " + resultCode);
+            switch (resultCode) {
+                case 0:
+                    Log.i("SonaSys", "User cancelled");
+                    break;
+
+
+            }
+
+        }
+    }
 
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();

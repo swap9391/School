@@ -70,7 +70,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
             txtTimeStamp = (TextView) view.findViewById(R.id.txt_time_stamp);
             rltLayoutDesign = (RelativeLayout) view.findViewById(R.id.rl_layout_design);
             imgEdit = (ImageButton) view.findViewById(R.id.img_edit);
-            if (AppController.isAdmin(context)) {
+            if (context.isAdmin) {
                 imgEdit.setVisibility(View.GONE);
             } else {
                 imgEdit.setVisibility(View.GONE);

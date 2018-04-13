@@ -93,7 +93,7 @@ public class CallWebService {
 
     }
 
-    public synchronized static <T> void getWebserviceObject(Context context, int post, String url, final HashMap<String, Object> param, VolleyResponseListener volleyResponseListener, Class<T> aClass) {
+    public synchronized static <T> void getWebserviceObject(Context context, int requestMethod, String url, final HashMap<String, Object> param, VolleyResponseListener volleyResponseListener, Class<T> aClass) {
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("Loading...");
         progressDialog.show();
@@ -106,7 +106,7 @@ public class CallWebService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+        JsonObjectRequest req = new JsonObjectRequest(requestMethod, url, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -139,7 +139,9 @@ public class CallWebService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.dismiss();
-                volleyResponseListener.onError(error.getMessage());
+                if (!error.getMessage().isEmpty()) {
+                    volleyResponseListener.onError(error.getMessage());
+                }
             }
 
         });

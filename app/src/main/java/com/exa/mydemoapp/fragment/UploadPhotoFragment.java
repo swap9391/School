@@ -80,8 +80,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     Uri fileView;
     //List<Uri> imglist = new ArrayList<>();
     List<File> imageFiles = new ArrayList<>();
-    private int REQUEST_CAMERA = 101, PICK_IMAGE = 102;
-    Uri imageUri;
     int count = 0;
     AlbumMasterModel albumImagesModel;
     LocationUpdateService myservice;
@@ -370,19 +368,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, REQUEST_CAMERA);
-    }
-
-    private void picfromGallery() {
-        /*Intent intent = new Intent();
-        intent.setType("image*//*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);*/
-
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
 
     @Override

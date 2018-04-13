@@ -21,32 +21,38 @@ public class Database extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "SchoolDb";
     public static final int DATABASE_VERSION = 1;
 
-    public static final String STUDENT_DATA = "Create table if not exists student_data"
+    public static final String USER_DATA = "Create table if not exists user_data"
             + " ( localId integer primary key autoincrement," +
-            "_id integer," +
-            "registrationDate VARCHAR DEFAULT NULL," +
-            "schoolName VARCHAR DEFAULT NULL," +
-            "className VARCHAR DEFAULT NULL," +
-            "divisionId VARCHAR DEFAULT NULL," +
-            "registrationId VARCHAR DEFAULT NULL," +
-            "studentName VARCHAR DEFAULT NULL," +
-            "studentAddress VARCHAR DEFAULT NULL," +
-            "studentUserName VARCHAR DEFAULT NULL," +
-            "studentPassword VARCHAR DEFAULT NULL," +
+            "pkeyId integer," +
+            "username VARCHAR DEFAULT NULL," +
+            "password VARCHAR DEFAULT NULL," +
             "userType VARCHAR DEFAULT NULL," +
-            "studentBloodGrp VARCHAR DEFAULT NULL," +
-            "gender VARCHAR DEFAULT NULL," +
-            "totalFees VARCHAR DEFAULT NULL," +
-            "installmentType VARCHAR DEFAULT NULL," +
-            "installment1 VARCHAR DEFAULT NULL," +
-            "installment2 VARCHAR DEFAULT NULL," +
-            "installment3 VARCHAR DEFAULT NULL," +
-            "rollNumber VARCHAR DEFAULT NULL," +
+            "firstName VARCHAR DEFAULT NULL," +
+            "middleName VARCHAR DEFAULT NULL," +
+            "lastName VARCHAR DEFAULT NULL," +
+            "profilePicUrl VARCHAR DEFAULT NULL," +
+            "email VARCHAR DEFAULT NULL," +
             "contactNumber VARCHAR DEFAULT NULL," +
-            "dateInsvestment2 VARCHAR DEFAULT NULL," +
-            "dateInsvestment3 VARCHAR DEFAULT NULL," +
-            "subscribed VARCHAR DEFAULT NULL," +
-            "visiblity VARCHAR DEFAULT NULL)";
+            "busRoute VARCHAR DEFAULT NULL," +
+            "sessionKey VARCHAR DEFAULT NULL)";
+
+    public static final String USER_INFO = "Create table if not exists user_info"
+            + " ( localId integer primary key autoincrement," +
+            "pkeyId integer," +
+            "userId VARCHAR DEFAULT NULL," +
+            "dateOfBirth VARCHAR DEFAULT NULL," +
+            "registrationId VARCHAR DEFAULT NULL," +
+            "schoolName VARCHAR DEFAULT NULL," +
+            "registrationDate VARCHAR DEFAULT NULL," +
+            "qualification VARCHAR DEFAULT NULL," +
+            "speciality VARCHAR DEFAULT NULL," +
+            "className VARCHAR DEFAULT NULL," +
+            "divisionName VARCHAR DEFAULT NULL," +
+            "address VARCHAR DEFAULT NULL," +
+            "bloodGroup VARCHAR DEFAULT NULL," +
+            "gender VARCHAR DEFAULT NULL)";
+
+
 
     public static final String LOGIN_DATA = "Create table if not exists login_data"
             + " ( localId integer primary key autoincrement," +
@@ -59,7 +65,7 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase db = context.openOrCreateDatabase(
                 DATABASE_NAME, context.MODE_PRIVATE, null);
 
-        db.execSQL(STUDENT_DATA);
+        db.execSQL(USER_DATA);
         db.execSQL(LOGIN_DATA);
 
     }
@@ -67,7 +73,7 @@ public class Database extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(STUDENT_DATA);
+        db.execSQL(USER_DATA);
         db.execSQL(LOGIN_DATA);
     }
 
@@ -75,7 +81,7 @@ public class Database extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
-        String studentTbl = "DEOP TABLE IF EXIST class_data";
+        String studentTbl = "DROP TABLE IF EXISTS class_data";
         db.execSQL(studentTbl);
         onCreate(db);
     }

@@ -6,12 +6,20 @@ package com.exa.mydemoapp.database;
 public class SQLs {
     private SQLs() {
     }
-
-    public static final String sel_student_data = "Select localId, _id,registrationDate,schoolName,className,divisionId," +
-            "registrationId,studentName,studentAddress,studentUserName,studentPassword,userType,studentBloodGrp," +
-            "gender,totalFees,installmentType,installment1,installment2,installment3,rollNumber,contactNumber," +
-            "dateInsvestment2,dateInsvestment3,subscribed,visiblity" +
-            " From student_data Where 1=1";
+    public static final String sel_student_data = "Select localId," +
+            " pkeyId," +
+            "username," +
+            "password," +
+            "userType," +
+            "firstName," +
+            "middleName," +
+            "lastName," +
+            "profilePicUrl," +
+            "email," +
+            "contactNumber," +
+            "busRoute," +
+            "sessionKey" +
+            " From user_data Where 1=1";
     public static final String del_class_name = "DELETE from class_data";
     public static final String del_student= "DELETE from student_data";
     public static final String truncate_student= "TRUNCATE TABLE student_data";

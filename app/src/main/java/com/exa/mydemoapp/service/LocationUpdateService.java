@@ -179,7 +179,7 @@ public class LocationUpdateService extends Service implements
 
     private void updateUI() {
         Log.d(TAG, "UI update initiated .............");
-        if (Connectivity.isConnected(this)) {
+       /* if (Connectivity.isConnected(this)) {
 
             if (null != mCurrentLocation && !vanType.isEmpty()) {
                 startUpload = true;
@@ -201,7 +201,7 @@ public class LocationUpdateService extends Service implements
             } else {
                 Log.d(TAG, "location is null ...............");
             }
-        }
+        }*/
     }
 
    /* @Override

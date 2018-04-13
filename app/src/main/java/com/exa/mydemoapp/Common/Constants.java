@@ -9,10 +9,10 @@ import com.exa.mydemoapp.BuildConfig;
 public interface Constants {
 
     String RESPONSE_MESSAGE = "message";
-    String RESPONSE_KEY = "key";
+    String RESPONSE_KEY = "messageType";
     String RESPONSE_INFO = "data";
-    String RESPONSE_SUCCESS = "1";
-    String RESPONSE_ERROR = "0";
+    String RESPONSE_SUCCESS = "SUCCESS";
+    String RESPONSE_ERROR = "FAILURE";
 
     public static String MAIN_TABLE = BuildConfig.MAIN_TABLE_NAME;
     public static String IMAGE_TABLE = "IMAGETABLE";
@@ -32,7 +32,10 @@ public interface Constants {
     public static int DISPLACEMENT = 10; // 10 meters
     public static String USER_TYPE = "USER_TYPE";
     public static String USER_TYPE_GUEST = "GUEST";
-    public static String USER_TYPE_STUDENT = "STUDENT";
+    public static String USER_TYPE_ADMIN= "MA";
+    public static String USER_TYPE_STUDENT = "MS";
+    public static String USER_TYPE_DRIVER = "MD";
+    public static String USER_TYPE_TEACHER = "MT";
     public static String FB_TITLE = "title";
     public static String FB_MESSAGE = "message";
     public static String FIREBASE = "firebase";

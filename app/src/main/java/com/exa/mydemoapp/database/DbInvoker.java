@@ -9,7 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.exa.mydemoapp.mapper.StudentMapper;
+import com.exa.mydemoapp.mapper.UserMapper;
 import com.exa.mydemoapp.model.UserModel;
 
 
@@ -131,34 +131,36 @@ public class DbInvoker {
 
     public void insertUpdateUser(UserModel bean) {
         insertUpdateBean(bean);
+
+
     }
 
     public List<UserModel> getStudentListByClass(String className) {
         String sql = SQLs.sel_student_data + " and className=" + "'" + className + "'" + " ORDER BY localId ASC";
         String[] params = {""};
         return (List<UserModel>) executeSelect(sql, params,
-                new StudentMapper());
+                new UserMapper());
     }
 
     public List<UserModel> getUserList() {
         String sql = SQLs.sel_student_data + " ORDER BY localId ASC";
         String[] params = {""};
         return (List<UserModel>) executeSelect(sql, params,
-                new StudentMapper());
+                new UserMapper());
     }
 
     public List<UserModel> getUserListByStudent(String className) {
         String sql = SQLs.sel_student_data + " and userType='STUDENT' and className='" + className + "' ORDER BY localId ASC";
         String[] params = {""};
         return (List<UserModel>) executeSelect(sql, params,
-                new StudentMapper());
+                new UserMapper());
     }
 
     public UserModel getStudentById(String studentId) {
         String[] params = {""};
         String sql = SQLs.sel_student_data + " and _id='" + studentId + "'";
         return executeSelectOne(sql, params,
-                new StudentMapper());
+                new UserMapper());
     }
 
     /*public List<IdValue> getCodeValue(int codeTypeId) {

@@ -85,7 +85,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         btnDownload = (ImageButton) v.findViewById(R.id.btn_download);
         btnDelete = (ImageButton) v.findViewById(R.id.btn_delete);
 
-        if (AppController.isAdmin(getMyActivity())) {
+        if (getMyActivity().isAdmin) {
             btnDelete.setVisibility(View.VISIBLE);
         } else {
             btnDelete.setVisibility(View.GONE);
@@ -115,7 +115,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         });
         if (fragmentFrom.equals("community")) {
             btnDelete.setVisibility(View.GONE);
-        } else if (AppController.isAdmin(getMyActivity()) && !isGuest && !fragmentFrom.equals("community")) {
+        } else if (getMyActivity().isAdmin && !isGuest && !fragmentFrom.equals("community")) {
             btnDelete.setVisibility(View.VISIBLE);
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override

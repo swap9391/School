@@ -17,6 +17,7 @@ public abstract class BasicBean {
     protected long createdAt;
     protected long updatedAt;
     protected boolean isDeleted;
+    protected String sessionKey;
 
     private boolean sync = true;
 
@@ -138,5 +139,13 @@ public abstract class BasicBean {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public String getSessionKey() {
+        return sessionKey;
+    }
+
+    public void setSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey;
     }
 }

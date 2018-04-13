@@ -91,18 +91,6 @@ public class AppController extends Application {
         }
     }
 
-    public static boolean isAdmin(Context context) {
-        String usertype = CommonUtils.getSharedPref(Constants.USER_TYPE, context);
-        if (usertype != null && usertype.equals("ADMIN")) {
-            IS_ADMIN = true;
-        } else {
-            IS_ADMIN = false;
-        }
-
-        return IS_ADMIN;
-    }
-
-
 //    public static Bitmap takeScreenShot(Activity activity)
 //    {
 //        View view = activity.getWindow().getDecorView();

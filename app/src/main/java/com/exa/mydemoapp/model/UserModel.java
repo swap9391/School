@@ -30,9 +30,10 @@ public class UserModel extends BasicBean implements Serializable {
     private boolean accountExpired;
     private boolean accountLocked;
     private boolean isActive;
-    private StudentFeesModel studentFeesModel= new StudentFeesModel();
-    private UserInfoModel userInfoModel= new UserInfoModel();
-    private UserDevice userDevice= new UserDevice();
+    private String loginFrom = "APP";
+    private StudentFeesModel studentFeesModel = new StudentFeesModel();
+    private UserInfoModel userInfoModel = new UserInfoModel();
+    private UserDevice userDevice = new UserDevice();
 
 
     public String getUsername() {
@@ -187,6 +188,14 @@ public class UserModel extends BasicBean implements Serializable {
         this.userInfoModel = userInfoModel;
     }
 
+    public String getLoginFrom() {
+        return loginFrom;
+    }
+
+    public void setLoginFrom(String loginFrom) {
+        this.loginFrom = loginFrom;
+    }
+
     public UserDevice getUserDevice() {
         return userDevice;
     }
@@ -195,28 +204,23 @@ public class UserModel extends BasicBean implements Serializable {
         this.userDevice = userDevice;
     }
 
-    /*@Override
+
+    @Override
     public void dbBinding(ContentHolder holder) {
         super.dbBinding(holder);
         holder.setTable("student_data");
-        holder.getValues().put("_id", getPkeyId());
-        holder.getValues().put("studentName", getStudentName());
-        holder.getValues().put("studentAddress", getStudentAddress());
-        holder.getValues().put("studentUserName", getStudentUserName());
-        holder.getValues().put("studentPassword", getStudentPassword());
-        holder.getValues().put("studentBloodGrp", getStudentBloodGrp());
-        holder.getValues().put("gender", getGender());
-        holder.getValues().put("totalFees", "" + getTotalFees());
-        holder.getValues().put("installmentType", getInstallmentType());
-        holder.getValues().put("installment1", getInstallment1());
-        holder.getValues().put("installment2", getInstallment2());
-        holder.getValues().put("installment3", getInstallment3());
-        holder.getValues().put("rollNumber", getRollNumber());
-        holder.getValues().put("contactNumber", getContactNumber());
-        holder.getValues().put("dateInsvestment2", getDateInsvestment2());
-        holder.getValues().put("dateInsvestment3", getDateInsvestment3());
-        holder.getValues().put("subscribed", getSubscribed());
+        holder.getValues().put("pkeyId", getPkeyId());
+        holder.getValues().put("username", getUsername());
+        holder.getValues().put("password", getPassword());
         holder.getValues().put("userType", getUserType());
-        holder.getValues().put("visiblity", getVisiblity());
-    }*/
+        holder.getValues().put("firstName", getFirstName());
+        holder.getValues().put("middleName", getMiddleName());
+        holder.getValues().put("lastName", getLastName());
+        holder.getValues().put("profilePicUrl", getProfilePicUrl());
+        holder.getValues().put("email", getEmail());
+        holder.getValues().put("contactNumber", "" + getContactNumber());
+        holder.getValues().put("busRoute", getBusRoute());
+        holder.getValues().put("sessionKey", getSessionKey());
+
+    }
 }
