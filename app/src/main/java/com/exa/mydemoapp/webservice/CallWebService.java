@@ -4,12 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.exa.mydemoapp.Common.AppController;
+import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.database.DbInvoker;
+import com.exa.mydemoapp.model.UserModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -18,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -108,6 +113,7 @@ public class CallWebService {
         }
         JsonObjectRequest req = new JsonObjectRequest(requestMethod, url, jsonObject,
                 new Response.Listener<JSONObject>() {
+
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -125,7 +131,7 @@ public class CallWebService {
                                     Gson gson = gsonBuilder.create();
                                     Object object = gson.fromJson(String.valueOf(jsonObjectResult), aClass);
                                     volleyResponseListener.onResponse(object);
-                                }else {
+                                } else {
                                     volleyResponseListener.onResponse();
                                 }
                             } else if (key.equalsIgnoreCase(Constants.RESPONSE_ERROR)) {
@@ -148,7 +154,29 @@ public class CallWebService {
                 }
             }
 
-        });
+        }) {
+
+            /** Passing some request headers* */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                DbInvoker dbInvoker = new DbInvoker(context);
+                String studentId = CommonUtils.getSharedPref(Constants.STUDENT_ID, context);
+                UserModel userModel = new UserModel();
+                if (studentId != null) {
+                    userModel = dbInvoker.getStudentById(studentId);
+                }
+                HashMap<String, String> headers = new HashMap();
+                if (userModel != null) {
+                    headers.put("Content-Type", "application/json");
+                    headers.put("X-AUTH-TOKEN", userModel.getSessionKey());
+
+                }
+                return headers;
+            }
+        };
+
+
         AppController.getInstance().addToRequestQueue(req);
     }
 

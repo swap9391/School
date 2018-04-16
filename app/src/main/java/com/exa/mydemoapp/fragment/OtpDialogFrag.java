@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,12 +35,12 @@ public class OtpDialogFrag extends DialogFragment implements View.OnClickListene
     Button btn_resend, btn_save;
     EditText txtOtp;
     OtpListner dialogResult;
-    String contactNumber;
+    UserModel userModel;
     String serverOtp;
 
-    public OtpDialogFrag(OtpListner dialogResult, String contactNumber) {
+    public OtpDialogFrag(OtpListner dialogResult, UserModel userModel) {
         this.dialogResult = dialogResult;
-        this.contactNumber = contactNumber;
+        this.userModel = userModel;
     }
 
     @Override
@@ -60,19 +61,17 @@ public class OtpDialogFrag extends DialogFragment implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_resend_otp:
-                getOtp();
+                if (!txtOtp.getText().toString().isEmpty()) {
+                    getOtp();
+                } else {
+                    getMyActivity().showToast("Please Enter Otp");
+                }
                 break;
             case R.id.btn_save:
-                if (serverOtp != null && serverOtp.equalsIgnoreCase(txtOtp.getText().toString())) {
-                    dialogResult.onResult(true);
-                    getDialog().dismiss();
-                } else {
-                    getMyActivity().showToast("Otp doesnt match!");
-                    getDialog().dismiss();
-                }
-
+                getOtp();
                 break;
         }
+
     }
 
     @Override
@@ -125,8 +124,11 @@ public class OtpDialogFrag extends DialogFragment implements View.OnClickListene
 
     public void getOtp() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.contactNumber, contactNumber);
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.SIGN_UP, hashMap, new VolleyResponseListener<OtpMasterModel>() {
+      /*  hashMap.put(IJson.userId, userModel.getPkeyId());
+        hashMap.put(IJson.otp, txtOtp.getText().toString());*/
+        String url = String.format(IUrls.URL_VERIFY_OTP, userModel.getPkeyId(), txtOtp.getText().toString());
+        Log.d("otpUrl", url);
+        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<OtpMasterModel>() {
             @Override
             public void onResponse(OtpMasterModel[] object) {
 
@@ -134,11 +136,13 @@ public class OtpDialogFrag extends DialogFragment implements View.OnClickListene
 
             @Override
             public void onResponse(OtpMasterModel object) {
-                serverOtp = object.getOtp();
+
             }
 
             @Override
             public void onResponse() {
+                dialogResult.onResult(true);
+                getDialog().dismiss();
             }
 
             @Override

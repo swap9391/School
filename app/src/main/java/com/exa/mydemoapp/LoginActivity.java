@@ -225,12 +225,15 @@ public class LoginActivity extends CommonActivity {
             @Override
             public void onResponse(UserModel[] object) {
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onResponse(UserModel studentData) {
-                    dbInvoker.insertUpdateUser(studentData);
+                dbInvoker.deleteStudents();
+                dbInvoker.insertUpdateUser(studentData);
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_NAME, studentData.getUsername());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.USER_TYPE, studentData.getUserType());
                 CommonUtils.insertSharedPref(LoginActivity.this, Constants.STUDENT_ID, studentData.getPkeyId().toString());

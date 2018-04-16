@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,8 +18,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -63,13 +66,12 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
     @ViewById(R.id.btn_add)
     private Button btnAdd;
     @ViewById(R.id.edt_cheque_bank)
-    private Button edtBankName;
+    private EditText edtBankName;
     @ViewById(R.id.edt_cheque_number)
-    private Button edtChequeNumber;
-    @ViewById(R.id.chk_paid)
-    private ImageView imgCheque;
+    private EditText edtChequeNumber;
     @ViewById(R.id.img_cheque)
-
+    private ImageView imgCheque;
+    @ViewById(R.id.chk_paid)
     private Button chkPaid;
 
     private List<String> listFees;
@@ -79,16 +81,19 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
     FeesInstallmentsModel feesInstallmentsModel;
     Uri imageUri;
     Uri fileView;
+    File chequeFile;
     private int REQUEST_CAMERA = 101;
+    List<FeesInstallmentsModel> list;
 
     public AddFeesDialogFragment() {
     }
 
     @SuppressLint("ValidFragment")
-    public AddFeesDialogFragment(HomeActivity activity,FeesInstallmentsModel feesInstallmentsModel, DialogResultListner dialogResultListner) {
+    public AddFeesDialogFragment(HomeActivity activity, FeesInstallmentsModel feesInstallmentsModel, List<FeesInstallmentsModel> list, DialogResultListner dialogResultListner) {
         this.activity = activity;
         this.dialogResultListner = dialogResultListner;
-        this.feesInstallmentsModel=feesInstallmentsModel;
+        this.feesInstallmentsModel = feesInstallmentsModel;
+        this.list = list;
     }
 
     @Override
@@ -99,9 +104,17 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.layout_add_fees, container, false);
-        activity.initViewBinding(v);
-
+        initView(v);
+        getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         listFees = Arrays.asList(getResources().getStringArray(R.array.fees_type));
+        for (FeesInstallmentsModel feesInstallmentsModel : list) {
+            for (String string : listFees) {
+                if (feesInstallmentsModel.getInstallmentNo().equals(string)) {
+                    listFees.remove(string);
+                }
+            }
+        }
+
         ArrayAdapter<String> feesAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, listFees);
         feesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnFeesType.setAdapter(feesAdapter);
@@ -109,16 +122,10 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
         spnFeesType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (listFees.get(position).equals("Cheque")) {
-                    edtBankName.setVisibility(View.VISIBLE);
-                    edtChequeNumber.setVisibility(View.VISIBLE);
-                    txtChequeImage.setVisibility(View.VISIBLE);
-                    imgCheque.setVisibility(View.VISIBLE);
+                if (listFees.get(position).equals("First Installment")) {
+                    datePickerInvest.setVisibility(View.GONE);
                 } else {
-                    edtBankName.setVisibility(View.GONE);
-                    edtChequeNumber.setVisibility(View.GONE);
-                    txtChequeImage.setVisibility(View.GONE);
-                    imgCheque.setVisibility(View.GONE);
+                    datePickerInvest.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -137,10 +144,20 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
         spnPaymentMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (listFees.get(position).equals("First Installment")) {
-                    datePickerInvest.setVisibility(View.GONE);
+
+
+                if (listPaymentMode.get(position).equals("Cheque")) {
+                    getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                    edtBankName.setVisibility(View.VISIBLE);
+                    edtChequeNumber.setVisibility(View.VISIBLE);
+                    txtChequeImage.setVisibility(View.VISIBLE);
+                    imgCheque.setVisibility(View.VISIBLE);
                 } else {
-                    datePickerInvest.setVisibility(View.VISIBLE);
+                    getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                    edtBankName.setVisibility(View.GONE);
+                    edtChequeNumber.setVisibility(View.GONE);
+                    txtChequeImage.setVisibility(View.GONE);
+                    imgCheque.setVisibility(View.GONE);
                 }
 
             }
@@ -156,6 +173,21 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
         btnAdd.setOnClickListener(this);
 
         return v;
+    }
+
+    private void initView(View view) {
+        spnFeesType = (Spinner) view.findViewById(R.id.spinner_fees_type);
+        txtInstallmentType = (TextView) view.findViewById(R.id.lblInstallmentType);
+        txtPaymentMode = (TextView) view.findViewById(R.id.lblPaymentMode);
+        txtChequeImage = (TextView) view.findViewById(R.id.lblChequeImg);
+        spnPaymentMode = (Spinner) view.findViewById(R.id.spinner_payment_mode);
+        edtInstallmentAmount = (EditText) view.findViewById(R.id.edt_installment_amount);
+        datePickerInvest = (Button) view.findViewById(R.id.date_picker_installment);
+        btnAdd = (Button) view.findViewById(R.id.btn_add);
+        edtBankName = (EditText) view.findViewById(R.id.edt_cheque_bank);
+        edtChequeNumber = (EditText) view.findViewById(R.id.edt_cheque_number);
+        chkPaid = (CheckBox) view.findViewById(R.id.chk_paid);
+        imgCheque = (ImageView) view.findViewById(R.id.img_cheque);
     }
 
     private void startCamera() {
@@ -180,6 +212,7 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
                     String imageurl = activity.getRealPathFromURI(imageUri);
                     // setVehicleImage(imageurl, requestCode);
                     Log.e("", imageurl);
+                    chequeFile = new File(activity.getRealPathFromURI(imageUri));
                     setImage(imageurl);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -285,8 +318,15 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
             case R.id.btn_add:
                 bindModel();
                 if (check()) {
-                    uploadImages();
+                    if (feesInstallmentsModel.getPaymentMode().equals("Cheque")) {
+                        uploadImages();
+                    } else {
+                        dialogResultListner.getResult(feesInstallmentsModel);
+                        getDialog().dismiss();
+                    }
                 }
+
+
                 break;
             case R.id.img_cheque:
                 startCamera();
@@ -296,15 +336,17 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
 
     private void uploadImages() {
         final ProgressDialog progressDialog = new ProgressDialog(activity);
-        progressDialog.setTitle("Uploading... ");
+        progressDialog.setTitle("Uploading ... ");
         progressDialog.show();
         progressDialog.setCancelable(false);
         S3UploadActivity.uploadData(activity, new S3FileTransferDelegate() {
             @Override
             public void onS3FileTransferStateChanged(int id, TransferState state, String url, Object object) {
                 File file = (File) object;
+                progressDialog.dismiss();
                 feesInstallmentsModel.setChequeImage(url);
                 dialogResultListner.getResult(feesInstallmentsModel);
+                getDialog().dismiss();
             }
 
             @Override
@@ -316,9 +358,8 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
             public void onS3FileTransferError(int id, String fileName, Exception ex) {
                 progressDialog.dismiss();
             }
-        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss" + edtChequeNumber.getText().toString()), new File(fileView.toString()));
+        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss") + edtChequeNumber.getText().toString(), chequeFile);
     }
-
 
 
 }

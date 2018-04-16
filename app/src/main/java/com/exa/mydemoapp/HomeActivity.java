@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -88,7 +89,7 @@ public class HomeActivity extends CommonActivity {
     public List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
     public boolean isGallery = true;
     public boolean isGuest = false;
-    public boolean isAdmin=false;
+    public boolean isAdmin = false;
     private Fragment fromFragment;
     private String newsFeedType;
     Database db;
@@ -126,11 +127,11 @@ public class HomeActivity extends CommonActivity {
 //            CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
             String fb_reg = CommonUtils.getSharedPref(Constants.FIREBASE_REGISTER, this);
             if (fb_reg == null || !fb_reg.equalsIgnoreCase("TRUE")) {
-              //  registerToken(token);
+                //  registerToken(token);
             } else {
                 if (CommonUtils.getSharedPref(Constants.USER_TYPE, this).equals(Constants.USER_TYPE_ADMIN)) {
-                 //   getUserList();
-                    isAdmin=true;
+                    //   getUserList();
+                    isAdmin = true;
                 }
             }
         }
@@ -448,9 +449,11 @@ public class HomeActivity extends CommonActivity {
             public void onResponse(FirebaseRegistrationModel[] object) {
 
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onResponse(FirebaseRegistrationModel studentData) {
                 CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
@@ -482,9 +485,11 @@ public class HomeActivity extends CommonActivity {
                 }*/
 
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onResponse(UserModel object) {
 

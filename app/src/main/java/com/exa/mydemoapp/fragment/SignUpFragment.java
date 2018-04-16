@@ -86,8 +86,12 @@ public class SignUpFragment extends CommonFragment {
     private Spinner spnClass;
     @ViewById(R.id.spinner_division)
     private Spinner spnDivision;
-    @ViewById(R.id.edt_student_name)
-    private EditText edtStudentName;
+    @ViewById(R.id.edt_first_name)
+    private EditText edtFirstName;
+    @ViewById(R.id.edt_middle_name)
+    private EditText edtMiddleName;
+    @ViewById(R.id.edt_last_name)
+    private EditText edtLastName;
     @ViewById(R.id.edt_student_address)
     private EditText edtAddress;
     @ViewById(R.id.edt_student_blood_group)
@@ -193,24 +197,28 @@ public class SignUpFragment extends CommonFragment {
                         txtDivision.setVisibility(View.GONE);
                         spnClass.setVisibility(View.GONE);
                         spnDivision.setVisibility(View.GONE);
+                        userModel.setUserType(Constants.USER_TYPE_ADMIN);
                         break;
                     case "TEACHER":
                         txtClassName.setVisibility(View.VISIBLE);
                         txtDivision.setVisibility(View.VISIBLE);
                         spnClass.setVisibility(View.VISIBLE);
                         spnDivision.setVisibility(View.VISIBLE);
+                        userModel.setUserType(Constants.USER_TYPE_TEACHER);
                         break;
                     case "DRIVER":
                         txtClassName.setVisibility(View.GONE);
                         txtDivision.setVisibility(View.GONE);
                         spnClass.setVisibility(View.GONE);
                         spnDivision.setVisibility(View.GONE);
+                        userModel.setUserType(Constants.USER_TYPE_DRIVER);
                         break;
                     case "STUDENT":
                         txtClassName.setVisibility(View.VISIBLE);
                         txtDivision.setVisibility(View.VISIBLE);
                         spnClass.setVisibility(View.VISIBLE);
                         spnDivision.setVisibility(View.VISIBLE);
+                        userModel.setUserType(Constants.USER_TYPE_STUDENT);
                         break;
                 }
 
@@ -268,7 +276,9 @@ public class SignUpFragment extends CommonFragment {
         spnClass.setSelection(classPostion);
         spnSchoolName.setSelection(schoolPostion);
         spnDivision.setSelection(divisionPosition);
-        edtStudentName.setText(userModel.getFirstName());
+        edtFirstName.setText(userModel.getFirstName());
+        edtMiddleName.setText(userModel.getMiddleName());
+        edtLastName.setText(userModel.getLastName());
         edtContactNumber.setText(userModel.getContactNumber());
         edtAddress.setText(userModel.getUserInfoModel().getAddress());
         edtBloodGrp.setText(userModel.getUserInfoModel().getBloodGroup());
@@ -282,7 +292,9 @@ public class SignUpFragment extends CommonFragment {
     }
 
     private void bindModel() {
-        userModel.setFirstName(edtStudentName.getText().toString().trim());
+        userModel.setFirstName(edtFirstName.getText().toString().trim());
+        userModel.setMiddleName(edtMiddleName.getText().toString().trim());
+        userModel.setLastName(edtLastName.getText().toString().trim());
         userModel.getUserInfoModel().setAddress(edtAddress.getText().toString().trim());
         userModel.getUserInfoModel().setBloodGroup(edtBloodGrp.getText().toString().trim());
         userModel.setUsername(edtUsername.getText().toString().trim());
@@ -323,7 +335,7 @@ public class SignUpFragment extends CommonFragment {
                                 public void onClick(DialogInterface dialog, int which) {
                                     bindModel();
                                     if (check()) {
-                                        showOtpDialog();
+                                        uploadImages();
                                     }
                                 }
                             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -388,16 +400,24 @@ public class SignUpFragment extends CommonFragment {
             getMyActivity().showToast("Please Select User Type");
             return false;
         }
-        if ((userModel.getUserType().equals("STUDENT") || userModel.getUserType().equals("TEACHER")) && (userModel.getUserInfoModel().getClassName() == null || userModel.getUserInfoModel().getClassName().isEmpty())) {
+        if ((userModel.getUserType().equals(Constants.USER_TYPE_STUDENT) || userModel.getUserType().equals(Constants.USER_TYPE_TEACHER)) && (userModel.getUserInfoModel().getClassName() == null || userModel.getUserInfoModel().getClassName().isEmpty())) {
             getMyActivity().showToast("Please Select Class");
             return false;
         }
-        if ((userModel.getUserType().equals("STUDENT") || userModel.getUserType().equals("TEACHER")) && (userModel.getUserInfoModel().getDivisionName() == null || userModel.getUserInfoModel().getDivisionName().isEmpty())) {
+        if ((userModel.getUserType().equals(Constants.USER_TYPE_STUDENT) || userModel.getUserType().equals(Constants.USER_TYPE_TEACHER)) && (userModel.getUserInfoModel().getDivisionName() == null || userModel.getUserInfoModel().getDivisionName().isEmpty())) {
             getMyActivity().showToast("Please Select Division");
             return false;
         }
         if (userModel.getFirstName() == null || userModel.getFirstName().isEmpty()) {
-            getMyActivity().showToast("Please Enter Full Name");
+            getMyActivity().showToast("Please Enter First Name");
+            return false;
+        }
+        if (userModel.getMiddleName() == null || userModel.getMiddleName().isEmpty()) {
+            getMyActivity().showToast("Please Enter Middle Name");
+            return false;
+        }
+        if (userModel.getLastName() == null || userModel.getLastName().isEmpty()) {
+            getMyActivity().showToast("Please Enter Last Name");
             return false;
         }
         if (userModel.getContactNumber() != null && userModel.getContactNumber().isEmpty()) {
@@ -515,7 +535,7 @@ public class SignUpFragment extends CommonFragment {
         hashMap.put(IJson.profilePicUrl, userModel.getProfilePicUrl());
         hashMap.put(IJson.email, userModel.getEmail());
         hashMap.put(IJson.contactNumber, userModel.getContactNumber());
-        hashMap.put(IJson.contactNumberVerified, userModel.isContactNumberVerified());
+        // hashMap.put(IJson.contactNumberVerified, userModel.isContactNumberVerified());
         hashMap.put(IJson.busRoute, userModel.getBusRoute());
         hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
         hashMap.put(IJson.userInfoModel, userModel.getUserInfoModel());
@@ -538,10 +558,7 @@ public class SignUpFragment extends CommonFragment {
 
             @Override
             public void onResponse(UserModel object) {
-
-                getMyActivity().flagCallUserList = true;
-                getMyActivity().performBackForDesign();
-
+                showOtpDialog(object);
             }
 
             @Override
@@ -555,6 +572,9 @@ public class SignUpFragment extends CommonFragment {
 
     private void showFeesDialog() {
         FeesInstallmentsModel feesInstallmentsModel = new FeesInstallmentsModel();
+        if (userModel.getStudentFeesModel().getFeesInstallmentsModels().size()>0){
+
+        }
         AddFeesDialogFragment dialog = new AddFeesDialogFragment(getMyActivity(), feesInstallmentsModel, new DialogResultListner() {
             @Override
             public void getResult(FeesInstallmentsModel feesInstallmentsModel) {
@@ -565,15 +585,16 @@ public class SignUpFragment extends CommonFragment {
         dialog.show(getMyActivity().getFragmentManager(), "FeesDialog");
     }
 
-    private void showOtpDialog() {
+    private void showOtpDialog(UserModel userModel) {
         OtpDialogFrag dialog = new OtpDialogFrag(new OtpListner() {
             @Override
             public void onResult(boolean flag) {
                 if (flag) {
-                    uploadImages();
+                    getMyActivity().flagCallUserList = true;
+                    getMyActivity().performBackForDesign();
                 }
             }
-        }, userModel.getContactNumber() + "");
+        }, userModel);
         dialog.show(getMyActivity().getFragmentManager(), "FeesDialog");
     }
 
@@ -588,12 +609,14 @@ public class SignUpFragment extends CommonFragment {
 
         TextView txtInstallmentType = new TextView(getMyActivity());
         TextView txtInstallmentAmount = new TextView(getMyActivity());
+        TextView txtPayStatus = new TextView(getMyActivity());
 
         txtInstallmentType.setLayoutParams(textParam);
         txtInstallmentAmount.setLayoutParams(textParam);
+        txtPayStatus.setLayoutParams(textParam);
         txtInstallmentType.setText(feesInstallmentsModel.getInstallmentNo());
         txtInstallmentAmount.setText(getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
-
+        txtPayStatus.setText(feesInstallmentsModel.isPaid() ? "Paid" : "Unpaid");
         layout1.addView(txtInstallmentType);
         layout1.addView(txtInstallmentAmount);
 
@@ -614,7 +637,7 @@ public class SignUpFragment extends CommonFragment {
 
             @Override
             public void onS3FileTransferProgressChanged(int id, String fileName, int percentage) {
-                progressDialog.setTitle("Uploading.. " + percentage + "%    ");
+                progressDialog.setTitle("Uploading..." + percentage + "%    ");
             }
 
             @Override
@@ -645,8 +668,6 @@ public class SignUpFragment extends CommonFragment {
                 case 0:
                     Log.i("SonaSys", "User cancelled");
                     break;
-
-
             }
 
         }

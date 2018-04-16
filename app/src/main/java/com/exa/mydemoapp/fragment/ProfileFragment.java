@@ -78,7 +78,7 @@ public class ProfileFragment extends CommonFragment {
                 getMyActivity().logoOut();
             }
         });
-        if (!getMyActivity().isAdmin) {
+        if (getMyActivity().getUserModel().getUserType().equals(Constants.USER_TYPE_STUDENT)) {
             getRewards();
 
             layReward.setOnClickListener(new View.OnClickListener() {
@@ -113,22 +113,21 @@ public class ProfileFragment extends CommonFragment {
         if (userModel != null) {
             String name = userModel.getFirstName() + " " + userModel.getLastName();
             String address = userModel.getUserInfoModel().getAddress();
-            String bloodGrp = "Blood Group " + userModel.getUserInfoModel().getBloodGroup();
+            // String bloodGrp = "Blood Group " + userModel.getUserInfoModel().getBloodGroup();
 
-            if (userModel.getUserInfoModel().getGender().equalsIgnoreCase("Boy")) {
+          /*  if (userModel.getUserInfoModel().getGender().equalsIgnoreCase("Boy")) {
                 circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
             } else {
                 circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_girl));
-            }
+            }*/
+            circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
             txtName.setText(name != null ? name : "");
             txtAddress.setText(address != null ? address : "");
-            if (userModel.getUserType().equals("STUDENT") || userModel.getUserType().equals("STUDENT")) {
-                String className = "Class " + userModel.getUserInfoModel().getClassName();
-                String division = "Division " + userModel.getUserInfoModel().getDivisionName();
-                txtClassName.setText(className != null ? className : "");
-                txtDivision.setText(division != null ? division : "");
-            }
-            txtBloodGroup.setText(bloodGrp != null ? bloodGrp : "");
+            String className = "Email: " + userModel.getEmail();
+            String division = "Contact Number: " + userModel.getContactNumber();
+            txtClassName.setText(className != null ? className : "");
+            txtDivision.setText(division != null ? division : "");
+            // txtBloodGroup.setText(bloodGrp != null ? bloodGrp : "");
         }
     }
 
@@ -147,9 +146,11 @@ public class ProfileFragment extends CommonFragment {
                 }*/
 
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onResponse(StudentRewardsModel object) {
 

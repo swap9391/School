@@ -116,15 +116,49 @@
                 android:layout_margin="7dp">
 
                 <EditText
-                    android:id="@+id/edt_student_name"
+                    android:id="@+id/edt_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Full Name"
+                    android:hint="Enter First Name"
                     android:imeOptions="actionNext"
                     android:maxLines="1"
                     android:minLines="1"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp">
+
+                <EditText
+                    android:id="@+id/edt_middle_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Middle Name"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp">
+
+                <EditText
+                    android:id="@+id/edt_last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Last Name"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

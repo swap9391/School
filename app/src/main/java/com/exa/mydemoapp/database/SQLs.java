@@ -21,7 +21,7 @@ public class SQLs {
             "sessionKey" +
             " From user_data Where 1=1";
     public static final String del_class_name = "DELETE from class_data";
-    public static final String del_student= "DELETE from student_data";
+    public static final String del_student= "DELETE FROM SQLITE_SEQUENCE WHERE name='user_data'";
     public static final String truncate_student= "TRUNCATE TABLE student_data";
     public static final String sel_division_name = "Select _id,class_id,division_name From division_data Where 1=1";
     public static final String del_division_name = "DELETE from division_data";

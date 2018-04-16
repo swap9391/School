@@ -139,8 +139,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
-            android:gravity="center_horizontal"
             android:layout_marginTop="5dp"
+            android:gravity="center_horizontal"
             android:text="Capture Cheque Photo" />
 
         <ImageView
@@ -161,6 +161,9 @@
             android:background="@color/colorPrimary"
             android:text="Add Payment" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="50dp"></View>
 
     </LinearLayout>
 
