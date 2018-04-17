@@ -71,10 +71,10 @@ public class SlideshowDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
 
-        selectedPosition = getArguments().getInt("position");
-        fragmentFrom = getArguments().getString("frag");
-        isGuest = getArguments().getBoolean("Guest");
-        images = (ArrayList<AlbumMasterModel>) getArguments().getSerializable("images");
+        selectedPosition = getArguments().getInt(Constants.INTENT_TYPE_POSITION);
+        fragmentFrom = getArguments().getString(Constants.INTENT_TYPE_FRAGMENT);
+        isGuest = getArguments().getBoolean(Constants.INTENT_TYPE_GUEST);
+        images = (ArrayList<AlbumMasterModel>) getArguments().getSerializable(Constants.INTENT_TYPE_IMAGES);
 
 
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
@@ -109,13 +109,13 @@ public class SlideshowDialogFragment extends DialogFragment {
                     AlbumMasterModel image = images.get(selectedPosition);
                     downloadImage(image.getImg());
                 } else {
-                    getMyActivity().showToast("Please connect to internet !");
+                    getMyActivity().showToast(getString(R.string.no_internet));
                 }
             }
         });
-        if (fragmentFrom.equals("community")) {
+        if (fragmentFrom.equals(Constants.INTENT_VALUE_CHAT)) {
             btnDelete.setVisibility(View.GONE);
-        } else if (getMyActivity().isAdmin && !isGuest && !fragmentFrom.equals("community")) {
+        } else if (getMyActivity().isAdmin && !isGuest && !fragmentFrom.equals(Constants.INTENT_VALUE_CHAT)) {
             btnDelete.setVisibility(View.VISIBLE);
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -244,14 +244,14 @@ public class SlideshowDialogFragment extends DialogFragment {
         AndroidNetworking.initialize(getMyActivity());
 
         //Folder Creating Into Phone Storage
-        dirPath = Environment.getExternalStorageDirectory() + "/School Downloads";
+        dirPath = Environment.getExternalStorageDirectory() + getString(R.string.download_folder);
 
         fileName = "image" + Calendar.getInstance().getTime() + ".jpeg";
 
         //file Creating With Folder & Fle Name
         file = new File(dirPath, fileName);
 
-        pd.setMessage("Downloading image...");
+        pd.setMessage(getString(R.string.msg_progress_download));
         pd.show();
         AndroidNetworking.download(url, dirPath, fileName)
                 .build()
@@ -260,7 +260,7 @@ public class SlideshowDialogFragment extends DialogFragment {
                     @Override
                     public void onDownloadComplete() {
                         pd.dismiss();
-                        Toast.makeText(getMyActivity(), "Image Downloaded to sd card folder School Downloads", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getMyActivity(), getString(R.string.msg_download_folder), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

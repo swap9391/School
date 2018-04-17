@@ -19,7 +19,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Select Class Name" />
+                android:text="@string/lbl_select_class" />
 
             <Spinner
                 android:id="@+id/spinner_class_name"
@@ -39,7 +39,7 @@
                     android:id="@+id/edt_subject"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Subject"
+                    android:hint="@string/hint_subject"
                     android:imeOptions="actionNext"
                     android:inputType="number"
                     android:maxLength="4"
@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="7dp"
-                android:hint="Enter Description"
+                android:hint="@string/hint_description"
                 android:lines="4"
                 android:overScrollMode="always"
                 android:padding="5dp"

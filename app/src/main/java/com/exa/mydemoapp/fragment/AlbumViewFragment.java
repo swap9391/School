@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.android.volley.Request;
 import com.exa.mydemoapp.Common.Connectivity;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
@@ -50,7 +51,7 @@ public class AlbumViewFragment extends CommonFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_gallery, container, false);
-        getMyActivity().toolbar.setTitle("Image Album");
+        getMyActivity().toolbar.setTitle(getStringById(R.string.dashboard_image_gallery));
         getMyActivity().init();
         initViewBinding(view);
         images = new ArrayList<>();
@@ -58,7 +59,7 @@ public class AlbumViewFragment extends CommonFragment {
         if (Connectivity.isConnected(getMyActivity())) {
             getImageList();
         } else {
-            getMyActivity().showToast("Please Connect to internet !!");
+            getMyActivity().showToast(getStringById(R.string.no_internet));
         }
         return view;
     }
@@ -145,7 +146,7 @@ public class AlbumViewFragment extends CommonFragment {
                 listAlbumChild.add(albumImagesModel);
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("mylist", (Serializable) listAlbumChild);
+                bundle.putSerializable(Constants.LIST_TYPE, (Serializable) listAlbumChild);
                 getMyActivity().showFragment(new GalleryViewFragment(), bundle);
 
             }

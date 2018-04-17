@@ -44,8 +44,8 @@ public class AboutSchoolFragment extends CommonFragment {
         getMyActivity().init();
         initViewBinding(view);
 
-        txtSchoolTitle.setText("Kalpatru Kids");
-        txtSchoolAddress.setText("Pune");
+        txtSchoolTitle.setText(getString(R.string.app_name));
+        txtSchoolAddress.setText(getString(R.string.school_address));
         txtSchoolContent.setText(Html.fromHtml(getMyActivity().getResources().getString(R.string.school_content)));
 
       /*  Glide.with(getMyActivity()).load(R.mipmap.ic_launcher)

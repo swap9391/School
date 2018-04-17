@@ -124,7 +124,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.upload_info_layout, container, false);
-        getMyActivity().toolbar.setTitle("Upload Photo");
+        getMyActivity().toolbar.setTitle(getString(R.string.dashboard_upload));
         getMyActivity().init();
         initViewBinding(view);
         imageFiles = new ArrayList<>();
@@ -272,7 +272,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
     public void uploadImages() {
         final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
-        progressDialog.setTitle("Uploading... ");
+        progressDialog.setTitle(getString(R.string.msg_progress_uploading));
         progressDialog.show();
         progressDialog.setCancelable(false);
         S3UploadActivity.uploadData(getMyActivity(), new S3FileTransferDelegate() {
@@ -297,14 +297,14 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
             @Override
             public void onS3FileTransferProgressChanged(int id, String fileName, int percentage) {
-                progressDialog.setTitle("Uploading.. " + percentage + "%    " + totalImages + "/" + imageFiles.size());
+                progressDialog.setTitle(getString(R.string.msg_progress_uploading) + percentage + "%    " + totalImages + "/" + imageFiles.size());
             }
 
             @Override
             public void onS3FileTransferError(int id, String fileName, Exception ex) {
                 progressDialog.dismiss();
             }
-        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss" + count), imageFiles.get(0));
+        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), getString(R.string.date_format_joins)) + count, imageFiles.get(0));
     }
 
 
@@ -383,11 +383,11 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                     setImage(imageurl);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    getMyActivity().showToast("Try Again");
+                    getMyActivity().showToast(getString(R.string.msg_try_agian));
                 }
 
             } else {
-                getMyActivity().showToast("Capture Cancelled");
+                getMyActivity().showToast(getString(R.string.msg_capture_cacel));
             }
 
 
@@ -461,7 +461,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
 
                 File filesDir = getMyActivity().getFilesDir();
-                File imageFile = new File(filesDir, "image" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss" + countOfImage) + ".JPG");
+                File imageFile = new File(filesDir, "image" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), getString(R.string.date_format_joins)) + countOfImage + ".JPG");
 
                 OutputStream os;
                 try {
@@ -531,25 +531,25 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
     private boolean check() {
         if (albumImagesModel.getClassName() == null || albumImagesModel.getClassName().equals("")) {
-            getMyActivity().showToast("Please Select Class Name");
+            getMyActivity().showToast(getString(R.string.valid_class_name) );
             return false;
         }
         if (!albumImagesModel.getClassName().equalsIgnoreCase("All")) {
             if (albumImagesModel.getStudentId() == null || albumImagesModel.getStudentId().equals("")) {
-                getMyActivity().showToast("Please Select Student Name");
+                getMyActivity().showToast(getString(R.string.valid_student_name));
                 return false;
             }
         }
         if (albumImagesModel.getCreatedBy() == null || albumImagesModel.getCreatedBy().equals("")) {
-            getMyActivity().showToast("Please Enter User Name");
+            getMyActivity().showToast(getString(R.string.valid_user_name));
             return false;
         }
         if (albumImagesModel.getAlbumTitle() == null || albumImagesModel.getAlbumTitle().equals("")) {
-            getMyActivity().showToast("Please Enter Place Name");
+            getMyActivity().showToast(getString(R.string.valid_album_title));
             return false;
         }
         if (albumImagesModel.getAlbumDescription() == null || albumImagesModel.getAlbumDescription().equals("")) {
-            getMyActivity().showToast("Please Enter Description");
+            getMyActivity().showToast(getString(R.string.valid_description));
             return false;
         }
         return true;
@@ -569,7 +569,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             case R.id.action_save:
                 try {
                     AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.app_name), getString(R.string.save_msg));
-                    builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(getString(R.string.dialog_button_save), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             bindModel();
@@ -582,11 +582,11 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                                         save();
                                     }
                                 } else {
-                                    getMyActivity().showToast("Please Connect to internet !!");
+                                    getMyActivity().showToast(getString(R.string.no_internet));
                                 }
                             }
                         }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -713,9 +713,11 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             public void onResponse(AlbumMasterModel studentData) {
                 getMyActivity().showFragment(new DashboardFragment(), null);
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();

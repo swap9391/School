@@ -68,7 +68,7 @@ public class ProfileFragment extends CommonFragment {
         view = inflater.inflate(R.layout.layout_profile, container, false);
         initViewBinding(view);
         getMyActivity().init();
-        getMyActivity().toolbar.setTitle("My Profile");
+        getMyActivity().toolbar.setTitle(getString(R.string.title_profile));
         setData();
         rewardModelList = new ArrayList<>();
 
@@ -86,7 +86,7 @@ public class ProfileFragment extends CommonFragment {
                 public void onClick(View v) {
                     if (rewardModelList.size() > 0) {
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("mylist", (Serializable) rewardModelList);
+                        bundle.putSerializable(Constants.LIST_TYPE, (Serializable) rewardModelList);
                         getMyActivity().showFragment(getMyActivity().rewardGraphFragment, bundle);
                     }
 
@@ -123,8 +123,8 @@ public class ProfileFragment extends CommonFragment {
             circleImageView.setImageDrawable(getMyActivity().getResources().getDrawable(R.drawable.icon_boy));
             txtName.setText(name != null ? name : "");
             txtAddress.setText(address != null ? address : "");
-            String className = "Email: " + userModel.getEmail();
-            String division = "Contact Number: " + userModel.getContactNumber();
+            String className = getString(R.string.lbl_email) + userModel.getEmail();
+            String division = getString(R.string.lbl_contact_number)+ userModel.getContactNumber();
             txtClassName.setText(className != null ? className : "");
             txtDivision.setText(division != null ? division : "");
             // txtBloodGroup.setText(bloodGrp != null ? bloodGrp : "");

@@ -114,16 +114,16 @@ public class HomeWorkFragment extends CommonFragment {
 
     private boolean check() {
         if (homeWorkModel.getClassName() == null || homeWorkModel.getClassName().equals("")) {
-            getMyActivity().showToast("Please Select Class Name");
+            getMyActivity().showToast(getStringById(R.string.valid_class_name));
             return false;
         }
         if (homeWorkModel.getSubjectName() == null || homeWorkModel.getSubjectName().equals("")) {
-            getMyActivity().showToast("Please Select Subject Name");
+            getMyActivity().showToast(getStringById(R.string.valid_subject));
             return false;
         }
 
         if (homeWorkModel.getDescription() == null || homeWorkModel.getDescription().equals("")) {
-            getMyActivity().showToast("Please Enter Homework Description");
+            getMyActivity().showToast(getStringById(R.string.valid_description));
             return false;
         }
 
@@ -146,7 +146,7 @@ public class HomeWorkFragment extends CommonFragment {
             case R.id.action_save:
                 try {
                     AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.app_name), getString(R.string.save_msg));
-                    builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(getString(R.string.dialog_button_save), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             bindModel();
@@ -154,7 +154,7 @@ public class HomeWorkFragment extends CommonFragment {
                                 save();
                             }
                         }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

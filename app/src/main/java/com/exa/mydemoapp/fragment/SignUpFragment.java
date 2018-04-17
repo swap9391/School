@@ -558,7 +558,7 @@ public class SignUpFragment extends CommonFragment {
 
         hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
         hashMap.put(IJson.userInfoModel, userModel.getUserInfoModel());
-        hashMap.put(IJson.busRoute,"Moshi");
+        hashMap.put(IJson.busRoute, "Moshi");
 
         if (userModel.getPkeyId() != null) {
             hashMap.put(IJson.id, userModel.getPkeyId().toString());
@@ -708,6 +708,8 @@ public class SignUpFragment extends CommonFragment {
                     .asBitmap()
                     .override(300, 300)
                     .fitCenter()
+                    .placeholder(R.drawable.defualt_album_icon)
+                    .error(R.drawable.defualt_album_icon)
                     .into(imgProfile);
             fileProfile = new File(getMyActivity().getRealPathFromURI(selectedImage));
         } else {

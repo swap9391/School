@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.volley.Request;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.listner.OtpListner;
@@ -64,7 +65,7 @@ public class OtpDialogFrag extends DialogFragment implements View.OnClickListene
                 if (!txtOtp.getText().toString().isEmpty()) {
                     getOtp();
                 } else {
-                    getMyActivity().showToast("Please Enter Otp");
+                    getMyActivity().showToast(getString(R.string.valid_otp));
                 }
                 break;
             case R.id.btn_save:
@@ -89,8 +90,8 @@ public class OtpDialogFrag extends DialogFragment implements View.OnClickListene
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equalsIgnoreCase("otp")) {
-                final String message = intent.getStringExtra("message");
+            if (intent.getAction().equalsIgnoreCase(Constants.INTENT_TYPE_OTP)) {
+                final String message = intent.getStringExtra(Constants.INTENT_TYPE_MSG);
                 txtOtp.setText(getOnlyNumerics(message));
                 //Do whatever you want with the code here
             }

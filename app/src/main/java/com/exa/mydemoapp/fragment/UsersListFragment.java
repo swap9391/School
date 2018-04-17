@@ -80,7 +80,7 @@ public class UsersListFragment extends CommonFragment {
             getMyActivity().showToast("Please Connect to internet !!");
         }*/
 
-        getMyActivity().toolbar.setTitle("Users");
+        getMyActivity().toolbar.setTitle(getStringById(R.string.title_user_list));
         return view;
     }
 

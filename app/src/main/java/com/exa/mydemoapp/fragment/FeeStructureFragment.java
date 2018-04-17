@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
@@ -53,7 +54,7 @@ public class FeeStructureFragment extends CommonFragment {
 
         if (userModel != null) {
 
-            if (userModel.getUserType().equals("STUDENT")) {
+            if (userModel.getUserType().equals(Constants.USER_TYPE_STUDENT)) {
                 String totalFees = userModel.getStudentFeesModel().getTotalFees() + "";
                 double paid = 0.0;
                 for (FeesInstallmentsModel feesInstallmentsModel : userModel.getStudentFeesModel().getFeesInstallmentsModels()) {

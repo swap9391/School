@@ -64,11 +64,10 @@ public class CalenderViewFragment extends Fragment {
         view = inflater.inflate(R.layout.layout_calender, container, false);
         progressDialog = new ProgressDialog(getMyActivity());
         ;
-        getMyActivity().toolbar.setTitle("Calender View");
+        getMyActivity().toolbar.setTitle(getString(R.string.dashboard_calender));
         getMyActivity().init();
 
         textview = (TextView) view.findViewById(R.id.txt_event_name);
-        final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 
         // Setup caldroid fragment
         // **** If you want normal CaldroidFragment, use below line ****
@@ -134,17 +133,12 @@ public class CalenderViewFragment extends Fragment {
 
             @Override
             public void onChangeMonth(int month, int year) {
-                String text = "month: " + month + " year: " + year;
                 countWeekendDays(year, month);
-                if (Connectivity.isConnected(getMyActivity())) {
-                    textview.setText("");
-                    if (listEvent.size() > 0) {
-                        initCalender();
-                    } else {
-                        getCalenderEvents();
-                    }
+                textview.setText("");
+                if (listEvent.size() > 0) {
+                    initCalender();
                 } else {
-                    getMyActivity().showToast("Please Connect to internet !!");
+                    getCalenderEvents();
                 }
             }
 
@@ -286,9 +280,11 @@ public class CalenderViewFragment extends Fragment {
                     initCalender();
                 }
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onResponse(AnnualCalenderMasterModel object) {
             }

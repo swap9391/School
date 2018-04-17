@@ -99,7 +99,9 @@ public class LoginActivity extends CommonActivity {
                 if (Connectivity.isConnected(LoginActivity.this)) {
                     bindModel();
                     // checkLogin();
-                    Login();
+                    if (check()) {
+                        Login();
+                    }
                     //saveLogin();
                 } else {
                     showToast(getStringById(R.string.no_internet));
@@ -107,6 +109,18 @@ public class LoginActivity extends CommonActivity {
             }
         });
 
+    }
+
+    private boolean check() {
+        if (userModel.getUsername() == null || userModel.getUsername().isEmpty()) {
+            showToast(getString(R.string.valid_user_name));
+            return false;
+        }
+        if (userModel.getPassword() == null || userModel.getPassword().isEmpty()) {
+            showToast(getString(R.string.valid_password));
+            return false;
+        }
+        return true;
     }
 
     private void bindModel() {

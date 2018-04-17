@@ -62,13 +62,13 @@ public class NewsFeedFragment extends CommonFragment {
         view = inflater.inflate(R.layout.layout_news_feed, container, false);
         initViewBinding(view);
         Bundle bundle = getArguments();
-        feed = bundle.getString("FEED");
+        feed = bundle.getString(Constants.FEED);
         albumNames = new ArrayList<>();
         getMyActivity().init();
         if (Connectivity.isConnected(getMyActivity())) {
             getImageList();
         } else {
-            getMyActivity().showToast("Please Connect to internet !!");
+            getMyActivity().showToast(getString(R.string.no_internet));
         }
         getMyActivity().toolbar.setTitle(feed);
 

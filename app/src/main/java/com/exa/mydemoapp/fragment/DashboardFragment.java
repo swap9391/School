@@ -58,7 +58,7 @@ public class DashboardFragment extends CommonFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_dashboard, container, false);
-        getMyActivity().toolbar.setTitle("Home");
+        getMyActivity().toolbar.setTitle(getString(R.string.dashboard_home));
 
         nameForAdmin = getResources().getStringArray(R.array.nameForAdmin);
         imagesForAdmin = getResources().obtainTypedArray(R.array.imagesForAdmin);

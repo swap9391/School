@@ -79,7 +79,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
         dbInvoker = new DbInvoker(getMyActivity());
         attendanceMasterModel = new AttendanceMasterModel();
         listStudent = new ArrayList<>();
-        getMyActivity().toolbar.setTitle("Add Attendance");
+        getMyActivity().toolbar.setTitle(getString(R.string.dashboard_attendance));
         setHasOptionsMenu(true);
         initViewBinding(view);
         List<String> listClass = new ArrayList(Arrays.asList(getResources().getStringArray(R.array.class_type)));

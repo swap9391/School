@@ -19,7 +19,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Select Class Name" />
+                android:text="@string/lbl_select_class" />
 
             <Spinner
                 android:id="@+id/spinner_class_name"
@@ -37,7 +37,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Select Student" />
+                android:text="@string/lbl_select_student" />
 
             <Spinner
                 android:id="@+id/spinner_student_name"
@@ -55,7 +55,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Select Reward" />
+                android:text="@string/lbl_select_reward" />
 
             <Spinner
                 android:id="@+id/spinner_reward_type"
@@ -75,7 +75,7 @@
                     android:id="@+id/edt_point"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Points"
+                    android:hint="@string/hint_points"
                     android:imeOptions="actionNext"
                     android:inputType="number"
                     android:maxLength="4"
@@ -88,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="7dp"
-                android:hint="Enter Description"
+                android:hint="@string/hint_description"
                 android:lines="4"
                 android:overScrollMode="always"
                 android:padding="5dp"

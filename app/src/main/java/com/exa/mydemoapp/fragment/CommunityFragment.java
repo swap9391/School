@@ -81,7 +81,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_community, container, false);
-        getMyActivity().toolbar.setTitle("Parent Community");
+        getMyActivity().toolbar.setTitle(getString(R.string.dashboard_community));
         getMyActivity().init();
         studentName=CommonUtils.getSharedPref(Constants.STUDENT_NAME,getMyActivity());
         communityModel = new CommunityModel();
@@ -217,9 +217,9 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
                                 albumImagesModel.setImg(model.getImg());
                                 albumImagesModelList.add(albumImagesModel);
                                 Bundle bundle = new Bundle();
-                                bundle.putSerializable("images", (Serializable) albumImagesModelList);
-                                bundle.putInt("position", 0);
-                                bundle.putString("frag", "community");
+                                bundle.putSerializable(Constants.INTENT_TYPE_IMAGES, (Serializable) albumImagesModelList);
+                                bundle.putInt(Constants.INTENT_TYPE_POSITION, 0);
+                                bundle.putString(Constants.INTENT_TYPE_FRAGMENT, Constants.INTENT_VALUE_CHAT);
                                 getMyActivity().setGallery(false);
                                 getMyActivity().showFragment(new SlideshowDialogFragment(), bundle);
                             }

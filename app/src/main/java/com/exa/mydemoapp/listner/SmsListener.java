@@ -7,6 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsMessage;
+
+import com.exa.mydemoapp.Common.Constants;
+
 public class SmsListener extends BroadcastReceiver {
 
     private SharedPreferences preferences;
@@ -31,8 +34,8 @@ public class SmsListener extends BroadcastReceiver {
                         msgBody = msgs[i].getMessageBody();
                     }
 
-                    Intent myIntent = new Intent("otp");
-                    myIntent.putExtra("message", msgBody);
+                    Intent myIntent = new Intent(Constants.INTENT_TYPE_OTP);
+                    myIntent.putExtra(Constants.INTENT_TYPE_MSG, msgBody);
                     LocalBroadcastManager.getInstance(context).sendBroadcast(myIntent);
                 } catch (Exception e) {
 //                            Log.d("Exception caught",e.getMessage());

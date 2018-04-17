@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.MapsActivity;
 import com.exa.mydemoapp.R;
@@ -99,7 +100,7 @@ public class HomeGridAdapter extends BaseAdapter {
                         break;
                     case "School Facilities":
                         context.setNewsFeedType(context.getStringById(R.string.img_type_facilities));
-                        bundle.putString("FEED", context.getNewsFeedType());
+                        bundle.putString(Constants.FEED, context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Calendar":
@@ -110,17 +111,17 @@ public class HomeGridAdapter extends BaseAdapter {
                         break;
                     case "Achievements":
                         context.setNewsFeedType(context.getStringById(R.string.img_type_archive));
-                        bundle.putString("FEED", context.getNewsFeedType());
+                        bundle.putString(Constants.FEED, context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Blog":
                         context.setNewsFeedType(context.getStringById(R.string.img_type_blog));
-                        bundle.putString("FEED", context.getNewsFeedType());
+                        bundle.putString(Constants.FEED, context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "News":
                         context.setNewsFeedType(context.getStringById(R.string.img_type_news));
-                        bundle.putString("FEED", context.getNewsFeedType());
+                        bundle.putString(Constants.FEED, context.getNewsFeedType());
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Parent Chatting":

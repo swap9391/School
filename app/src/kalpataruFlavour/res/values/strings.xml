@@ -197,6 +197,7 @@
     <string name="img_type_facilities">School Facilities</string>
 
     <string name="dashboard_about_school">About School</string>
+    <string name="dashboard_home">Home</string>
     <string name="dashboard_facilities">School Facilities</string>
     <string name="dashboard_calender">Calendar</string>
     <string name="dashboard_image_gallery">Photo Gallery</string>
@@ -245,9 +246,7 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="loading">Loading...</string>
-    <string name="no_internet">Please connect to internet</string>
-    <string name="valid_user_name">Please Enter Valid User Name</string>
-    <string name="valid_password">Please Enter Valid Password</string>
+    <string name="no_internet">Please connect to internet !!</string>
     <string name="login_success">Login Successful!!</string>
     <string name="user_reg_title">User Registration</string>
 
@@ -259,4 +258,46 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="contact_us_detail"><![CDATA[<b>Moshi- Alandi Road</b>,Dudulgaon,Moshi-412 105\n www.kalpaatarukids.com | email- kalpatarukids@gmail.com \n Contact no: +91 9689868788/ +91 9823405434 ]]></string>
 
     <string name="Rs">\u20B9  </string>
+    <string name="warning">Warning !</string>
+    <string name="exit_sign_up">Do you want to move to home screen !</string>
+    <string name="text_guest_user">Guest User</string>
+    <string name="text_device_type">Android</string>
+    <string name="text_hint_password">Ente Password</string>
+    <string name="text_hint_username">Enter User Name</string>
+    <string name="valid_user_name">Please enter user name</string>
+    <string name="valid_password">Please enter password</string>
+    <string name="school_address">Pune</string>
+    <string name="download_folder">/School Downloads</string>
+    <string name="msg_download_folder">Image Downloaded to sd card folder School Downloads</string>
+    <string name="msg_progress_download">Downloading Image...</string>
+    <string name="msg_progress_uploading">Uploading...</string>
+    <string name="date_format_joins">ddMMyyyyhhmmss</string>
+    <string name="msg_try_agian">Try Again</string>
+    <string name="msg_capture_cacel">Capture Cancelled</string>
+    <string name="valid_class_name">Please select class name</string>
+    <string name="valid_student_name">Please select student name</string>
+    <string name="valid_album_title">Please enter album title</string>
+    <string name="valid_description">Please enter description</string>
+    <string name="valid_subject">Please enter subject name</string>
+    <string name="dialog_button_save">Save</string>
+    <string name="dialog_button_cancel">Cancel</string>
+    <string name="title_user_list">User List</string>
+    <string name="valid_reward_type">Please select reward type</string>
+    <string name="valid_points">Please enter reward points</string>
+    <string name="title_profile">My Profile</string>
+    <string name="msg_reward_points">Reward Points</string>
+    <string name="msg_sign_out">Sign Out</string>
+    <string name="msg_change_password">Change Password</string>
+    <string name="lbl_email">Email: </string>
+    <string name="lbl_contact_number">Contact Number: </string>
+    <string name="lbl_select_class">Select Class Name</string>
+    <string name="lbl_select_student">Select Student</string>
+    <string name="lbl_select_reward">Select Reward</string>
+    <string name="lbl_select_image">Select Image Type</string>
+    <string name="hint_album_name">Enter Album Name</string>
+    <string name="hint_points">Enter Points</string>
+    <string name="hint_subject">Enter Subject</string>
+    <string name="hint_description">Enter Description</string>
+    <string name="valid_otp">Please enter otp</string>
+    <string name="lbl_total_point">Total Points </string>
 </resources>

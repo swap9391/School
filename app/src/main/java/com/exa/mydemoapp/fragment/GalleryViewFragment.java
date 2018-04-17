@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
@@ -38,14 +39,14 @@ public class GalleryViewFragment extends CommonFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_gallery, container, false);
-        getMyActivity().toolbar.setTitle("Image Album");
         getMyActivity().init();
         initViewBinding(view);
         images = new ArrayList<>();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            images = (ArrayList<AlbumMasterModel>) bundle.getSerializable("mylist");
+            images = (ArrayList<AlbumMasterModel>) bundle.getSerializable(Constants.LIST_TYPE);
         }
+        getMyActivity().toolbar.setTitle(images.get(0).getAlbumTitle());
         ShowList(images);
         return view;
     }
@@ -75,10 +76,10 @@ public class GalleryViewFragment extends CommonFragment {
             @Override
             public void onClick(View view, int position) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("images", (Serializable) newImagereqList);
-                bundle.putInt("position", position);
-                bundle.putString("frag", "gallery");
-                bundle.putBoolean("Guest", getMyActivity().isGuest);
+                bundle.putSerializable(Constants.INTENT_TYPE_IMAGES, (Serializable) newImagereqList);
+                bundle.putInt(Constants.INTENT_TYPE_POSITION, position);
+                bundle.putString(Constants.INTENT_TYPE_FRAGMENT, Constants.INTENT_VALUE_GALLERY);
+                bundle.putBoolean(Constants.INTENT_TYPE_GUEST, getMyActivity().isGuest);
            /*     FragmentTransaction ft = getMyActivity().getSupportFragmentManager().beginTransaction();
                 SlideshowDialogFragment newFragment = new SlideshowDialogFragment();
                 newFragment.setArguments(bundle);

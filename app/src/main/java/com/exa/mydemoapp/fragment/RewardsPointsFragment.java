@@ -163,24 +163,24 @@ public class RewardsPointsFragment extends CommonFragment {
 
     private boolean check() {
         if (rewardModel.getClassName() == null || rewardModel.getClassName().equals("")) {
-            getMyActivity().showToast("Please Select Class Name");
+            getMyActivity().showToast(getString(R.string.valid_class_name));
             return false;
         }
         if (rewardModel.getStudentId() == null || rewardModel.getStudentId().equals("")) {
-            getMyActivity().showToast("Please Select Student Name");
+            getMyActivity().showToast(getString(R.string.valid_student_name));
             return false;
         }
         if (rewardModel.getRewardType() == null || rewardModel.getRewardType().equals("")) {
-            getMyActivity().showToast("Please Select Reward Type");
+            getMyActivity().showToast(getString(R.string.valid_reward_type));
             return false;
         }
         if (rewardModel.getPoints() <= 0) {
-            getMyActivity().showToast("Please Enter Points");
+            getMyActivity().showToast(getString(R.string.valid_points));
             return false;
         }
 
         if (rewardModel.getDescription() == null || rewardModel.getDescription().equals("")) {
-            getMyActivity().showToast("Please Enter Reward Description");
+            getMyActivity().showToast(getString(R.string.valid_description));
             return false;
         }
 
@@ -203,7 +203,7 @@ public class RewardsPointsFragment extends CommonFragment {
             case R.id.action_save:
                 try {
                     AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.app_name), getString(R.string.save_msg));
-                    builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(getString(R.string.dialog_button_save), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             bindModel();
@@ -211,7 +211,7 @@ public class RewardsPointsFragment extends CommonFragment {
                                 save();
                             }
                         }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

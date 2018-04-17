@@ -24,7 +24,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
-                    android:text="Select Image Type" />
+                    android:text="@string/lbl_select_image" />
 
                 <Spinner
                     android:id="@+id/spinner_image_type"
@@ -41,7 +41,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
-                    android:text="Select Class Name" />
+                    android:text="@string/lbl_select_class" />
 
                 <Spinner
                     android:id="@+id/spinner_class_name"
@@ -59,7 +59,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
-                    android:text="Select Student" />
+                    android:text="@string/lbl_select_student" />
 
                 <Spinner
                     android:id="@+id/spinner_student_name"
@@ -79,7 +79,7 @@
                         android:id="@+id/edt_user_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Your Name"
+                        android:hint="@string/text_hint_username"
                         android:imeOptions="actionNext"
                         android:maxLines="1"
                         android:minLines="1"
@@ -95,7 +95,7 @@
                         android:id="@+id/edt_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Title"
+                        android:hint="@string/hint_album_name"
                         android:imeOptions="actionNext"
                         android:maxLines="1"
                         android:minLines="1"
@@ -108,7 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="7dp"
-                    android:hint="Enter Description"
+                    android:hint="@string/hint_description"
                     android:lines="4"
                     android:overScrollMode="always"
                     android:padding="5dp"

@@ -47,4 +47,15 @@ public interface Constants {
     public static int REWARD_INTERSCHOOL = 20;
     public static int REWARD_ACADEMICS = 20;
     public static int REWARD_OTHER = 10;
+    public static String FEED = "FEED";
+    public static String FEED_TYPE_NEWS = "News Feed";
+    public static String LIST_TYPE = "mylist";
+    public static String INTENT_TYPE_IMAGES = "images";
+    public static String INTENT_TYPE_POSITION = "position";
+    public static String INTENT_TYPE_FRAGMENT = "frag";
+    public static String INTENT_TYPE_GUEST = "Guest";
+    public static String INTENT_TYPE_OTP = "Otp";
+    public static String INTENT_TYPE_MSG = "Message";
+    public static String INTENT_VALUE_GALLERY= "gallery";
+    public static String INTENT_VALUE_CHAT= "community";
 }

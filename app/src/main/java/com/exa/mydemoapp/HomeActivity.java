@@ -152,12 +152,18 @@ public class HomeActivity extends CommonActivity {
                         Bundle bundle = new Bundle();
                         switch (item.getItemId()) {
                             case R.id.action_item1:
-                                showToolbar();
-                                showFragment(dashboardFragment, null);
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                Fragment currentFragment = fragmentManager.findFragmentById(R.id.frame_layout);
+                                if (signUpFragment != null && signUpFragment == currentFragment) {
+                                    warningDialog(getString(R.string.warning), getString(R.string.exit_sign_up));
+                                } else {
+                                    showToolbar();
+                                    showFragment(dashboardFragment, null);
+                                }
                                 break;
                             case R.id.action_item2:
                                 showToolbar();
-                                bundle.putString("FEED", "News Feed");
+                                bundle.putString(Constants.FEED, Constants.FEED_TYPE_NEWS);
                                 showFragment(newsFeedFragment, bundle);
                                 break;
                             case R.id.action_item3:
@@ -222,11 +228,11 @@ public class HomeActivity extends CommonActivity {
             showFragment(dashboardFragment, null);
         } else if (slideshowDialogFragment != null && slideshowDialogFragment.getClass() == currentFragment.getClass()) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("mylist", (Serializable) getListAlbumChild());
+            bundle.putSerializable(Constants.LIST_TYPE, (Serializable) getListAlbumChild());
             if (isGallery) {
                 showFragment(galleryViewFragment, bundle);
             } else if (fromFragment == newsFeedFragment) {
-                bundle.putString("FEED", getNewsFeedType());
+                bundle.putString(Constants.FEED, getNewsFeedType());
                 showFragment(newsFeedFragment, bundle);
             } else {
                 showFragment(communityFragment, null);
@@ -340,7 +346,29 @@ public class HomeActivity extends CommonActivity {
             builder.setPositiveButton(getStringById(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    exitFromApp();
+                    finish();
+                    System.exit(0);
+                }
+            }).setNegativeButton(getStringById(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+    }
+
+    private void warningDialog(String title, String message) {
+        try {
+            AlertDialog.Builder builder = showAlertDialog(this, title, message);
+            builder.setPositiveButton(getStringById(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    showToolbar();
+                    showFragment(dashboardFragment, null);
                 }
             }).setNegativeButton(getStringById(R.string.no), new DialogInterface.OnClickListener() {
                 @Override

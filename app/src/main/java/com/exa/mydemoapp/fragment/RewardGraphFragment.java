@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.StudentRewardsModel;
@@ -36,7 +37,7 @@ public class RewardGraphFragment extends CommonFragment {
         rewardModelList = new ArrayList<>();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            rewardModelList = (ArrayList<StudentRewardsModel>) bundle.getSerializable("mylist");
+            rewardModelList = (ArrayList<StudentRewardsModel>) bundle.getSerializable(Constants.LIST_TYPE);
         }
         loadData();
         pieChart.startAnimation();
@@ -70,7 +71,7 @@ public class RewardGraphFragment extends CommonFragment {
             }
         }
         int total = sportsPoint + culturePoint + interSchoolPoint + acadamicPoint + otherPoint;
-        getMyActivity().toolbar.setTitle("Total Points " + total);
+        getMyActivity().toolbar.setTitle(getString(R.string.lbl_total_point) + total);
         pieChart.addPieSlice(new PieModel(getStringById(R.string.reward_sports), sportsPoint, Color.parseColor("#FE6DA8")));
         pieChart.addPieSlice(new PieModel(getStringById(R.string.reward_cultural), culturePoint, Color.parseColor("#56B7F1")));
         pieChart.addPieSlice(new PieModel(getStringById(R.string.reward_inter_school), interSchoolPoint, Color.parseColor("#CDA67F")));
