@@ -5,9 +5,12 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonUtils;
@@ -21,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,10 +96,58 @@ public class CallWebService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.dismiss();
-            }
-        });
-        AppController.getInstance().addToRequestQueue(req);
+                NetworkResponse response = error.networkResponse;
+                if (error instanceof ServerError && response != null) {
+                    try {
+                        String res = new String(response.data,
+                                HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                        // Now you can use any deserializer to make sense of data
+                        JSONObject obj = new JSONObject(res);
+                        String message = obj.getString(Constants.RESPONSE_MESSAGE);
+                        if (message != null && !message.isEmpty()) {
+                            volleyResponseListener.onError(message);
+                        }
+                    } catch (UnsupportedEncodingException e1) {
+                        // Couldn't properly decode data to string
+                        e1.printStackTrace();
+                    } catch (JSONException e2) {
+                        // returned data is not JSONObject?
+                        e2.printStackTrace();
+                    }
+                }
 
+                if (error.getMessage() != null && !error.getMessage().isEmpty()) {
+                    volleyResponseListener.onError(error.getMessage());
+                }
+            }
+
+        }) {
+
+            /** Passing some request headers* */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                DbInvoker dbInvoker = new DbInvoker(context);
+                String studentId = CommonUtils.getSharedPref(Constants.STUDENT_ID, context);
+                UserModel userModel = new UserModel();
+                if (studentId != null) {
+                    userModel = dbInvoker.getStudentById(studentId);
+                }
+                HashMap<String, String> headers = new HashMap();
+                if (userModel != null) {
+                    headers.put("X-AUTH-TOKEN", userModel.getSessionKey());
+                }
+                return headers;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+        };
+
+
+        AppController.getInstance().addToRequestQueue(req);
     }
 
     public synchronized static <T> void getWebserviceObject(Context context, int requestMethod, String url, final HashMap<String, Object> param, VolleyResponseListener volleyResponseListener, Class<T> aClass) {
@@ -146,9 +198,31 @@ public class CallWebService {
 
                     }
                 }, new Response.ErrorListener() {
+
+
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.dismiss();
+                NetworkResponse response = error.networkResponse;
+                if (error instanceof ServerError && response != null) {
+                    try {
+                        String res = new String(response.data,
+                                HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                        // Now you can use any deserializer to make sense of data
+                        JSONObject obj = new JSONObject(res);
+                        String message = obj.getString(Constants.RESPONSE_MESSAGE);
+                        if (message != null && !message.isEmpty()) {
+                            volleyResponseListener.onError(message);
+                        }
+                    } catch (UnsupportedEncodingException e1) {
+                        // Couldn't properly decode data to string
+                        e1.printStackTrace();
+                    } catch (JSONException e2) {
+                        // returned data is not JSONObject?
+                        e2.printStackTrace();
+                    }
+                }
+
                 if (error.getMessage() != null && !error.getMessage().isEmpty()) {
                     volleyResponseListener.onError(error.getMessage());
                 }
@@ -168,11 +242,14 @@ public class CallWebService {
                 }
                 HashMap<String, String> headers = new HashMap();
                 if (userModel != null) {
-                    headers.put("Content-Type", "application/json");
                     headers.put("X-AUTH-TOKEN", userModel.getSessionKey());
-
                 }
                 return headers;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
             }
         };
 

@@ -104,6 +104,8 @@ public class SignUpFragment extends CommonFragment {
     private EditText edtContactNumber;
     @ViewById(R.id.edt_total_fees)
     private EditText edtTotalFees;
+    @ViewById(R.id.edt_email)
+    private EditText edtEmail;
     @ViewById(R.id.rd_girl)
     RadioButton rdGirl;
     @ViewById(R.id.rd_boy)
@@ -118,7 +120,10 @@ public class SignUpFragment extends CommonFragment {
     TextView txtAddFees;
     @ViewById(R.id.img_profile)
     ImageView imgProfile;
+    @ViewById(R.id.date_picker_dob)
+    Button btnDob;
     File fileProfile;
+
 
     boolean isEdit = false;
     private View view;
@@ -247,6 +252,13 @@ public class SignUpFragment extends CommonFragment {
             }
         });
 
+        btnDob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePicker();
+            }
+        });
+
         return view;
     }
 
@@ -299,8 +311,8 @@ public class SignUpFragment extends CommonFragment {
         userModel.getUserInfoModel().setBloodGroup(edtBloodGrp.getText().toString().trim());
         userModel.setUsername(edtUsername.getText().toString().trim());
         userModel.setContactNumber(edtContactNumber.getText().toString().trim());
-        userModel.setUserType(spnUserType.getSelectedItem().toString().trim());
         userModel.setPassword(edtPassword.getText().toString().trim());
+        userModel.setEmail(edtEmail.getText().toString().trim());
         userModel.getUserInfoModel().setSchoolName(spnSchoolName.getSelectedItem().toString());
         userModel.getUserInfoModel().setClassName(spnClass.getSelectedItem().toString().trim());
         userModel.getUserInfoModel().setDivisionName(spnDivision.getSelectedItem().toString().trim());
@@ -445,6 +457,10 @@ public class SignUpFragment extends CommonFragment {
             getMyActivity().showToast("Please Enter Password");
             return false;
         }
+        if (edtTotalFees.getText().toString().isEmpty()) {
+            getMyActivity().showToast("Please Enter Total Fees");
+            return false;
+        }
 
 
         return true;
@@ -537,8 +553,13 @@ public class SignUpFragment extends CommonFragment {
         hashMap.put(IJson.contactNumber, userModel.getContactNumber());
         // hashMap.put(IJson.contactNumberVerified, userModel.isContactNumberVerified());
         hashMap.put(IJson.busRoute, userModel.getBusRoute());
+        userModel.getUserInfoModel().setQualification("ABC");
+        userModel.getUserInfoModel().setSpeciality("ABC");
+
         hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
         hashMap.put(IJson.userInfoModel, userModel.getUserInfoModel());
+        hashMap.put(IJson.busRoute,"Moshi");
+
         if (userModel.getPkeyId() != null) {
             hashMap.put(IJson.id, userModel.getPkeyId().toString());
         }
@@ -572,14 +593,25 @@ public class SignUpFragment extends CommonFragment {
 
     private void showFeesDialog() {
         FeesInstallmentsModel feesInstallmentsModel = new FeesInstallmentsModel();
-        if (userModel.getStudentFeesModel().getFeesInstallmentsModels().size()>0){
+        if (userModel.getStudentFeesModel().getFeesInstallmentsModels().size() > 0) {
 
         }
-        AddFeesDialogFragment dialog = new AddFeesDialogFragment(getMyActivity(), feesInstallmentsModel, new DialogResultListner() {
+        AddFeesDialogFragment dialog = new AddFeesDialogFragment(getMyActivity(), feesInstallmentsModel, userModel.getStudentFeesModel().getFeesInstallmentsModels(), new DialogResultListner() {
             @Override
             public void getResult(FeesInstallmentsModel feesInstallmentsModel) {
+                int position = -1;
+                for (FeesInstallmentsModel bean : userModel.getStudentFeesModel().getFeesInstallmentsModels()) {
+                    position++;
+                    if (bean.getInstallmentNo().equals(feesInstallmentsModel.getInstallmentNo())) {
+                        userModel.getStudentFeesModel().getFeesInstallmentsModels().remove(position);
+                    }
+                }
                 userModel.getStudentFeesModel().getFeesInstallmentsModels().add(feesInstallmentsModel);
-                bindFeesView(feesInstallmentsModel);
+                if (feesInstallmentsModel != null) {
+                    userModel.getStudentFeesModel().setTotalFees(CommonUtils.asDouble(edtTotalFees.getText().toString().trim()));
+                    userModel.getStudentFeesModel().setNoOfInstallments(userModel.getStudentFeesModel().getFeesInstallmentsModels().size());
+                }
+                bindFeesView();
             }
         });
         dialog.show(getMyActivity().getFragmentManager(), "FeesDialog");
@@ -598,28 +630,43 @@ public class SignUpFragment extends CommonFragment {
         dialog.show(getMyActivity().getFragmentManager(), "FeesDialog");
     }
 
-    private void bindFeesView(FeesInstallmentsModel feesInstallmentsModel) {
+    private void bindFeesView() {
         LinearLayout layout1 = (LinearLayout) view.findViewById(R.id.layout_fees);
-        LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1.0f
-        );
-        textParam.setMargins(5, 5, 5, 5);
+        layout1.removeAllViews();
+        for (FeesInstallmentsModel feesInstallmentsModel : userModel.getStudentFeesModel().getFeesInstallmentsModels()) {
 
-        TextView txtInstallmentType = new TextView(getMyActivity());
-        TextView txtInstallmentAmount = new TextView(getMyActivity());
-        TextView txtPayStatus = new TextView(getMyActivity());
+            LinearLayout.LayoutParams layParam = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
 
-        txtInstallmentType.setLayoutParams(textParam);
-        txtInstallmentAmount.setLayoutParams(textParam);
-        txtPayStatus.setLayoutParams(textParam);
-        txtInstallmentType.setText(feesInstallmentsModel.getInstallmentNo());
-        txtInstallmentAmount.setText(getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
-        txtPayStatus.setText(feesInstallmentsModel.isPaid() ? "Paid" : "Unpaid");
-        layout1.addView(txtInstallmentType);
-        layout1.addView(txtInstallmentAmount);
+            );
+            layParam.setMargins(5, 5, 5, 5);
+            LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1.0f
+            );
+            textParam.setMargins(5, 5, 5, 5);
+            LinearLayout linearLayout = new LinearLayout(getMyActivity());
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout.setLayoutParams(textParam);
 
+            TextView txtInstallmentType = new TextView(getMyActivity());
+            TextView txtInstallmentAmount = new TextView(getMyActivity());
+            TextView txtPayStatus = new TextView(getMyActivity());
+
+            txtInstallmentType.setLayoutParams(textParam);
+            txtInstallmentAmount.setLayoutParams(textParam);
+            txtPayStatus.setLayoutParams(textParam);
+            txtInstallmentType.setText(feesInstallmentsModel.getInstallmentNo());
+            txtInstallmentAmount.setText(getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
+            txtPayStatus.setText(feesInstallmentsModel.isPaid() ? "Paid" : "Unpaid");
+            linearLayout.addView(txtInstallmentType);
+            linearLayout.addView(txtInstallmentAmount);
+            linearLayout.addView(txtPayStatus);
+            layout1.addView(linearLayout);
+
+        }
     }
 
 
@@ -631,7 +678,9 @@ public class SignUpFragment extends CommonFragment {
         S3UploadActivity.uploadData(getMyActivity(), new S3FileTransferDelegate() {
             @Override
             public void onS3FileTransferStateChanged(int id, TransferState state, String url, Object object) {
+                progressDialog.dismiss();
                 File file = (File) object;
+                userModel.setProfilePicUrl(url);
                 save();
             }
 
@@ -644,7 +693,7 @@ public class SignUpFragment extends CommonFragment {
             public void onS3FileTransferError(int id, String fileName, Exception ex) {
                 progressDialog.dismiss();
             }
-        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss" + userModel.getUsername()), fileProfile);
+        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss") + userModel.getUsername(), fileProfile);
     }
 
     @Override
@@ -660,7 +709,7 @@ public class SignUpFragment extends CommonFragment {
                     .override(300, 300)
                     .fitCenter()
                     .into(imgProfile);
-            fileProfile = new File(selectedImage.toString());
+            fileProfile = new File(getMyActivity().getRealPathFromURI(selectedImage));
         } else {
 
             Log.i("SonaSys", "resultCode: " + resultCode);
@@ -672,6 +721,47 @@ public class SignUpFragment extends CommonFragment {
 
         }
     }
+
+
+    private void showDatePicker() {
+        DatePickerFragment date = new DatePickerFragment();
+        /**
+         * Set Up Current Date Into dialog
+         */
+        Calendar calender = Calendar.getInstance();
+        Bundle args = new Bundle();
+        args.putInt("year", calender.get(Calendar.YEAR));
+        args.putInt("month", calender.get(Calendar.MONTH));
+        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        date.setArguments(args);
+        /**
+         * Set Call back to capture selected date
+         */
+        date.setCallBack(ondate);
+        date.show(getMyActivity().getSupportFragmentManager(), "Date Picker");
+    }
+
+    DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            monthOfYear += 1;
+            String month = "" + monthOfYear;
+            String day = "" + dayOfMonth;
+            if (monthOfYear < 10) {
+                month = "0" + monthOfYear;
+            }
+            if (dayOfMonth < 10) {
+                day = "0" + dayOfMonth;
+            }
+            Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
+            String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT);
+            //annualCalenderMasterModel.setEventDate(formatedDate);
+            btnDob.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
+            userModel.getUserInfoModel().setDateOfBirth("" + date.getTime());
+        }
+    };
+
 
     public HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();

@@ -2,6 +2,7 @@ package com.exa.mydemoapp.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -19,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +30,7 @@ import android.widget.TextView;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.bumptech.glide.Glide;
 import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
@@ -41,7 +44,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by midt-078 on 11/4/18.
@@ -72,7 +77,7 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
     @ViewById(R.id.img_cheque)
     private ImageView imgCheque;
     @ViewById(R.id.chk_paid)
-    private Button chkPaid;
+    private CheckBox chkPaid;
 
     private List<String> listFees;
     private List<String> listPaymentMode;
@@ -106,14 +111,12 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
         View v = inflater.inflate(R.layout.layout_add_fees, container, false);
         initView(v);
         getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        listFees = Arrays.asList(getResources().getStringArray(R.array.fees_type));
-        for (FeesInstallmentsModel feesInstallmentsModel : list) {
-            for (String string : listFees) {
-                if (feesInstallmentsModel.getInstallmentNo().equals(string)) {
-                    listFees.remove(string);
-                }
-            }
-        }
+
+        listFees = new ArrayList<String>();
+        listFees.add("First Installment");
+        listFees.add("Second Installment");
+        listFees.add("Third Installment");
+
 
         ArrayAdapter<String> feesAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, listFees);
         feesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -127,6 +130,29 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
                 } else {
                     datePickerInvest.setVisibility(View.VISIBLE);
                 }
+                for (FeesInstallmentsModel feesInstallmentsModel : list) {
+                    if (feesInstallmentsModel.getInstallmentNo().equals(listFees.get(position))) {
+                        bindView(feesInstallmentsModel);
+                        break;
+                    } else {
+                        edtBankName.setText("");
+                        edtChequeNumber.setText("");
+                        Glide.with(activity)
+                                .load("")
+                                .asBitmap()
+                                .override(300, 300)
+                                .fitCenter()
+                                .placeholder(R.drawable.defualt_album_icon)
+                                .error(R.drawable.defualt_album_icon)
+                                .into(imgCheque);
+                        edtInstallmentAmount.setText("");
+                        chkPaid.setChecked(false);
+                    }
+
+
+                }
+
+
             }
 
             @Override
@@ -171,8 +197,28 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
 
         imgCheque.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
-
+        datePickerInvest.setOnClickListener(this);
         return v;
+    }
+
+
+    private void bindView(FeesInstallmentsModel feesInstallmentsModel) {
+        txtPaymentMode.setText("Payment Mode :" + feesInstallmentsModel.getPaymentMode());
+        if (feesInstallmentsModel.getInstallmentNo().equals("Cheque")) {
+            edtBankName.setText(feesInstallmentsModel.getChequeBankName());
+            edtChequeNumber.setText(feesInstallmentsModel.getChequeNo());
+            txtChequeImage.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(feesInstallmentsModel.getChequeImage())
+                    .asBitmap()
+                    .placeholder(R.drawable.defualt_album_icon)
+                    .error(R.drawable.defualt_album_icon)
+                    .override(300, 300)
+                    .fitCenter()
+                    .into(imgCheque);
+        }
+        edtInstallmentAmount.setText(feesInstallmentsModel.getInstallmentAmount() + "");
+        chkPaid.setChecked(feesInstallmentsModel.isPaid());
     }
 
     private void initView(View view) {
@@ -271,7 +317,11 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
         feesInstallmentsModel.setInstallmentAmount(CommonUtils.asDouble(edtInstallmentAmount.getText().toString()));
         feesInstallmentsModel.setChequeNo(edtChequeNumber.getText().toString());
         feesInstallmentsModel.setChequeBankName(edtBankName.getText().toString());
-        if (chkPaid.isSelected()) {
+        if (feesInstallmentsModel.getInstallmentDate() <= 0) {
+            feesInstallmentsModel.setInstallmentDate(Calendar.getInstance().getTimeInMillis());
+        }
+
+        if (chkPaid.isChecked()) {
             feesInstallmentsModel.setPaid(true);
         } else {
             feesInstallmentsModel.setPaid(false);
@@ -331,6 +381,10 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
             case R.id.img_cheque:
                 startCamera();
                 break;
+
+            case R.id.date_picker_installment:
+                showDatePicker();
+                break;
         }
     }
 
@@ -360,6 +414,45 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
             }
         }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss") + edtChequeNumber.getText().toString(), chequeFile);
     }
+
+    private void showDatePicker() {
+        DatePickerFragment date = new DatePickerFragment();
+        /**
+         * Set Up Current Date Into dialog
+         */
+        Calendar calender = Calendar.getInstance();
+        Bundle args = new Bundle();
+        args.putInt("year", calender.get(Calendar.YEAR));
+        args.putInt("month", calender.get(Calendar.MONTH));
+        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        date.setArguments(args);
+        /**
+         * Set Call back to capture selected date
+         */
+        date.setCallBack(ondate);
+        date.show(activity.getSupportFragmentManager(), "Date Picker");
+    }
+
+    DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            monthOfYear += 1;
+            String month = "" + monthOfYear;
+            String day = "" + dayOfMonth;
+            if (monthOfYear < 10) {
+                month = "0" + monthOfYear;
+            }
+            if (dayOfMonth < 10) {
+                day = "0" + dayOfMonth;
+            }
+            Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
+            String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT);
+            //annualCalenderMasterModel.setEventDate(formatedDate);
+            datePickerInvest.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
+            feesInstallmentsModel.setInstallmentDate(date.getTime());
+        }
+    };
 
 
 }
