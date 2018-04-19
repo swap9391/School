@@ -102,8 +102,6 @@ public class SignUpFragment extends CommonFragment {
     private EditText edtBloodGrp;
     @ViewById(R.id.edt_student_username)
     private EditText edtUsername;
-    @ViewById(R.id.edt_student_password)
-    private EditText edtPassword;
     @ViewById(R.id.edt_contact_number)
     private EditText edtContactNumber;
     @ViewById(R.id.edt_total_fees)
@@ -128,6 +126,10 @@ public class SignUpFragment extends CommonFragment {
     Button btnDob;
     @ViewById(R.id.progress_bar)
     ProgressBar progressBar;
+    @ViewById(R.id.layout_fees)
+    LinearLayout layout1;
+    @ViewById(R.id.view_fees)
+    View viewFees;
     File fileProfile;
 
 
@@ -271,19 +273,19 @@ public class SignUpFragment extends CommonFragment {
         int divisionPosition = 0;
         int installmentPosition = 0;
         for (int i = 0; i < listSchool.size(); i++) {
-            if (listSchool.get(i).equals(userModel.getUserInfoModel().getSchoolName())) {
+            if (listSchool.get(i). equals(userModel.getUserInfoModel().getSchoolName())) {
                 schoolPostion = i;
                 break;
             }
         }
         for (int i = 0; i < listClass.size(); i++) {
-            if (listClass.get(i).equals(userModel.getUserInfoModel().getClassName())) {
+            if (listClass.get(i).getDropdownValue(). equals(userModel.getUserInfoModel().getClassName())) {
                 classPostion = i;
                 break;
             }
         }
         for (int i = 0; i < listDivision.size(); i++) {
-            if (listDivision.get(i).equals(userModel.getUserInfoModel().getDivisionName())) {
+            if (listDivision.get(i).getDropdownValue().equals(userModel.getUserInfoModel().getDivisionName())) {
                 divisionPosition = i;
                 break;
             }
@@ -299,7 +301,6 @@ public class SignUpFragment extends CommonFragment {
         edtAddress.setText(userModel.getUserInfoModel().getAddress());
         edtBloodGrp.setText(userModel.getUserInfoModel().getBloodGroup());
         edtUsername.setText(userModel.getUsername());
-        edtPassword.setText(userModel.getPassword());
         edtTotalFees.setText(userModel.getStudentFeesModel().getTotalFees() + "");
         long dob = CommonUtils.toLong(userModel.getUserInfoModel().getDateOfBirth());
         btnDob.setText(CommonUtils.formatDateForDisplay(new Date(dob), Constants.ONLY_DATE_FORMAT));
@@ -309,6 +310,11 @@ public class SignUpFragment extends CommonFragment {
             rdGirl.setChecked(true);
         }
         progressBar.setVisibility(View.VISIBLE);
+        txtAddFees.setVisibility(View.GONE);
+        viewFees.setVisibility(View.GONE);
+        layout1.setVisibility(View.GONE);
+        edtTotalFees.setVisibility(View.GONE);
+
         Glide.with(this)
                 .load(userModel.getProfilePicUrl())
                 .asBitmap()
@@ -344,7 +350,6 @@ public class SignUpFragment extends CommonFragment {
         userModel.getUserInfoModel().setBloodGroup(edtBloodGrp.getText().toString().trim());
         userModel.setUsername(edtUsername.getText().toString().trim());
         userModel.setContactNumber(edtContactNumber.getText().toString().trim());
-        userModel.setPassword(edtPassword.getText().toString().trim());
         userModel.setEmail(edtEmail.getText().toString().trim());
         userModel.getUserInfoModel().setSchoolName(spnSchoolName.getSelectedItem().toString());
         userModel.getUserInfoModel().setClassName(spnClass.getSelectedItem().toString().trim());
@@ -486,10 +491,6 @@ public class SignUpFragment extends CommonFragment {
             getMyActivity().showToast("Please Enter User Name");
             return false;
         }
-        if (userModel.getPassword() == null || userModel.getPassword().isEmpty()) {
-            getMyActivity().showToast("Please Enter Password");
-            return false;
-        }
         if (edtTotalFees.getText().toString().isEmpty()) {
             getMyActivity().showToast("Please Enter Total Fees");
             return false;
@@ -576,7 +577,6 @@ public class SignUpFragment extends CommonFragment {
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.username, userModel.getUsername());
-        hashMap.put(IJson.password, userModel.getPassword());
         hashMap.put(IJson.userType, userModel.getUserType());
         hashMap.put(IJson.firstName, userModel.getFirstName());
         hashMap.put(IJson.middleName, userModel.getMiddleName());
@@ -584,17 +584,13 @@ public class SignUpFragment extends CommonFragment {
         hashMap.put(IJson.profilePicUrl, userModel.getProfilePicUrl());
         hashMap.put(IJson.email, userModel.getEmail());
         hashMap.put(IJson.contactNumber, userModel.getContactNumber());
-        // hashMap.put(IJson.contactNumberVerified, userModel.isContactNumberVerified());
         hashMap.put(IJson.busRoute, userModel.getBusRoute());
-        userModel.getUserInfoModel().setQualification("ABC");
-        userModel.getUserInfoModel().setSpeciality("ABC");
-
-        hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
         hashMap.put(IJson.userInfoModel, userModel.getUserInfoModel());
         hashMap.put(IJson.busRoute, "Moshi");
 
         if (userModel.getPkeyId() != null) {
             hashMap.put(IJson.id, userModel.getPkeyId().toString());
+            hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
         }
         CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.SIGN_UP, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
@@ -664,7 +660,6 @@ public class SignUpFragment extends CommonFragment {
     }
 
     private void bindFeesView() {
-        LinearLayout layout1 = (LinearLayout) view.findViewById(R.id.layout_fees);
         layout1.removeAllViews();
         for (FeesInstallmentsModel feesInstallmentsModel : userModel.getStudentFeesModel().getFeesInstallmentsModels()) {
 
