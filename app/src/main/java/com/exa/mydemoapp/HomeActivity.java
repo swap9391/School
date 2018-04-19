@@ -38,7 +38,9 @@ import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.ContactUsFragment;
 import com.exa.mydemoapp.fragment.DashboardFragment;
 import com.exa.mydemoapp.fragment.GalleryViewFragment;
+import com.exa.mydemoapp.fragment.HomeWorkFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
+import com.exa.mydemoapp.fragment.PagerFragment;
 import com.exa.mydemoapp.fragment.ProfileFragment;
 import com.exa.mydemoapp.fragment.RewardGraphFragment;
 import com.exa.mydemoapp.fragment.RewardsPointsFragment;
@@ -48,7 +50,9 @@ import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
 import com.exa.mydemoapp.model.AlbumMasterModel;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.FirebaseRegistrationModel;
+import com.exa.mydemoapp.model.OtpMasterModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.tracker.TrackerService;
 import com.exa.mydemoapp.webservice.CallWebService;
@@ -86,6 +90,8 @@ public class HomeActivity extends CommonActivity {
     public RewardsPointsFragment rewardsPointsFragment;
     public RewardGraphFragment rewardGraphFragment;
     public ContactUsFragment contactUsFragment;
+    public HomeWorkFragment homeWorkFragment;
+    public PagerFragment pagerFragment;
     public List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
     public boolean isGallery = true;
     public boolean isGuest = false;
@@ -96,6 +102,7 @@ public class HomeActivity extends CommonActivity {
     DbInvoker dbInvoker;
     public boolean flagCallUserList = false;
     UserModel userModel;
+    List<UserModel> listUsers;
 
 
     @Override
@@ -104,6 +111,7 @@ public class HomeActivity extends CommonActivity {
         Intent intent = getIntent();
         db = new Database(HomeActivity.this);
         dbInvoker = new DbInvoker(this);
+        listUsers= new ArrayList<>();
         AWSMobileClient.getInstance().initialize(this).execute();
         String studentId = CommonUtils.getSharedPref(Constants.STUDENT_ID, this);
         if (studentId != null) {
@@ -177,6 +185,9 @@ public class HomeActivity extends CommonActivity {
 
         showFragment(dashboardFragment, null);
 
+        if (!CommonUtils.getSharedPref(Constants.INTENT_IS_DROPDOWN, this).equals("YES")) {
+            getDropDownList();
+        }
 
         // updateAlbumInfo();
         // updateStudentInfo();
@@ -245,8 +256,8 @@ public class HomeActivity extends CommonActivity {
             showFragment(dashboardFragment, null);
         } else if (signUpFragment != null && signUpFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
-            showFragment(usersListFragment, null);
-        } else if (usersListFragment != null && usersListFragment.getClass() == currentFragment.getClass()) {
+            showFragment(pagerFragment, null);
+        } else if (pagerFragment != null && pagerFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
         } else if (rewardsPointsFragment != null && rewardsPointsFragment.getClass() == currentFragment.getClass()) {
@@ -259,6 +270,9 @@ public class HomeActivity extends CommonActivity {
             showToolbar();
             showFragment(profileFragment, null);
         } else if (contactUsFragment != null && contactUsFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
+        } else if (homeWorkFragment != null && homeWorkFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
         } else {
@@ -298,6 +312,8 @@ public class HomeActivity extends CommonActivity {
         rewardGraphFragment = new RewardGraphFragment();
         attendanceFragment = new AttendanceFragment();
         contactUsFragment = new ContactUsFragment();
+        homeWorkFragment = new HomeWorkFragment();
+        pagerFragment= new PagerFragment();
     }
 
     public List<AlbumMasterModel> getListAlbumChild() {
@@ -419,17 +435,14 @@ public class HomeActivity extends CommonActivity {
         return false;
     }
 
-    public void logoOut() {
+    public void logOut() {
         stopLocationService();
         try {
             AlertDialog.Builder builder = showAlertDialog(this, getString(R.string.logout_title), getString(R.string.logout_msg));
             builder.setPositiveButton(getStringById(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    CommonUtils.removeAllPref(HomeActivity.this);
-                    Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
+                    getLogOutApi();
                 }
             }).setNegativeButton(getStringById(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
@@ -443,6 +456,38 @@ public class HomeActivity extends CommonActivity {
         }
 
     }
+
+    public void getLogOutApi() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        CallWebService.getWebserviceObject(HomeActivity.this, Request.Method.DELETE, IUrls.URL_LOG_OUT, hashMap, new VolleyResponseListener<UserModel>() {
+            @Override
+            public void onResponse(UserModel[] object) {
+
+            }
+
+            @Override
+            public void onResponse(UserModel object) {
+
+            }
+
+            @Override
+            public void onResponse() {
+                CommonUtils.removeAllPref(HomeActivity.this);
+                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (message != null && !message.isEmpty()) {
+                    showToast(message);
+                }
+
+            }
+        }, UserModel.class);
+    }
+
 
     public static AlertDialog.Builder showAlertDialog(Context context, String title, String msg) {
         AlertDialog.Builder alertDialog = null;
@@ -486,7 +531,6 @@ public class HomeActivity extends CommonActivity {
             public void onResponse(FirebaseRegistrationModel studentData) {
                 CommonUtils.insertSharedPref(HomeActivity.this, Constants.FIREBASE_REGISTER, "TRUE");
                 if (isAdmin) {
-                    getUserList();
                 }
             }
 
@@ -498,20 +542,17 @@ public class HomeActivity extends CommonActivity {
     }
 
 
-    public void getUserList() {
+    public void getDropDownList() {
         HashMap<String, String> hashMap = new HashMap<>();
         // hashMap.put(IJson.password, "" + studentId);
-        CallWebService.getWebservice(HomeActivity.this, Request.Method.POST, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<UserModel>() {
+        CallWebService.getWebservice(HomeActivity.this, Request.Method.GET, IUrls.URL_DROPDOWN_LIST, hashMap, new VolleyResponseListener<DropdownMasterModel>() {
             @Override
-            public void onResponse(UserModel[] object) {
-                dbInvoker.deleteStudents();
-                for (UserModel userModel : object) {
-                    dbInvoker.insertUpdateUser(userModel);
+            public void onResponse(DropdownMasterModel[] object) {
+                dbInvoker.deleteDropDown();
+                for (DropdownMasterModel dropdownMasterModel : object) {
+                    dbInvoker.insertUpdateDropDown(dropdownMasterModel);
                 }
-                /*if (object[0] instanceof UserModel) {
-                 for (S)
-                }*/
-
+                CommonUtils.insertSharedPref(HomeActivity.this, Constants.INTENT_IS_DROPDOWN, "YES");
             }
 
             @Override
@@ -519,14 +560,14 @@ public class HomeActivity extends CommonActivity {
             }
 
             @Override
-            public void onResponse(UserModel object) {
+            public void onResponse(DropdownMasterModel object) {
 
             }
 
             @Override
             public void onError(String message) {
             }
-        }, UserModel[].class);
+        }, DropdownMasterModel[].class);
     }
 
     public UserModel getUserModel() {
@@ -543,6 +584,14 @@ public class HomeActivity extends CommonActivity {
 
     public void setDbInvoker(DbInvoker dbInvoker) {
         this.dbInvoker = dbInvoker;
+    }
+
+    public List<UserModel> getListUsers() {
+        return listUsers;
+    }
+
+    public void setListUsers(List<UserModel> listUsers) {
+        this.listUsers = listUsers;
     }
 }
 

@@ -36,6 +36,7 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.listner.DialogResultListner;
 import com.exa.mydemoapp.model.AlbumImagesModel;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.FeesInstallmentsModel;
 import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
 import com.exa.mydemoapp.s3Upload.S3UploadActivity;
@@ -79,8 +80,8 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
     @ViewById(R.id.chk_paid)
     private CheckBox chkPaid;
 
-    private List<String> listFees;
-    private List<String> listPaymentMode;
+    private List<DropdownMasterModel> listFees;
+    private List<DropdownMasterModel> listPaymentMode;
     HomeActivity activity;
     DialogResultListner dialogResultListner;
     FeesInstallmentsModel feesInstallmentsModel;
@@ -112,26 +113,22 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
         initView(v);
         getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
-        listFees = new ArrayList<String>();
-        listFees.add("First Installment");
-        listFees.add("Second Installment");
-        listFees.add("Third Installment");
-
-
-        ArrayAdapter<String> feesAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, listFees);
+        listFees = activity.getDbInvoker().getDropDownByType("FEESTYPE");
+        ArrayAdapter<DropdownMasterModel> feesAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, listFees);
         feesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnFeesType.setAdapter(feesAdapter);
         feesAdapter.notifyDataSetChanged();
         spnFeesType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (listFees.get(position).equals("First Installment")) {
+                feesInstallmentsModel.setInstallmentNo(listFees.get(position).getServerValue());
+                if (listFees.get(position).getDropdownValue().equals("First Installment")) {
                     datePickerInvest.setVisibility(View.GONE);
                 } else {
                     datePickerInvest.setVisibility(View.VISIBLE);
                 }
                 for (FeesInstallmentsModel feesInstallmentsModel : list) {
-                    if (feesInstallmentsModel.getInstallmentNo().equals(listFees.get(position))) {
+                    if (feesInstallmentsModel.getInstallmentLocalValue().equals(listFees.get(position).getDropdownValue())) {
                         bindView(feesInstallmentsModel);
                         break;
                     } else {
@@ -162,8 +159,8 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
         });
 
 
-        listPaymentMode = Arrays.asList(getResources().getStringArray(R.array.payment_mode));
-        ArrayAdapter<String> paymentModeAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, listPaymentMode);
+        listPaymentMode =  activity.getDbInvoker().getDropDownByType("PAYMENTMODE");
+        ArrayAdapter<DropdownMasterModel> paymentModeAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, listPaymentMode);
         paymentModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnPaymentMode.setAdapter(paymentModeAdapter);
         paymentModeAdapter.notifyDataSetChanged();
@@ -172,7 +169,7 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
 
-                if (listPaymentMode.get(position).equals("Cheque")) {
+                if (listPaymentMode.get(position).getDropdownValue().equals("CHEQUE")) {
                     getDialog().getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     edtBankName.setVisibility(View.VISIBLE);
                     edtChequeNumber.setVisibility(View.VISIBLE);
@@ -312,7 +309,8 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
 
 
     private void bindModel() {
-        feesInstallmentsModel.setInstallmentNo(spnFeesType.getSelectedItem().toString());
+
+        feesInstallmentsModel.setInstallmentLocalValue(spnFeesType.getSelectedItem().toString());
         feesInstallmentsModel.setPaymentMode(spnPaymentMode.getSelectedItem().toString());
         feesInstallmentsModel.setInstallmentAmount(CommonUtils.asDouble(edtInstallmentAmount.getText().toString()));
         feesInstallmentsModel.setChequeNo(edtChequeNumber.getText().toString());

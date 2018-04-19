@@ -20,6 +20,7 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.DailyHomeworkModel;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -42,7 +43,7 @@ public class HomeWorkFragment extends CommonFragment {
     @ViewById(R.id.edt_description)
     private EditText edt_description;
 
-    List<String> listClass;
+    List<DropdownMasterModel> listClass;
     List<String> listRewardType;
     DailyHomeworkModel homeWorkModel;
 
@@ -64,9 +65,8 @@ public class HomeWorkFragment extends CommonFragment {
         homeWorkModel = new DailyHomeworkModel();
 
 
-        listClass = Arrays.asList(getResources().getStringArray(R.array.class_type));
-        //listClass.remove(new String("All"));
-        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
+        listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
+        ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<DropdownMasterModel>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
         classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();

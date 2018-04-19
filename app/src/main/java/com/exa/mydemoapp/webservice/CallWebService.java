@@ -48,7 +48,7 @@ public class CallWebService {
 */
     static ProgressDialog progressDialog;
 
-    public synchronized static <T> void getWebservice(Context context, int post, String url, final HashMap<String, String> param, VolleyResponseListener volleyResponseListener, Class<T[]> aClass) {
+    public synchronized static <T> void getWebservice(Context context, int method, String url, final HashMap<String, String> param, VolleyResponseListener volleyResponseListener, Class<T[]> aClass) {
 
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("Loading...");
@@ -63,7 +63,7 @@ public class CallWebService {
             e.printStackTrace();
         }
 
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+        JsonObjectRequest req = new JsonObjectRequest(method, url, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -135,7 +135,9 @@ public class CallWebService {
                 }
                 HashMap<String, String> headers = new HashMap();
                 if (userModel != null) {
+                    headers.put("Content-Type", "application/json");
                     headers.put("X-AUTH-TOKEN", userModel.getSessionKey());
+
                 }
                 return headers;
             }
@@ -149,6 +151,7 @@ public class CallWebService {
 
         AppController.getInstance().addToRequestQueue(req);
     }
+
 
     public synchronized static <T> void getWebserviceObject(Context context, int requestMethod, String url, final HashMap<String, Object> param, VolleyResponseListener volleyResponseListener, Class<T> aClass) {
         progressDialog = new ProgressDialog(context);

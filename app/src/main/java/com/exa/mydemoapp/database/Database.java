@@ -52,7 +52,12 @@ public class Database extends SQLiteOpenHelper {
             "bloodGroup VARCHAR DEFAULT NULL," +
             "gender VARCHAR DEFAULT NULL)";
 
-
+    public static final String DROPDOWN_DATA = "Create table if not exists dropdown_data"
+            + " ( localId integer primary key autoincrement," +
+            "pkeyId integer," +
+            "dropdownType VARCHAR DEFAULT NULL," +
+            "serverValue VARCHAR DEFAULT NULL," +
+            "dropdownValue VARCHAR DEFAULT NULL)";
 
     public static final String LOGIN_DATA = "Create table if not exists login_data"
             + " ( localId integer primary key autoincrement," +
@@ -67,6 +72,7 @@ public class Database extends SQLiteOpenHelper {
 
         db.execSQL(USER_DATA);
         db.execSQL(LOGIN_DATA);
+        db.execSQL(DROPDOWN_DATA);
 
     }
 
@@ -75,14 +81,18 @@ public class Database extends SQLiteOpenHelper {
 
         db.execSQL(USER_DATA);
         db.execSQL(LOGIN_DATA);
+        db.execSQL(DROPDOWN_DATA);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                 + newVersion + ", which will destroy all old data");
-        String studentTbl = "DROP TABLE IF EXISTS class_data";
-        db.execSQL(studentTbl);
+        String userTbl = "DROP TABLE IF EXISTS class_data";
+        db.execSQL(userTbl);
+        String dropdownTbl = "DROP TABLE IF EXISTS dropdown_data";
+        db.execSQL(dropdownTbl);
+
         onCreate(db);
     }
 

@@ -25,14 +25,28 @@
                 android:gravity="center_horizontal"
                 android:text="Select Profile Picture" />
 
-            <ImageView
-                android:id="@+id/img_profile"
+            <RelativeLayout
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="7dp"
-                android:src="@drawable/defualt_album_icon" />
+                >
 
+                <ImageView
+                    android:id="@+id/img_profile"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="7dp"
+                    android:src="@drawable/defualt_album_icon" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:indeterminate="false"
+                    android:visibility="gone" />
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="match_parent"

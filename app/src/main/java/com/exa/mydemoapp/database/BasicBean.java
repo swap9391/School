@@ -19,7 +19,6 @@ public abstract class BasicBean {
     protected boolean isDeleted;
     protected String sessionKey;
 
-    private boolean sync = true;
 
 
     public void addData(String key, Object value) {
@@ -92,13 +91,6 @@ public abstract class BasicBean {
         return getPkeyId() != null ? getPkeyId().hashCode() : -1;
     }
 
-    public boolean isSync() {
-        return sync;
-    }
-
-    public void setSync(boolean sync) {
-        this.sync = sync;
-    }
 
 
     public String getCreatedBy() {

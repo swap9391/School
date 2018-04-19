@@ -27,6 +27,7 @@ import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.listner.AttendanceListner;
 import com.exa.mydemoapp.model.AttendanceMasterModel;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.StudentAttendanceDetailsModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
@@ -82,9 +83,9 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
         getMyActivity().toolbar.setTitle(getString(R.string.dashboard_attendance));
         setHasOptionsMenu(true);
         initViewBinding(view);
-        List<String> listClass = new ArrayList(Arrays.asList(getResources().getStringArray(R.array.class_type)));
-        listClass.remove(0);
-        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
+
+        List<DropdownMasterModel> listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
+        ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<DropdownMasterModel>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
         classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
@@ -94,7 +95,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 selectedStudents = new ArrayList<>();
                 lastClassName = spinnerClass.getLastVisiblePosition();
-                getAttendance(listClass.get(position));
+                getAttendance(listClass.get(position).getDropdownValue());
             }
 
             @Override

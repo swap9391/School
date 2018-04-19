@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class FeesInstallmentsModel extends BasicBean implements Serializable {
     private String studentFeeId;
     private String installmentNo;
+    private String installmentLocalValue;
     private double installmentAmount;
     private long installmentDate;
     private String paymentMode;
@@ -89,5 +90,13 @@ public class FeesInstallmentsModel extends BasicBean implements Serializable {
 
     public void setChequeImage(String chequeImage) {
         this.chequeImage = chequeImage;
+    }
+
+    public String getInstallmentLocalValue() {
+        return installmentLocalValue;
+    }
+
+    public void setInstallmentLocalValue(String installmentLocalValue) {
+        this.installmentLocalValue = installmentLocalValue;
     }
 }

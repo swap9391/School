@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,6 +38,8 @@ import android.widget.Toast;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.android.volley.Request;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
@@ -49,6 +53,7 @@ import com.exa.mydemoapp.fragment.UsersListFragment;
 import com.exa.mydemoapp.listner.DialogResultListner;
 import com.exa.mydemoapp.listner.OtpListner;
 import com.exa.mydemoapp.model.AlbumImagesModel;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.FeesInstallmentsModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
@@ -74,10 +79,9 @@ public class SignUpFragment extends CommonFragment {
 
     private UserModel userModel;
     private List<String> listSchool;
-    private List<String> listClass;
-    private List<String> listDivision;
-
-    private List<String> listUserType;
+    private List<DropdownMasterModel> listClass;
+    private List<DropdownMasterModel> listDivision;
+    private List<DropdownMasterModel> listUserType;
     @ViewById(R.id.toolbar)
     public Toolbar toolbar;
     @ViewById(R.id.spinner_school_name)
@@ -122,6 +126,8 @@ public class SignUpFragment extends CommonFragment {
     ImageView imgProfile;
     @ViewById(R.id.date_picker_dob)
     Button btnDob;
+    @ViewById(R.id.progress_bar)
+    ProgressBar progressBar;
     File fileProfile;
 
 
@@ -143,21 +149,21 @@ public class SignUpFragment extends CommonFragment {
         spnSchoolName.setAdapter(schoolAdapter);
         schoolAdapter.notifyDataSetChanged();
 
-        listClass = Arrays.asList(getResources().getStringArray(R.array.class_type));
-        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
+        listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
+        ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
         classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
 
-        listDivision = Arrays.asList(getResources().getStringArray(R.array.division_name));
-        ArrayAdapter<String> divisionAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
+        listDivision = getMyActivity().getDbInvoker().getDropDownByType("DEVISION");
+        ArrayAdapter<DropdownMasterModel> divisionAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
         divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnDivision.setAdapter(divisionAdapter);
         divisionAdapter.notifyDataSetChanged();
 
 
-        listUserType = Arrays.asList(getResources().getStringArray(R.array.userType));
-        ArrayAdapter<String> userTypeadapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listUserType);
+        listUserType = getMyActivity().getDbInvoker().getDropDownByType("USERTYPE");
+        ArrayAdapter<DropdownMasterModel> userTypeadapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listUserType);
         userTypeadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnUserType.setAdapter(userTypeadapter);
         userTypeadapter.notifyDataSetChanged();
@@ -165,7 +171,7 @@ public class SignUpFragment extends CommonFragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            userModel = (UserModel) bundle.getSerializable("studentData");
+            userModel = (UserModel) bundle.getSerializable(Constants.INTENT_TYPE_USER_DATA);
             if (userModel != null) {
                 isEdit = true;
                 bindView();
@@ -196,34 +202,31 @@ public class SignUpFragment extends CommonFragment {
         spnUserType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                switch (listUserType.get(position)) {
+                userModel.setUserType(listUserType.get(position).getServerValue());
+                switch (listUserType.get(position).getDropdownValue()) {
                     case "ADMIN":
                         txtClassName.setVisibility(View.GONE);
                         txtDivision.setVisibility(View.GONE);
                         spnClass.setVisibility(View.GONE);
                         spnDivision.setVisibility(View.GONE);
-                        userModel.setUserType(Constants.USER_TYPE_ADMIN);
                         break;
                     case "TEACHER":
                         txtClassName.setVisibility(View.VISIBLE);
                         txtDivision.setVisibility(View.VISIBLE);
                         spnClass.setVisibility(View.VISIBLE);
                         spnDivision.setVisibility(View.VISIBLE);
-                        userModel.setUserType(Constants.USER_TYPE_TEACHER);
                         break;
                     case "DRIVER":
                         txtClassName.setVisibility(View.GONE);
                         txtDivision.setVisibility(View.GONE);
                         spnClass.setVisibility(View.GONE);
                         spnDivision.setVisibility(View.GONE);
-                        userModel.setUserType(Constants.USER_TYPE_DRIVER);
                         break;
                     case "STUDENT":
                         txtClassName.setVisibility(View.VISIBLE);
                         txtDivision.setVisibility(View.VISIBLE);
                         spnClass.setVisibility(View.VISIBLE);
                         spnDivision.setVisibility(View.VISIBLE);
-                        userModel.setUserType(Constants.USER_TYPE_STUDENT);
                         break;
                 }
 
@@ -291,16 +294,46 @@ public class SignUpFragment extends CommonFragment {
         edtFirstName.setText(userModel.getFirstName());
         edtMiddleName.setText(userModel.getMiddleName());
         edtLastName.setText(userModel.getLastName());
+        edtEmail.setText(userModel.getEmail());
         edtContactNumber.setText(userModel.getContactNumber());
         edtAddress.setText(userModel.getUserInfoModel().getAddress());
         edtBloodGrp.setText(userModel.getUserInfoModel().getBloodGroup());
         edtUsername.setText(userModel.getUsername());
         edtPassword.setText(userModel.getPassword());
+        edtTotalFees.setText(userModel.getStudentFeesModel().getTotalFees() + "");
+        long dob = CommonUtils.toLong(userModel.getUserInfoModel().getDateOfBirth());
+        btnDob.setText(CommonUtils.formatDateForDisplay(new Date(dob), Constants.ONLY_DATE_FORMAT));
         if (userModel.getUserInfoModel().getGender().equals("Boy")) {
             rdBoy.setChecked(true);
         } else {
             rdGirl.setChecked(true);
         }
+        progressBar.setVisibility(View.VISIBLE);
+        Glide.with(this)
+                .load(userModel.getProfilePicUrl())
+                .asBitmap()
+                .override(300, 300)
+                .fitCenter()
+                .placeholder(R.drawable.defualt_album_icon)
+                .error(R.drawable.defualt_album_icon)
+                .listener(new RequestListener<String, Bitmap>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(imgProfile)
+
+        ;
+
+
     }
 
     private void bindModel() {
@@ -608,7 +641,7 @@ public class SignUpFragment extends CommonFragment {
                 }
                 userModel.getStudentFeesModel().getFeesInstallmentsModels().add(feesInstallmentsModel);
                 if (feesInstallmentsModel != null) {
-                    userModel.getStudentFeesModel().setTotalFees(CommonUtils.asDouble(edtTotalFees.getText().toString().trim()));
+                    userModel.getStudentFeesModel().setTotalFees(CommonUtils.asDouble(edtTotalFees.getText().toString().trim(), 0.0));
                     userModel.getStudentFeesModel().setNoOfInstallments(userModel.getStudentFeesModel().getFeesInstallmentsModels().size());
                 }
                 bindFeesView();

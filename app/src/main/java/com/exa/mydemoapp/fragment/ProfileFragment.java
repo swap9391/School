@@ -75,7 +75,7 @@ public class ProfileFragment extends CommonFragment {
         layLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getMyActivity().logoOut();
+                getMyActivity().logOut();
             }
         });
         if (getMyActivity().getUserModel().getUserType().equals(Constants.USER_TYPE_STUDENT)) {

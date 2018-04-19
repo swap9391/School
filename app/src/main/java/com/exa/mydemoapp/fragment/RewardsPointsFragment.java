@@ -23,6 +23,7 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.StudentRewardsModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
@@ -55,9 +56,9 @@ public class RewardsPointsFragment extends CommonFragment {
     @ViewById(R.id.edt_point)
     private EditText edt_points;
 
-    List<String> listClass;
+    List<DropdownMasterModel> listClass;
     List<String> listStudentName;
-    List<String> listRewardType;
+    List<DropdownMasterModel> listRewardType;
     List<UserModel> listStudentClassWise;
     StudentRewardsModel rewardModel;
 
@@ -82,15 +83,14 @@ public class RewardsPointsFragment extends CommonFragment {
 
         listStudentClassWise = new ArrayList<>();
 
-        listClass = Arrays.asList(getResources().getStringArray(R.array.class_type));
-        //listClass.remove(new String("All"));
-        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
+        listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
+        ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<DropdownMasterModel>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
         classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
 
-        listRewardType = Arrays.asList(getResources().getStringArray(R.array.reward_type));
-        ArrayAdapter<String> rewardAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listRewardType);
+        listRewardType = getMyActivity().getDbInvoker().getDropDownByType("REWARDTYPE");
+        ArrayAdapter<DropdownMasterModel> rewardAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listRewardType);
         rewardAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRewardType.setAdapter(rewardAdapter);
         rewardAdapter.notifyDataSetChanged();
@@ -99,8 +99,8 @@ public class RewardsPointsFragment extends CommonFragment {
         spnClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (!listClass.get(position).equals("All")) {
-                    listStudentClassWise = getMyActivity().getDbInvoker().getStudentListByClass(listClass.get(position));
+                /*if (!listClass.get(position).equals("All")) {
+                    listStudentClassWise = getMyActivity().getDbInvoker().getStudentListByClass(listClass.get(position).getDropdownValue());
                     if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
                         for (UserModel bean : listStudentClassWise) {
                             listStudentName.add(bean.getFirstName() + " " + bean.getUserInfoModel().getRegistrationId());
@@ -115,7 +115,7 @@ public class RewardsPointsFragment extends CommonFragment {
                 } else {
                     spinnerStudentName.setVisibility(View.GONE);
                     txtStudentSpinnerTitle.setVisibility(View.GONE);
-                }
+                }*/
             }
 
             @Override
@@ -247,11 +247,13 @@ public class RewardsPointsFragment extends CommonFragment {
 
             @Override
             public void onResponse(StudentRewardsModel studentData) {
-              getMyActivity().showFragment(new DashboardFragment(),null);
+                getMyActivity().showFragment(new DashboardFragment(), null);
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();

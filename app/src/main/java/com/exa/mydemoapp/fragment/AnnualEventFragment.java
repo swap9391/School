@@ -24,6 +24,7 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.model.AnnualCalenderMasterModel;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -73,13 +74,14 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
         edtEventName = (EditText) view.findViewById(R.id.edt_event_name);
         datePicker.setOnClickListener(this);
 
-        List<String> listEventType = Arrays.asList(getResources().getStringArray(R.array.event_type));
-        ArrayAdapter<String> eventAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listEventType);
+        List<DropdownMasterModel> listEventType = getMyActivity().getDbInvoker().getDropDownByType("EVENTTYPE");
+        ArrayAdapter<DropdownMasterModel> eventAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listEventType);
         eventAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(eventAdapter);
         eventAdapter.notifyDataSetChanged();
-        List<String> listClass = Arrays.asList(getResources().getStringArray(R.array.class_type));
-        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
+
+        List<DropdownMasterModel> listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
+        ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<DropdownMasterModel>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
         classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
@@ -143,7 +145,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             CommonUtils.showToast(getMyActivity(), "Please Enter Event Name");
             return false;
         }
-        if (annualCalenderMasterModel.getEventDate() <=0 ) {
+        if (annualCalenderMasterModel.getEventDate() <= 0) {
             CommonUtils.showToast(getMyActivity(), "Please Select Event Date");
             return false;
         }
@@ -175,6 +177,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(AnnualCalenderMasterModel object) {
             }
+
             @Override
             public void onResponse() {
             }
@@ -245,11 +248,13 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
 
             @Override
             public void onResponse(AnnualCalenderMasterModel studentData) {
-                getMyActivity().showFragment(new DashboardFragment(),null);
+                getMyActivity().showFragment(new DashboardFragment(), null);
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();

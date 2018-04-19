@@ -113,7 +113,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
             public void onClick(View view) {
                 //  AlbumMasterModel bean = listAlbumChild.get(holder.currentPage);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("studentData", selectedItem);
+                bundle.putSerializable(Constants.INTENT_TYPE_USER_DATA, selectedItem);
                 context.showFragment(new SignUpFragment(), bundle);
             }
         });

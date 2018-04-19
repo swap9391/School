@@ -11,13 +11,13 @@
         <item>Curricular</item>
     </string-array>
 
-    <string-array name="class_type">
+  <!--  <string-array name="class_type">
         <item>All</item>
         <item>Playgroup</item>
         <item>Nursery</item>
         <item>Jr.KG</item>
         <item>Sr.KG</item>
-    </string-array>
+    </string-array>-->
 
     <string-array name="image_type">
         <item>@string/img_type_news</item>

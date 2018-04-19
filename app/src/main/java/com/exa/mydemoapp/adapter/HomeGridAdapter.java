@@ -25,6 +25,7 @@ import com.exa.mydemoapp.fragment.ContactUsFragment;
 import com.exa.mydemoapp.fragment.FeeStructureFragment;
 import com.exa.mydemoapp.fragment.HomeWorkFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
+import com.exa.mydemoapp.fragment.PagerFragment;
 import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
@@ -143,7 +144,7 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new RewardsPointsFragment(), null);
                         break;
                     case "Manage Users":
-                        context.showFragment(new UsersListFragment(), null);
+                        context.showFragment(new PagerFragment(), null);
                         break;
                     case "Fees Structure":
                         context.showFragment(new FeeStructureFragment(), null);

@@ -45,6 +45,7 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.AlbumImagesModel;
 import com.exa.mydemoapp.model.AlbumMasterModel;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
 import com.exa.mydemoapp.s3Upload.S3UploadActivity;
@@ -86,7 +87,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private boolean bound = false;
     View view;
     boolean isEdit = false;
-    List<String> listEventType;
+    List<DropdownMasterModel> listEventType;
     ArrayList<AlbumMasterModel> albumImagesModelArrayList;
     @ViewById(R.id.lattitude)
     TextView lat;
@@ -108,7 +109,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private TextView txtStudentSpinnerTitle;
 
 
-    private List<String> listClass;
+    private List<DropdownMasterModel> listClass;
     private List<UserModel> listStudents;
     private List<String> listStudentName;
     ProgressDialog progressDialog;
@@ -128,15 +129,16 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         getMyActivity().init();
         initViewBinding(view);
         imageFiles = new ArrayList<>();
-        listEventType = Arrays.asList(getResources().getStringArray(R.array.image_type));
-        ArrayAdapter<String> eventAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listEventType);
+
+        listEventType = getMyActivity().getDbInvoker().getDropDownByType("IMAGETYPE");
+        ArrayAdapter<DropdownMasterModel> eventAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listEventType);
         eventAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(eventAdapter);
         eventAdapter.notifyDataSetChanged();
 
 
-        listClass = Arrays.asList(getResources().getStringArray(R.array.class_type));
-        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
+        listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
+        ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<DropdownMasterModel>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
         classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
@@ -150,7 +152,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                         progressDialog = new ProgressDialog(getMyActivity());
                         progressDialog.setTitle("Loading Student List...");
                         progressDialog.show();
-                        getStudents(listClass.get(position));
+                        getStudents(listClass.get(position).getDropdownValue());
                     } else {
                         getMyActivity().showToast("Please Connect to internet !!");
                     }

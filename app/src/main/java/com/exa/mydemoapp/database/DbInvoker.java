@@ -9,7 +9,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.exa.mydemoapp.mapper.DropDownMapper;
 import com.exa.mydemoapp.mapper.UserMapper;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.UserModel;
 
 
@@ -129,6 +131,7 @@ public class DbInvoker {
 
     }
 
+    // USer
     public void insertUpdateUser(UserModel bean) {
         insertUpdateBean(bean);
     }
@@ -174,13 +177,32 @@ public class DbInvoker {
         executeSQL(sql, params);
     }
 
-    public void dropStudents() {
+    //DropDown
+    public void insertUpdateDropDown(DropdownMasterModel bean) {
+        insertUpdateBean(bean);
+    }
+
+    public List<DropdownMasterModel> getDropDownList() {
+        String sql = SQLs.sel_dropdown_data + " ORDER BY localId ASC";
+        String[] params = {""};
+        return (List<DropdownMasterModel>) executeSelect(sql, params,
+                new DropDownMapper());
+    }
+
+    public List<DropdownMasterModel> getDropDownByType(String type) {
+        String[] params = {""};
+        String sql = SQLs.sel_dropdown_data + " and dropdownType='" + type + "'";
+        return (List<DropdownMasterModel>) executeSelect(sql, params,
+                new DropDownMapper());
+    }
+
+    public void deleteDropDown() {
         String[] params = new String[0];
-        String sql = SQLs.truncate_student;
+        String sql = SQLs.del_drop_down;
         executeSQL(sql, params);
     }
 
-/*
+    /*
     public List<DivisionName> getDivisionNameByClass(int classId) {
         String sql = SQLs.sel_division_name+" and classpkeyId="+classId+" ORDER BY division_name ASC";
         String[] params = { "" };

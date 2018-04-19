@@ -15,7 +15,7 @@ public interface IUrls {
     String URL_LOGIN = BASE_URL + "signin";
     String URL_IMAGE_UPLOAD = BASE_URL + "uploadimages";
     String URL_IMAGE_LIST = BASE_URL + "getimages";
-    String URL_USER_LIST = BASE_URL + "getuserlist";
+    String URL_USER_LIST = BASE_URL + "users/list";
     String URL_ADD_REWARD = BASE_URL + "savereward";
     String URL_GET_REWARDS = BASE_URL + "getrewards";
     String URL_ADD_EVENTS = BASE_URL + "saveevents";
@@ -24,5 +24,7 @@ public interface IUrls {
     String URL_GET_ATTENDANCE = BASE_URL + "getattendance";
     String URL_FIREBASE_REG = BASE_URL + "inserttoken";
     String URL_VERIFY_OTP= BASE_URL + "user/%1$s/verify/otp/%2$s";
+    String URL_DROPDOWN_LIST = BASE_URL + "dropdown/list";
+    String URL_LOG_OUT = BASE_URL + "signout";
 
 }

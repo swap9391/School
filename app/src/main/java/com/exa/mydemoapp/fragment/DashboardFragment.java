@@ -122,7 +122,7 @@ public class DashboardFragment extends CommonFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                getMyActivity().logoOut();
+                getMyActivity().logOut();
                 break;
         }
         return true;

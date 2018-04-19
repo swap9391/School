@@ -58,4 +58,7 @@ public interface Constants {
     public static String INTENT_TYPE_MSG = "Message";
     public static String INTENT_VALUE_GALLERY= "gallery";
     public static String INTENT_VALUE_CHAT= "community";
+    public static String INTENT_IS_DROPDOWN= "dropdown";
+    public static String INTENT_TYPE_USER_DATA = "userdata";
+
 }
