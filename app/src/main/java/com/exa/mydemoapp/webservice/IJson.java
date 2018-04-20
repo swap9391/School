@@ -9,7 +9,7 @@ import com.exa.mydemoapp.annotation.Required;
 public interface IJson {
 
     //student
-    String id = "_id";
+    String id = "pkeyId";
     String schoolName = "schoolName";
     String className = "className";
     String division = "divisionName";

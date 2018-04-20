@@ -273,13 +273,13 @@ public class SignUpFragment extends CommonFragment {
         int divisionPosition = 0;
         int installmentPosition = 0;
         for (int i = 0; i < listSchool.size(); i++) {
-            if (listSchool.get(i). equals(userModel.getUserInfoModel().getSchoolName())) {
+            if (listSchool.get(i).equals(userModel.getUserInfoModel().getSchoolName())) {
                 schoolPostion = i;
                 break;
             }
         }
         for (int i = 0; i < listClass.size(); i++) {
-            if (listClass.get(i).getDropdownValue(). equals(userModel.getUserInfoModel().getClassName())) {
+            if (listClass.get(i).getDropdownValue().equals(userModel.getUserInfoModel().getClassName())) {
                 classPostion = i;
                 break;
             }
@@ -590,6 +590,7 @@ public class SignUpFragment extends CommonFragment {
 
         if (userModel.getPkeyId() != null) {
             hashMap.put(IJson.id, userModel.getPkeyId().toString());
+        } else {
             hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
         }
         CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.SIGN_UP, hashMap, new VolleyResponseListener<UserModel>() {
@@ -699,29 +700,34 @@ public class SignUpFragment extends CommonFragment {
 
 
     private void uploadImages() {
-        final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
-        progressDialog.setTitle("Uploading... ");
-        progressDialog.show();
-        progressDialog.setCancelable(false);
-        S3UploadActivity.uploadData(getMyActivity(), new S3FileTransferDelegate() {
-            @Override
-            public void onS3FileTransferStateChanged(int id, TransferState state, String url, Object object) {
-                progressDialog.dismiss();
-                File file = (File) object;
-                userModel.setProfilePicUrl(url);
-                save();
-            }
+        if (fileProfile != null) {
 
-            @Override
-            public void onS3FileTransferProgressChanged(int id, String fileName, int percentage) {
-                progressDialog.setTitle("Uploading..." + percentage + "%    ");
-            }
+            final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
+            progressDialog.setTitle("Uploading... ");
+            progressDialog.show();
+            progressDialog.setCancelable(false);
+            S3UploadActivity.uploadData(getMyActivity(), new S3FileTransferDelegate() {
+                @Override
+                public void onS3FileTransferStateChanged(int id, TransferState state, String url, Object object) {
+                    progressDialog.dismiss();
+                    File file = (File) object;
+                    userModel.setProfilePicUrl(url);
+                    save();
+                }
 
-            @Override
-            public void onS3FileTransferError(int id, String fileName, Exception ex) {
-                progressDialog.dismiss();
-            }
-        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss") + userModel.getUsername(), fileProfile);
+                @Override
+                public void onS3FileTransferProgressChanged(int id, String fileName, int percentage) {
+                    progressDialog.setTitle("Uploading..." + percentage + "%    ");
+                }
+
+                @Override
+                public void onS3FileTransferError(int id, String fileName, Exception ex) {
+                    progressDialog.dismiss();
+                }
+            }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "ddMMyyyyhhmmss") + userModel.getUsername(), fileProfile);
+        } else {
+            save();
+        }
     }
 
     @Override

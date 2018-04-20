@@ -53,6 +53,7 @@
                     android:paddingTop="20dp"></Spinner>
 
                 <TextView
+                    android:id="@+id/lbl_division"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"

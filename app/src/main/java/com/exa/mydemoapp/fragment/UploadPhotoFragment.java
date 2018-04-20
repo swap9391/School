@@ -108,6 +108,8 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private Spinner spinnerStudentName;
     @ViewById(R.id.txt_student_spinner)
     private TextView txtStudentSpinnerTitle;
+    @ViewById(R.id.lbl_division)
+    private TextView txtDivisionSpinnerTitle;
 
 
     private List<DropdownMasterModel> listClass;
@@ -118,6 +120,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     ProgressDialog progressDialog;
     int totalImages;
     boolean apiFlag = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,20 +149,24 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         spnClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
 
-
+        DropdownMasterModel allDropdownMasterModel = new DropdownMasterModel();
+        allDropdownMasterModel.setDropdownValue("All");
+        allDropdownMasterModel.setServerValue(null);
+        listDivision = new ArrayList<>();
+        listDivision.add(allDropdownMasterModel);
         listDivision = getMyActivity().getDbInvoker().getDropDownByType("DEVISION");
         ArrayAdapter<DropdownMasterModel> divisionAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
         divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnDivision.setAdapter(divisionAdapter);
         divisionAdapter.notifyDataSetChanged();
 
-        listStudent = new ArrayList<>();
 
         spnDivision.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 getStudent(listClass.get(spnClass.getSelectedItemPosition()).getServerValue(), listDivision.get(position).getServerValue());
+
             }
 
             @Override
@@ -172,7 +179,20 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                getStudent(listClass.get(position).getServerValue(), listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
+                if (listClass.get(spnClass.getSelectedItemPosition()).getDropdownValue().equals("All")) {
+                    spnDivision.setVisibility(View.GONE);
+                    spinnerStudentName.setVisibility(View.GONE);
+                    txtDivisionSpinnerTitle.setVisibility(View.GONE);
+                    txtStudentSpinnerTitle.setVisibility(View.GONE);
+                    albumImagesModel.setStudentId(null);
+                    albumImagesModel.setDivisionName(null);
+                } else {
+                    spnDivision.setVisibility(View.VISIBLE);
+                    spinnerStudentName.setVisibility(View.VISIBLE);
+                    txtDivisionSpinnerTitle.setVisibility(View.VISIBLE);
+                    txtStudentSpinnerTitle.setVisibility(View.VISIBLE);
+                    getStudent(listClass.get(position).getServerValue(), listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
+                }
             }
 
             @Override
@@ -237,14 +257,14 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         albumImagesModel.setAlbumDescription(edt_description.getText().toString().trim());
         albumImagesModel.setAlbumType(spinnerType.getSelectedItem().toString());
         albumImagesModel.setClassName(spnClass.getSelectedItem().toString());
-        if (listStudentName != null && listStudentName.size() > 0) {
-            String studentId = listStudents.get(spinnerStudentName.getSelectedItemPosition()).getPkeyId();
-            if (studentId != null) {
-                albumImagesModel.setStudentId(studentId);
-            }
+        if (albumImagesModel.getClassName().equals("All")) {
+            albumImagesModel.setStudentId(null);
+            albumImagesModel.setDivisionName(null);
         } else {
-            albumImagesModel.setStudentId("NA");
+            albumImagesModel.setStudentId(listStudent.get(spinnerStudentName.getSelectedItemPosition()).getPkeyId());
+            albumImagesModel.setDivisionName(listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
         }
+
     }
 
     private void bindView() {
@@ -707,11 +727,12 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.imgTitle, albumImagesModel.getAlbumTitle());
         hashMap.put(IJson.description, albumImagesModel.getAlbumDescription());
-       // hashMap.put(IJson.userName, albumImagesModel.getCreatedBy());
+        // hashMap.put(IJson.userName, albumImagesModel.getCreatedBy());
         hashMap.put(IJson.imageType, albumImagesModel.getAlbumType());
         hashMap.put(IJson.className, albumImagesModel.getClassName());
-        hashMap.put(IJson.division, null);
-        hashMap.put(IJson.studentId, null);
+        hashMap.put(IJson.division, albumImagesModel.getDivisionName());
+        hashMap.put(IJson.studentId, albumImagesModel.getStudentId());
+
         hashMap.put(IJson.images, albumImagesModel.getAlbumImagesModels());
 
         CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
@@ -740,7 +761,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     }
 
 
-
     public void getStudent(String classId, String divisionId) {
         if (!apiFlag) {
             apiFlag = true;
@@ -752,6 +772,11 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
             CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentModel>() {
                 @Override
                 public void onResponse(StudentModel[] object) {
+                    listStudent = new ArrayList<>();
+                    StudentModel allStudent = new StudentModel();
+                    allStudent.setFullName("All");
+                    allStudent.setPkeyId(null);
+                    listStudent.add(allStudent);
                     for (StudentModel studentModel : object) {
                         listStudent.add(studentModel);
                     }
@@ -773,6 +798,8 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
                 @Override
                 public void onError(String message) {
+                    spinnerStudentName.setVisibility(View.GONE);
+                    txtStudentSpinnerTitle.setVisibility(View.GONE);
                     if (message != null && !message.isEmpty()) {
                         getMyActivity().showToast(message);
                     }

@@ -101,7 +101,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         UserModel selectedItem = listUser.get(position);
 
-        holder.txtName.setText(selectedItem.getFirstName() + " " + selectedItem.getFirstName());
+        holder.txtName.setText(selectedItem.getFirstName() + " " + selectedItem.getLastName());
         holder.txtUserType.setText("User Type :" + selectedItem.getUserType());
         holder.txtRegNo.setText("Reg.No :" + selectedItem.getUserInfoModel().getRegistrationId());
         Calendar calendar = Calendar.getInstance();
