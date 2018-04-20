@@ -46,6 +46,7 @@ import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.AlbumImagesModel;
 import com.exa.mydemoapp.model.AlbumMasterModel;
 import com.exa.mydemoapp.model.DropdownMasterModel;
+import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
 import com.exa.mydemoapp.s3Upload.S3UploadActivity;
@@ -97,12 +98,12 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private EditText edt_title;
     @ViewById(R.id.edt_description)
     private EditText edt_description;
-    @ViewById(R.id.edt_user_name)
-    private EditText edt_user;
     @ViewById(R.id.spinner_image_type)
     private Spinner spinnerType;
     @ViewById(R.id.spinner_class_name)
     private Spinner spnClass;
+    @ViewById(R.id.spinner_division)
+    private Spinner spnDivision;
     @ViewById(R.id.spinner_student_name)
     private Spinner spinnerStudentName;
     @ViewById(R.id.txt_student_spinner)
@@ -110,11 +111,13 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
 
     private List<DropdownMasterModel> listClass;
+    private List<DropdownMasterModel> listDivision;
+    private List<StudentModel> listStudent;
     private List<UserModel> listStudents;
     private List<String> listStudentName;
     ProgressDialog progressDialog;
     int totalImages;
-
+    boolean apiFlag = false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,31 +146,39 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         spnClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
 
-        spnClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (!listClass.get(position).equals("All")) {
 
-                    if (Connectivity.isConnected(getMyActivity())) {
-                        progressDialog = new ProgressDialog(getMyActivity());
-                        progressDialog.setTitle("Loading Student List...");
-                        progressDialog.show();
-                        getStudents(listClass.get(position).getDropdownValue());
-                    } else {
-                        getMyActivity().showToast("Please Connect to internet !!");
-                    }
-                } else {
-                    spinnerStudentName.setVisibility(View.GONE);
-                    txtStudentSpinnerTitle.setVisibility(View.GONE);
-                }
+        listDivision = getMyActivity().getDbInvoker().getDropDownByType("DEVISION");
+        ArrayAdapter<DropdownMasterModel> divisionAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
+        divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnDivision.setAdapter(divisionAdapter);
+        divisionAdapter.notifyDataSetChanged();
+
+        listStudent = new ArrayList<>();
+
+        spnDivision.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getStudent(listClass.get(spnClass.getSelectedItemPosition()).getServerValue(), listDivision.get(position).getServerValue());
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
+        spnClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getStudent(listClass.get(position).getServerValue(), listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         Bundle bundle = getArguments();
         albumImagesModelArrayList = new ArrayList<>();
@@ -224,7 +235,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private void bindModel() {
         albumImagesModel.setAlbumTitle(edt_title.getText().toString().trim());
         albumImagesModel.setAlbumDescription(edt_description.getText().toString().trim());
-        albumImagesModel.setCreatedBy(edt_user.getText().toString().trim());
         albumImagesModel.setAlbumType(spinnerType.getSelectedItem().toString());
         albumImagesModel.setClassName(spnClass.getSelectedItem().toString());
         if (listStudentName != null && listStudentName.size() > 0) {
@@ -240,7 +250,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private void bindView() {
         edt_title.setText(albumImagesModel.getAlbumTitle());
         edt_description.setText(albumImagesModel.getAlbumDescription());
-        edt_user.setText(albumImagesModel.getCreatedBy());
         int eventPosition = listEventType.indexOf(albumImagesModel.getAlbumType());
         spinnerType.setSelection(eventPosition);
         if (isEdit) {
@@ -522,7 +531,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         layout1.removeAllViews();
         edt_title.getText().clear();
         edt_description.getText().clear();
-        edt_user.getText().clear();
     }
 
 
@@ -533,7 +541,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
     private boolean check() {
         if (albumImagesModel.getClassName() == null || albumImagesModel.getClassName().equals("")) {
-            getMyActivity().showToast(getString(R.string.valid_class_name) );
+            getMyActivity().showToast(getString(R.string.valid_class_name));
             return false;
         }
         if (!albumImagesModel.getClassName().equalsIgnoreCase("All")) {
@@ -697,12 +705,13 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.imgTitle, "" + albumImagesModel.getAlbumTitle());
-        hashMap.put(IJson.description, "" + albumImagesModel.getAlbumDescription());
-        hashMap.put(IJson.userName, "" + albumImagesModel.getCreatedBy());
-        hashMap.put(IJson.imageType, "" + albumImagesModel.getAlbumType());
-        hashMap.put(IJson.classId, "" + albumImagesModel.getClassName());
-        hashMap.put(IJson.studentId, "0");
+        hashMap.put(IJson.imgTitle, albumImagesModel.getAlbumTitle());
+        hashMap.put(IJson.description, albumImagesModel.getAlbumDescription());
+       // hashMap.put(IJson.userName, albumImagesModel.getCreatedBy());
+        hashMap.put(IJson.imageType, albumImagesModel.getAlbumType());
+        hashMap.put(IJson.className, albumImagesModel.getClassName());
+        hashMap.put(IJson.division, null);
+        hashMap.put(IJson.studentId, null);
         hashMap.put(IJson.images, albumImagesModel.getAlbumImagesModels());
 
         CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
@@ -722,10 +731,56 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
             @Override
             public void onError(String message) {
-                Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
+                if (message != null && !message.isEmpty()) {
+                    Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
+                }
             }
         }, AlbumMasterModel.class);
 
+    }
+
+
+
+    public void getStudent(String classId, String divisionId) {
+        if (!apiFlag) {
+            apiFlag = true;
+            HashMap<String, Object> hashMap = new HashMap<>();
+      /*  hashMap.put(IJson.userId, userModel.getPkeyId());
+        hashMap.put(IJson.otp, txtOtp.getText().toString());*/
+            String url = String.format(IUrls.URL_CLASS_WISE_STUDENT, classId, divisionId);
+            Log.d("url", url);
+            CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentModel>() {
+                @Override
+                public void onResponse(StudentModel[] object) {
+                    for (StudentModel studentModel : object) {
+                        listStudent.add(studentModel);
+                    }
+                    ArrayAdapter<StudentModel> studentAdapter = new ArrayAdapter(getMyActivity(), android.R.layout.simple_spinner_item, listStudent);
+                    studentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerStudentName.setAdapter(studentAdapter);
+                    studentAdapter.notifyDataSetChanged();
+                    apiFlag = false;
+                }
+
+                @Override
+                public void onResponse() {
+                }
+
+                @Override
+                public void onResponse(StudentModel object) {
+
+                }
+
+                @Override
+                public void onError(String message) {
+                    if (message != null && !message.isEmpty()) {
+                        getMyActivity().showToast(message);
+                    }
+                    apiFlag = false;
+                }
+            }, StudentModel[].class);
+
+        }
     }
 
 

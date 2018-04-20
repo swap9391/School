@@ -11,8 +11,8 @@ public interface IJson {
     //student
     String id = "_id";
     String schoolName = "schoolName";
-    String className = "classId";
-    String division = "divisionId";
+    String className = "className";
+    String division = "divisionName";
     String registrationId = "registrationId";
     String firstName = "firstName";
     String middleName = "middleName";
@@ -32,11 +32,11 @@ public interface IJson {
 
 
     //image data
-    String imgTitle = "imgTitle";
-    String description = "description";
+    String imgTitle = "albumTitle";
+    String description = "albumDescription";
     String rating = "rating";
     String userName = "userName";
-    String imageType = "imageType";
+    String imageType = "albumType";
     String dateStamp = "dateStamp";
     String classId = "classId";
     String divisionId = "divisionId";

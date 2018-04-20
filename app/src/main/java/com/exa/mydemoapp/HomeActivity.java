@@ -47,6 +47,7 @@ import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.SignUpFragment;
 import com.exa.mydemoapp.fragment.SlideshowDialogFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
+import com.exa.mydemoapp.fragment.UpdateFeesFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
 import com.exa.mydemoapp.model.AlbumMasterModel;
@@ -92,6 +93,7 @@ public class HomeActivity extends CommonActivity {
     public ContactUsFragment contactUsFragment;
     public HomeWorkFragment homeWorkFragment;
     public PagerFragment pagerFragment;
+    public UpdateFeesFragment updateFeesFragment;
     public List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
     public boolean isGallery = true;
     public boolean isGuest = false;
@@ -314,6 +316,7 @@ public class HomeActivity extends CommonActivity {
         contactUsFragment = new ContactUsFragment();
         homeWorkFragment = new HomeWorkFragment();
         pagerFragment= new PagerFragment();
+        updateFeesFragment= new UpdateFeesFragment();
     }
 
     public List<AlbumMasterModel> getListAlbumChild() {
@@ -543,7 +546,7 @@ public class HomeActivity extends CommonActivity {
 
 
     public void getDropDownList() {
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         // hashMap.put(IJson.password, "" + studentId);
         CallWebService.getWebservice(HomeActivity.this, Request.Method.GET, IUrls.URL_DROPDOWN_LIST, hashMap, new VolleyResponseListener<DropdownMasterModel>() {
             @Override

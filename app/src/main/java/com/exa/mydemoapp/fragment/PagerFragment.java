@@ -231,7 +231,7 @@ public class PagerFragment extends CommonFragment {
     }
 
     public void getUserList() {
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         // hashMap.put(IJson.password, "" + studentId);
         CallWebService.getWebservice(getMyActivity(), Request.Method.GET, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<UserModel>() {
             @Override

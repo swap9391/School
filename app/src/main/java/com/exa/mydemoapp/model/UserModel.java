@@ -205,6 +205,7 @@ public class UserModel extends BasicBean implements Serializable {
     }
 
 
+
     @Override
     public void dbBinding(ContentHolder holder) {
         super.dbBinding(holder);

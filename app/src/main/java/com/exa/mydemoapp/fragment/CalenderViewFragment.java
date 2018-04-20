@@ -267,7 +267,7 @@ public class CalenderViewFragment extends Fragment {
     }
 
     private void getCalenderEvents() {
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.classId, "All");
         hashMap.put(IJson.divisionId, "");
         CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_GET_EVENTS, hashMap, new VolleyResponseListener<AnnualCalenderMasterModel>() {

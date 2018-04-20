@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.MapsActivity;
@@ -28,6 +29,7 @@ import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.PagerFragment;
 import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
+import com.exa.mydemoapp.fragment.UpdateFeesFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
 
@@ -147,7 +149,12 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new PagerFragment(), null);
                         break;
                     case "Fees Structure":
-                        context.showFragment(new FeeStructureFragment(), null);
+                        String userType = CommonUtils.getSharedPref(Constants.USER_TYPE, context);
+                        if (userType.equals(Constants.USER_TYPE_ADMIN)) {
+                            context.showFragment(new UpdateFeesFragment(), null);
+                        }else {
+                            context.showFragment(new FeeStructureFragment(), null);
+                        }
                         break;
                     case "Bus Location":
                         Intent intent1 = new Intent(context, MapsActivity.class);

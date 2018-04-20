@@ -11,13 +11,13 @@
         <item>Curricular</item>
     </string-array>
 
-  <!--  <string-array name="class_type">
-        <item>All</item>
-        <item>Playgroup</item>
-        <item>Nursery</item>
-        <item>Jr.KG</item>
-        <item>Sr.KG</item>
-    </string-array>-->
+    <!--  <string-array name="class_type">
+          <item>All</item>
+          <item>Playgroup</item>
+          <item>Nursery</item>
+          <item>Jr.KG</item>
+          <item>Sr.KG</item>
+      </string-array>-->
 
     <string-array name="image_type">
         <item>@string/img_type_news</item>
@@ -294,10 +294,19 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="lbl_select_student">Select Student</string>
     <string name="lbl_select_reward">Select Reward</string>
     <string name="lbl_select_image">Select Image Type</string>
+    <string name="lbl_select_division">Select Division</string>
     <string name="hint_album_name">Enter Album Name</string>
     <string name="hint_points">Enter Points</string>
     <string name="hint_subject">Enter Subject</string>
     <string name="hint_description">Enter Description</string>
     <string name="valid_otp">Please enter otp</string>
     <string name="lbl_total_point">Total Points </string>
+    <string name="lbl_total_fees">Total Fees</string>
+    <string name="lbl_no_installments">No. of Installments</string>
+    <string name="lbl_installment_type">Installment Type</string>
+    <string name="lbl_installment_amount">Amount</string>
+    <string name="lbl_installment_date">Date</string>
+    <string name="lbl_payment_status">Payment Status</string>
+    <string name="lbl_payment_mode">Payment Mode</string>
+    <string name="btn_pay">Pay Now</string>
 </resources>

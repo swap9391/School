@@ -191,7 +191,14 @@ public class DbInvoker {
 
     public List<DropdownMasterModel> getDropDownByType(String type) {
         String[] params = {""};
-        String sql = SQLs.sel_dropdown_data + " and dropdownType='" + type + "'";
+        String sql = SQLs.sel_dropdown_data + " AND dropdownType='" + type + "'";
+        return (List<DropdownMasterModel>) executeSelect(sql, params,
+                new DropDownMapper());
+    }
+
+    public List<DropdownMasterModel> getDropDownExceptValue(String type, String value) {
+        String[] params = {""};
+        String sql = SQLs.sel_dropdown_data + " AND dropdownType='" + type + "' AND dropdownValue != '" + value + "'";
         return (List<DropdownMasterModel>) executeSelect(sql, params,
                 new DropDownMapper());
     }

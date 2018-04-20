@@ -13,7 +13,7 @@ public interface IUrls {
     String SIGN_UP = BASE_URL + "signup";
  //   String URL_LOGIN = BASE_URL + "login";
     String URL_LOGIN = BASE_URL + "signin";
-    String URL_IMAGE_UPLOAD = BASE_URL + "uploadimages";
+    String URL_IMAGE_UPLOAD = BASE_URL + "album/add";
     String URL_IMAGE_LIST = BASE_URL + "getimages";
     String URL_USER_LIST = BASE_URL + "users/list";
     String URL_ADD_REWARD = BASE_URL + "savereward";
@@ -26,5 +26,6 @@ public interface IUrls {
     String URL_VERIFY_OTP= BASE_URL + "user/%1$s/verify/otp/%2$s";
     String URL_DROPDOWN_LIST = BASE_URL + "dropdown/list";
     String URL_LOG_OUT = BASE_URL + "signout";
+    String URL_CLASS_WISE_STUDENT= BASE_URL + "users/classwise/%1$s/%2$s";
 
 }

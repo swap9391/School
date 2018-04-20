@@ -81,7 +81,7 @@ public class NewsFeedFragment extends CommonFragment {
         Map<Integer, AlbumMasterModel> td = new HashMap<>();
         Map<String, AlbumMasterModel> mapAlbum = new HashMap<>();
         String studentId = "0";
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.studentId, studentId);
         hashMap.put(IJson.imageType, feed);
         // hashMap.put(IJson.password, "" + studentId);

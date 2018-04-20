@@ -48,7 +48,7 @@ public class CallWebService {
 */
     static ProgressDialog progressDialog;
 
-    public synchronized static <T> void getWebservice(Context context, int method, String url, final HashMap<String, String> param, VolleyResponseListener volleyResponseListener, Class<T[]> aClass) {
+    public synchronized static <T> void getWebservice(Context context, int method, String url, final HashMap<String, Object> param, VolleyResponseListener volleyResponseListener, Class<T[]> aClass) {
 
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("Loading...");
