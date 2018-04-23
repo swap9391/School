@@ -16,10 +16,10 @@ public interface IUrls {
     String URL_IMAGE_UPLOAD = BASE_URL + "album/add";
     String URL_IMAGE_LIST = BASE_URL + "getimages";
     String URL_USER_LIST = BASE_URL + "users/list";
-    String URL_ADD_REWARD = BASE_URL + "savereward";
-    String URL_GET_REWARDS = BASE_URL + "getrewards";
-    String URL_ADD_EVENTS = BASE_URL + "saveevents";
-    String URL_GET_EVENTS = BASE_URL + "getevents";
+    String URL_ADD_REWARD = BASE_URL + "student/rewards";
+    String URL_GET_REWARDS = BASE_URL + "student/%1$s/rewards";
+    String URL_ADD_EVENTS = BASE_URL + "annualcalender/event";
+    String URL_GET_EVENTS = BASE_URL + "annualcalender/event/%1$s/%2$s";
     String URL_ADD_ATTENDANCE = BASE_URL + "markattendance";
     String URL_GET_ATTENDANCE = BASE_URL + "getattendance";
     String URL_FIREBASE_REG = BASE_URL + "inserttoken";

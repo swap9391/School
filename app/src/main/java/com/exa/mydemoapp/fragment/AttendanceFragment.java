@@ -222,7 +222,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                     hashMap.put(IJson.id, attendanceMasterModel.getPkeyId());
                 }
 
-                CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_ATTENDANCE, hashMap, new VolleyResponseListener<AttendanceMasterModel>() {
+                CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.POST, IUrls.URL_ADD_ATTENDANCE, hashMap, new VolleyResponseListener<AttendanceMasterModel>() {
                     @Override
                     public void onResponse(AttendanceMasterModel[] object) {
                     }
@@ -256,7 +256,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.dateStamp, CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.ONLY_DATE_FORMAT));
         hashMap.put(IJson.classId, className);
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_GET_ATTENDANCE, hashMap, new VolleyResponseListener<AttendanceMasterModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.POST, IUrls.URL_GET_ATTENDANCE, hashMap, new VolleyResponseListener<AttendanceMasterModel>() {
 
             @Override
             public void onResponse(AttendanceMasterModel[] object) {

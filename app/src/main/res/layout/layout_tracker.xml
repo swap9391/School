@@ -112,25 +112,51 @@
                     android:textColorLink="@color/textcolor"
                     android:visibility="invisible" />
 
-                <EditText
-                    android:id="@+id/transport_id"
-                    android:layout_width="160dp"
+                <TextView
+                    android:id="@+id/lbl_route_type"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/permissionText"
-                    android:layout_centerHorizontal="true"
-                    android:backgroundTint="@color/textcolor"
-                    android:hint="Vehicle Number"
-                    android:maxLength="10"
-                    android:maxLines="1"
-                    android:textColor="@color/textcolor"
-                    android:textColorHighlight="@color/textcolor"
-                    android:textColorHint="@color/textcolor" />
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/lbl_select_bus_type" />
+
+                <Spinner
+                    android:id="@+id/spinner_route_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lbl_route_type"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:paddingBottom="20dp"
+                    android:paddingTop="20dp"></Spinner>
+
+                <TextView
+                    android:id="@+id/lbl_trip_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/spinner_route_type"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/lbl_select_trip_type" />
+
+                <Spinner
+                    android:id="@+id/spinner_trip_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lbl_trip_type"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:paddingBottom="20dp"
+                    android:paddingTop="20dp"></Spinner>
 
                 <Button
                     android:id="@+id/button_start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/transport_id"
+                    android:layout_below="@+id/spinner_trip_type"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="40dp"
                     android:text="Start tracking" />
@@ -139,7 +165,7 @@
                     android:id="@+id/button_stop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/transport_id"
+                    android:layout_below="@+id/spinner_trip_type"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="40dp"
                     android:text="Stop tracking" />

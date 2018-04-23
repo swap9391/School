@@ -462,7 +462,7 @@ public class HomeActivity extends CommonActivity {
 
     public void getLogOutApi() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        CallWebService.getWebserviceObject(HomeActivity.this, Request.Method.DELETE, IUrls.URL_LOG_OUT, hashMap, new VolleyResponseListener<UserModel>() {
+        CallWebService.getWebserviceObject(HomeActivity.this,true,true, Request.Method.DELETE, IUrls.URL_LOG_OUT, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
             public void onResponse(UserModel[] object) {
 
@@ -520,7 +520,7 @@ public class HomeActivity extends CommonActivity {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.token, token);
         hashMap.put(IJson.userId, "" + CommonUtils.getSharedPref(Constants.STUDENT_ID, HomeActivity.this));
-        CallWebService.getWebserviceObject(HomeActivity.this, Request.Method.POST, IUrls.URL_FIREBASE_REG, hashMap, new VolleyResponseListener<FirebaseRegistrationModel>() {
+        CallWebService.getWebserviceObject(HomeActivity.this,true,true, Request.Method.POST, IUrls.URL_FIREBASE_REG, hashMap, new VolleyResponseListener<FirebaseRegistrationModel>() {
             @Override
             public void onResponse(FirebaseRegistrationModel[] object) {
 

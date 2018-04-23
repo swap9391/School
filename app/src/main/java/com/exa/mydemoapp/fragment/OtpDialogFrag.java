@@ -129,7 +129,7 @@ public class OtpDialogFrag extends DialogFragment implements View.OnClickListene
         hashMap.put(IJson.otp, txtOtp.getText().toString());*/
         String url = String.format(IUrls.URL_VERIFY_OTP, userModel.getPkeyId(), txtOtp.getText().toString());
         Log.d("otpUrl", url);
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<OtpMasterModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.GET, url, hashMap, new VolleyResponseListener<OtpMasterModel>() {
             @Override
             public void onResponse(OtpMasterModel[] object) {
 

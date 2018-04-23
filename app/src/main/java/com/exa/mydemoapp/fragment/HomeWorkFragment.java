@@ -182,7 +182,7 @@ public class HomeWorkFragment extends CommonFragment {
         hashMap.put(IJson.dateStamp, "" + homeWorkModel.getHomeworkDate());
         hashMap.put(IJson.description, "" + homeWorkModel.getDescription());
 
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<DailyHomeworkModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<DailyHomeworkModel>() {
             @Override
             public void onResponse(DailyHomeworkModel[] object) {
             }

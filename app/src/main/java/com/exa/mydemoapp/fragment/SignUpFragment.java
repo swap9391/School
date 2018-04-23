@@ -131,11 +131,8 @@ public class SignUpFragment extends CommonFragment {
     @ViewById(R.id.view_fees)
     View viewFees;
     File fileProfile;
-
-
     boolean isEdit = false;
     private View view;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -587,13 +584,15 @@ public class SignUpFragment extends CommonFragment {
         hashMap.put(IJson.busRoute, userModel.getBusRoute());
         hashMap.put(IJson.userInfoModel, userModel.getUserInfoModel());
         hashMap.put(IJson.busRoute, "Moshi");
-
+        int method;
         if (userModel.getPkeyId() != null) {
             hashMap.put(IJson.id, userModel.getPkeyId().toString());
+            method= Request.Method.PUT;
         } else {
             hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
+            method= Request.Method.POST;
         }
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.SIGN_UP, hashMap, new VolleyResponseListener<UserModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(),true,true, method, IUrls.SIGN_UP, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
             public void onResponse(UserModel[] object) {
                 if (object[0] instanceof UserModel) {

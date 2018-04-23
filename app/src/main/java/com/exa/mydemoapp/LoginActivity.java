@@ -235,7 +235,7 @@ public class LoginActivity extends CommonActivity {
         hashMap.put(IJson.loginFrom, userModel.getLoginFrom());
         hashMap.put(IJson.deviceDetails, userModel.getUserDevice());
 
-        CallWebService.getWebserviceObject(this, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<UserModel>() {
+        CallWebService.getWebserviceObject(this,true,true, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
             public void onResponse(UserModel[] object) {
             }

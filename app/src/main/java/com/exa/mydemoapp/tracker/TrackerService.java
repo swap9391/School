@@ -36,11 +36,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.BuildConfig;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.fragment.DashboardFragment;
+import com.exa.mydemoapp.model.BusLocationsModel;
+import com.exa.mydemoapp.model.StudentRewardsModel;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.OneoffTask;
@@ -83,6 +92,7 @@ public class TrackerService extends Service implements LocationListener {
     private NotificationCompat.Builder mNotificationBuilder;
     private PowerManager.WakeLock mWakelock;
     private Date lastTime;
+    private BusLocationsModel busLocationsModel;
 
     public TrackerService() {
     }
@@ -292,12 +302,21 @@ public class TrackerService extends Service implements LocationListener {
             return;
         }
 
+        busLocationsModel = new BusLocationsModel();
+
         Map<String, Object> transportStatus = new HashMap<>();
         transportStatus.put("lattitude", location.getLatitude());
         transportStatus.put("longitude", location.getLongitude());
         transportStatus.put("time", new Date().getTime());
         transportStatus.put("power", getBatteryLevel());
-        String transportId = CommonUtils.getSharedPref(getString(R.string.transport_id), this);
+        String routType = CommonUtils.getSharedPref(Constants.ROUTE_TYPE, this);
+        String tripType = CommonUtils.getSharedPref(Constants.TRIP_TYPE, this);
+
+        busLocationsModel.setBusRoute(routType);
+        busLocationsModel.setBusTripType(tripType);
+        busLocationsModel.setLatitude("" + location.getLatitude());
+        busLocationsModel.setLongitude("" + location.getLongitude());
+
         if (locationIsAtStatus(location, 1) && locationIsAtStatus(location, 0)) {
             // If the most recent two statuses are approximately at the same
             // location as the new current location, rather than adding the new
@@ -308,16 +327,19 @@ public class TrackerService extends Service implements LocationListener {
 
             mTransportStatuses.set(0, transportStatus);
             // Only need to update 0th status, so we can save bandwidth.
-            if (lastTime==null){
+            if (lastTime == null) {
                 lastTime = Calendar.getInstance().getTime();
                 Log.d("Location", location.getLatitude() + "," + location.getLongitude());
+                save();
             }
-            if (timeDiffrence(Calendar.getInstance().getTime(),lastTime ) > 1) {
+            if (timeDiffrence(Calendar.getInstance().getTime(), lastTime) >= 1) {
                 Log.d("Location", location.getLatitude() + "," + location.getLongitude());
                 lastTime = Calendar.getInstance().getTime();
+                save();
             }
             //  mFirebaseTransportRef.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(transportId).child("0").setValue(transportStatus);
             //mFirebaseTransportRef.child("0").setValue(transportStatus);
+
         } else {
             // Maintain a fixed number of previous statuses.
             while (mTransportStatuses.size() >= mFirebaseRemoteConfig.getLong("MAX_STATUSES")) {
@@ -326,13 +348,15 @@ public class TrackerService extends Service implements LocationListener {
             mTransportStatuses.addFirst(transportStatus);
             // We push the entire list at once since each key/index changes, to
             // minimize network requests.
-            if (lastTime==null){
+            if (lastTime == null) {
                 lastTime = Calendar.getInstance().getTime();
                 Log.d("Location", location.getLatitude() + "," + location.getLongitude());
+                save();
             }
-            if (timeDiffrence(Calendar.getInstance().getTime(),lastTime ) > 1) {
+            if (timeDiffrence(Calendar.getInstance().getTime(), lastTime) >= 1) {
                 Log.d("Location", location.getLatitude() + "," + location.getLongitude());
                 lastTime = Calendar.getInstance().getTime();
+                save();
             }
 
 
@@ -390,7 +414,7 @@ public class TrackerService extends Service implements LocationListener {
                 Log.v("Data2", "" + date2.getTime());
                 hours = (int) (mills / (1000 * 60 * 60));
                 mins = (int) (mills / (1000 * 60)) % 60;
-                int sec=(int) (mills / 1000 ) % 60;
+                int sec = (int) (mills / 1000) % 60;
 
                 String diff = hours + ":" + mins; // updated value every1 second
             } else {
@@ -400,6 +424,43 @@ public class TrackerService extends Service implements LocationListener {
             e.printStackTrace();
         }
         return mins;
+    }
+
+
+    private void save() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put(IJson.busRoute, busLocationsModel.getBusRoute());
+        hashMap.put(IJson.busTripType, busLocationsModel.getBusTripType());
+        hashMap.put(IJson.latitude, busLocationsModel.getLatitude());
+        hashMap.put(IJson.longitude, busLocationsModel.getLongitude());
+
+   /*     CallWebService.getWebserviceObject(this, true, true, Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<StudentRewardsModel>() {
+            @Override
+            public void onResponse(StudentRewardsModel[] object) {
+            }
+
+            @Override
+            public void onResponse(StudentRewardsModel studentData) {
+            }
+
+            @Override
+            public void onResponse() {
+            }
+
+            @Override
+            public void onError(String message) {
+                com.google.android.gms.gcm.Task task = new OneoffTask.Builder()
+                        .setService(TrackerTaskService.class)
+                        .setUpdateCurrent(true)
+                        .setTag(TrackerTaskService.TAG)
+                        .setRequiredNetwork(com.google.android.gms.gcm.Task.NETWORK_STATE_ANY)
+                        .setRequiresCharging(false)
+                        .build();
+                GcmNetworkManager.getInstance(TrackerService.this).schedule(task);
+                stopSelf();
+            }
+        }, StudentRewardsModel.class);*/
+
     }
 
 }

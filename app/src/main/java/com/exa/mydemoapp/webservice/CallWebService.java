@@ -153,11 +153,13 @@ public class CallWebService {
     }
 
 
-    public synchronized static <T> void getWebserviceObject(Context context, int requestMethod, String url, final HashMap<String, Object> param, VolleyResponseListener volleyResponseListener, Class<T> aClass) {
+    public synchronized static <T> void getWebserviceObject(Context context, boolean progressFlag, boolean toastFlag, int requestMethod, String url, final HashMap<String, Object> param, VolleyResponseListener volleyResponseListener, Class<T> aClass) {
         progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("Loading...");
-        progressDialog.show();
-        progressDialog.setCancelable(false);
+        if (progressFlag) {
+            progressDialog.setTitle("Loading...");
+            progressDialog.show();
+            progressDialog.setCancelable(false);
+        }
         Gson gson = new Gson();
         String jsonString = gson.toJson(param);
         JSONObject jsonObject = null;
@@ -179,7 +181,9 @@ public class CallWebService {
                             String message = jsonObject.getString(Constants.RESPONSE_MESSAGE);
 
                             if (key.equalsIgnoreCase(Constants.RESPONSE_SUCCESS)) {
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                                if (toastFlag) {
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                                }
                                 if (!jsonObject.isNull(Constants.RESPONSE_INFO)) {
                                     jsonObjectResult = jsonObject.getJSONObject(Constants.RESPONSE_INFO);
                                     GsonBuilder gsonBuilder = new GsonBuilder();

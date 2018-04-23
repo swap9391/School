@@ -68,4 +68,9 @@ public interface IJson {
     //otp
     String otp="otp";
 
+    //busLocation
+    String latitude="latitude";
+    String longitude="longitude";
+    String busTripType="busTripType";
+
 }

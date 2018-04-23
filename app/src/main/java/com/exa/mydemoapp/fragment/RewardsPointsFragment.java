@@ -234,13 +234,16 @@ public class RewardsPointsFragment extends CommonFragment {
 
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.classId, "" + rewardModel.getClassName());
-        hashMap.put(IJson.studentId, "" + rewardModel.getStudentId());
-        hashMap.put(IJson.rewardType, "" + rewardModel.getRewardType());
-        hashMap.put(IJson.points, "" + rewardModel.getPoints());
-        hashMap.put(IJson.description, "" + rewardModel.getDescription());
+        hashMap.put(IJson.className, rewardModel.getClassName());
+        hashMap.put(IJson.studentId, rewardModel.getStudentId());
+        hashMap.put(IJson.rewardType, rewardModel.getRewardType());
+        hashMap.put(IJson.points, rewardModel.getPoints());
+        hashMap.put(IJson.description, rewardModel.getDescription());
+        if (rewardModel.getPkeyId() != null) {
+            hashMap.put(IJson.id, rewardModel.getPkeyId().toString());
+        }
 
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<StudentRewardsModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<StudentRewardsModel>() {
             @Override
             public void onResponse(StudentRewardsModel[] object) {
             }

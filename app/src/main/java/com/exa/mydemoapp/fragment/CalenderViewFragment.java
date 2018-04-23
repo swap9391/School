@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,7 +51,6 @@ public class CalenderViewFragment extends Fragment {
     List<AnnualCalenderMasterModel> listEvent = new ArrayList<>();
     List<DateModel> listDate;
     ProgressDialog progressDialog;
-
     View view;
 
     @Override
@@ -63,7 +63,7 @@ public class CalenderViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_calender, container, false);
         progressDialog = new ProgressDialog(getMyActivity());
-        ;
+
         getMyActivity().toolbar.setTitle(getString(R.string.dashboard_calender));
         getMyActivity().init();
 
@@ -268,9 +268,27 @@ public class CalenderViewFragment extends Fragment {
 
     private void getCalenderEvents() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.classId, "All");
-        hashMap.put(IJson.divisionId, "");
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_GET_EVENTS, hashMap, new VolleyResponseListener<AnnualCalenderMasterModel>() {
+
+        Date startDate = new Date();
+        Date endDate = new Date();
+        Calendar calendar = new GregorianCalendar();
+        int year = calendar.get(Calendar.YEAR);
+        calendar.set(Calendar.MONTH, 06);
+        calendar.set(Calendar.DATE, 01);
+        calendar.set(Calendar.YEAR, year);
+        startDate = calendar.getTime();
+
+        Calendar calendar1 = new GregorianCalendar();
+        calendar1.set(Calendar.MONTH, 05);
+        calendar1.set(Calendar.DATE, 31);
+        calendar1.set(Calendar.YEAR, year + 1);
+        endDate = calendar1.getTime();
+
+
+        String url = String.format(IUrls.URL_GET_EVENTS, startDate.getTime(), endDate.getTime());
+
+
+        CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<AnnualCalenderMasterModel>() {
             @Override
             public void onResponse(AnnualCalenderMasterModel[] object) {
                 for (AnnualCalenderMasterModel rewardModel : object) {

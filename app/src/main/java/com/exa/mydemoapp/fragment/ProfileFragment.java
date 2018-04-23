@@ -133,8 +133,8 @@ public class ProfileFragment extends CommonFragment {
 
     private void getRewards() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.studentId, "" + CommonUtils.getSharedPref(Constants.STUDENT_ID, getMyActivity()));
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_GET_REWARDS, hashMap, new VolleyResponseListener<StudentRewardsModel>() {
+        String url = String.format(IUrls.URL_GET_REWARDS, CommonUtils.getSharedPref(Constants.STUDENT_ID, getMyActivity()));
+        CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentRewardsModel>() {
             @Override
             public void onResponse(StudentRewardsModel[] object) {
 

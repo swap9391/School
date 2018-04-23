@@ -735,7 +735,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
         hashMap.put(IJson.images, albumImagesModel.getAlbumImagesModels());
 
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
             @Override
             public void onResponse(AlbumMasterModel[] object) {
 

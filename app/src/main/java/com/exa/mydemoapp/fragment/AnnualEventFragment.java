@@ -31,7 +31,6 @@ import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -223,7 +222,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             }
             Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
             String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT);
-            //annualCalenderMasterModel.setEventDate(formatedDate);
+            annualCalenderMasterModel.setEventDate(date.getTime());
             txtSelectedDate.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
         }
     };
@@ -238,10 +237,10 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
         hashMap.put(IJson.eventName, "" + annualCalenderMasterModel.getEventName());
         hashMap.put(IJson.eventDate, "" + annualCalenderMasterModel.getEventDate());
         hashMap.put(IJson.eventType, "" + annualCalenderMasterModel.getEventType());
-        hashMap.put(IJson.classId, "" + annualCalenderMasterModel.getClassName());
+        hashMap.put(IJson.className, "" + annualCalenderMasterModel.getClassName());
         //hashMap.put(IJson.divisionId, "" + annualCalenderMasterModel.getdi());
 
-        CallWebService.getWebserviceObject(getMyActivity(), Request.Method.POST, IUrls.URL_ADD_EVENTS, hashMap, new VolleyResponseListener<AnnualCalenderMasterModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_EVENTS, hashMap, new VolleyResponseListener<AnnualCalenderMasterModel>() {
             @Override
             public void onResponse(AnnualCalenderMasterModel[] object) {
             }

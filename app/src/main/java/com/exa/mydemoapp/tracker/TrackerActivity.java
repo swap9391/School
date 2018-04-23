@@ -37,15 +37,23 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.MapsActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.database.DbInvoker;
+import com.exa.mydemoapp.model.DropdownMasterModel;
+
+import java.util.List;
 
 public class TrackerActivity extends CommonActivity {
 
@@ -53,12 +61,18 @@ public class TrackerActivity extends CommonActivity {
     private static String[] PERMISSIONS_REQUIRED = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-    private EditText mTransportIdEditText;
     private Snackbar mSnackbarPermissions;
     private Snackbar mSnackbarGps;
     Button mStartButton, mStopButton;
     Toolbar toolbar;
-
+    private List<DropdownMasterModel> listTripType;
+    private List<DropdownMasterModel> listRouteType;
+    @ViewById(R.id.spinner_trip_type)
+    private Spinner spnTripType;
+    @ViewById(R.id.spinner_route_type)
+    private Spinner spnRoute;
+    DbInvoker dbInvoker;
+    View view;
     /**
      * Configures UI elements, and starts validation if inputs have previously been entered.
      */
@@ -66,7 +80,9 @@ public class TrackerActivity extends CommonActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_tracker);
-        mTransportIdEditText = (EditText) findViewById(R.id.transport_id);
+        view = getWindow().getDecorView();
+        initViewBinding(view);
+        dbInvoker = new DbInvoker(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setTitle("Start Tracking");
@@ -74,6 +90,20 @@ public class TrackerActivity extends CommonActivity {
         String transportID = CommonUtils.getSharedPref(getString(R.string.transport_id), this);
         mStartButton = (Button) findViewById(R.id.button_start);
         mStopButton = (Button) findViewById(R.id.button_stop);
+
+        listRouteType = dbInvoker.getDropDownByType("IMAGETYPE");
+        ArrayAdapter<DropdownMasterModel> routeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listRouteType);
+        routeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnRoute.setAdapter(routeAdapter);
+        routeAdapter.notifyDataSetChanged();
+
+
+        listTripType = dbInvoker.getDropDownByType("CLASSTYPE");
+        ArrayAdapter<DropdownMasterModel> tripTypeAdapter = new ArrayAdapter<DropdownMasterModel>(this, android.R.layout.simple_spinner_item, listTripType);
+        tripTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnTripType.setAdapter(tripTypeAdapter);
+        tripTypeAdapter.notifyDataSetChanged();
+
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,7 +142,8 @@ public class TrackerActivity extends CommonActivity {
 
     private void setTrackingStatus(int status) {
         boolean tracking = status == R.string.tracking;
-        mTransportIdEditText.setEnabled(!tracking);
+        spnRoute.setEnabled(!tracking);
+        spnTripType.setEnabled(!tracking);
         mStartButton.setVisibility(tracking ? View.INVISIBLE : View.VISIBLE);
         mStopButton.setVisibility(tracking ? View.VISIBLE : View.INVISIBLE);
         ((TextView) findViewById(R.id.title)).setText(getString(status));
@@ -147,11 +178,12 @@ public class TrackerActivity extends CommonActivity {
      */
     private void checkInputFields() {
         // Validate permissions.
-        if (mTransportIdEditText.length() == 0) {
+        if (spnRoute.getSelectedItem().toString().length() == 0 && spnTripType.getSelectedItem().toString().length() == 0) {
             Toast.makeText(TrackerActivity.this, R.string.missing_inputs, Toast.LENGTH_SHORT).show();
         } else {
             // Store values.
-            CommonUtils.insertSharedPref(TrackerActivity.this, getString(R.string.transport_id), mTransportIdEditText.getText().toString());
+            CommonUtils.insertSharedPref(TrackerActivity.this, Constants.ROUTE_TYPE, spnRoute.getSelectedItem().toString());
+            CommonUtils.insertSharedPref(TrackerActivity.this, Constants.TRIP_TYPE, spnTripType.getSelectedItem().toString());
             // Validate permissions.
             checkLocationPermission();
         }
@@ -215,11 +247,11 @@ public class TrackerActivity extends CommonActivity {
         // Before we start the service, confirm that we have extra power usage privileges.
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
         Intent intent = new Intent();
-        if (!pm.isIgnoringBatteryOptimizations(getPackageName())) {
-            intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-        }
+        //    if (!pm.isIgnoringBatteryOptimizations(getPackageName())) {
+        intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        intent.setData(Uri.parse("package:" + getPackageName()));
+        startActivity(intent);
+        //}
         startService(new Intent(this, TrackerService.class));
     }
 
@@ -234,7 +266,8 @@ public class TrackerActivity extends CommonActivity {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        mTransportIdEditText.setEnabled(true);
+                        spnRoute.setEnabled(true);
+                        spnTripType.setEnabled(true);
                         mStartButton.setVisibility(View.VISIBLE);
                         stopLocationService();
                     }

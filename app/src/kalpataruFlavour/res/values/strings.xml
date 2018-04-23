@@ -237,7 +237,7 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="not_tracking">Not tracking &#x2718;</string>
     <string name="connecting">Connecting &#8230;</string>
     <string name="transport_id" translatable="false">transport_id</string>
-    <string name="missing_inputs">Please enter a transport ID</string>
+    <string name="missing_inputs">Missing Inputs</string>
     <string name="logout_title">Logout</string>
     <string name="logout_msg">Do you want to sign out?</string>
     <string name="exit_msg">Do you want to exit from application?</string>
@@ -295,6 +295,8 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="lbl_select_reward">Select Reward</string>
     <string name="lbl_select_image">Select Image Type</string>
     <string name="lbl_select_division">Select Division</string>
+    <string name="lbl_select_bus_type">Select Bus Route</string>
+    <string name="lbl_select_trip_type">Select Trip Type</string>
     <string name="hint_album_name">Enter Album Name</string>
     <string name="hint_points">Enter Points</string>
     <string name="hint_subject">Enter Subject</string>
@@ -309,4 +311,5 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="lbl_payment_status">Payment Status</string>
     <string name="lbl_payment_mode">Payment Mode</string>
     <string name="btn_pay">Pay Now</string>
+
 </resources>
