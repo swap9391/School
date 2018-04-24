@@ -31,6 +31,25 @@
                 android:paddingTop="20dp"></Spinner>
 
             <TextView
+                android:id="@+id/lbl_division"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/lbl_select_division" />
+
+            <Spinner
+                android:id="@+id/spinner_division"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="20dp"></Spinner>
+
+
+            <TextView
                 android:id="@+id/txt_student_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

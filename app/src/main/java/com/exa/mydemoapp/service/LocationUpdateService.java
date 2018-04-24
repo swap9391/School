@@ -12,14 +12,25 @@ import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
+import com.android.volley.Request;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.model.BusLocationsModel;
+import com.exa.mydemoapp.model.StudentRewardsModel;
+import com.exa.mydemoapp.tracker.TrackerService;
+import com.exa.mydemoapp.tracker.TrackerTaskService;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IJson;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.OneoffTask;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -31,12 +42,10 @@ import com.google.firebase.storage.StorageReference;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 //not used
-public class LocationUpdateService extends Service implements
-        LocationListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class LocationUpdateService extends Service {
 
     private DatabaseReference databaseReference;
     private StorageReference mStorageRef;
@@ -49,60 +58,19 @@ public class LocationUpdateService extends Service implements
     private final String TAG = "LocationActivity";
     private final long INTERVAL = 1000 * 10;
     private final long FASTEST_INTERVAL = 1000 * 5;
-    private LocationRequest mLocationRequest;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mCurrentLocation;
-    private String mLastUpdateTime;
-    private String vanType;
-    Context context = this;
     private boolean startUpload = false;
-    private boolean stopUpload = false;
-    double lat = 0.0;
-    double lng = 0.0;
     Handler handler;
+    private String rootType;
+    private String tripType;
 
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
 
     @Override
     public void onCreate() {
 
         Log.d(TAG, "onCreate ...............................");
         //show error dialog if GoolglePlayServices not available
-        if (!isGooglePlayServicesAvailable()) {
-
-        }
-        createLocationRequest();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-
-        init();
-
-
     }
 
-    protected void init() {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-        if (mGoogleApiClient.isConnected()) {
-            startLocationUpdates();
-            Log.d(TAG, "Location update resumed .....................");
-        }
-
-    }
 
     public Runnable runnable = new Runnable() {
         @Override
@@ -110,10 +78,10 @@ public class LocationUpdateService extends Service implements
             handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    handler.postDelayed(this, 3000);
+                    handler.postDelayed(this, 30000);
                     updateUI();
                 }
-            }, 3000);
+            }, 30000);
         }
     };
 
@@ -125,21 +93,6 @@ public class LocationUpdateService extends Service implements
         Log.d(TAG, "isConnected ...............: " + mGoogleApiClient.isConnected());
     }*/
 
-    private boolean isGooglePlayServicesAvailable() {
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (ConnectionResult.SUCCESS == status) {
-            return true;
-        } else {
-            //GooglePlayServicesUtil.getErrorDialog(status, context, 0).show();
-            return false;
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d(TAG, "onConnected - isConnected ...............: " + mGoogleApiClient.isConnected());
-        startLocationUpdates();
-    }
 
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -152,56 +105,36 @@ public class LocationUpdateService extends Service implements
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
         Log.d(TAG, "Location update started ..............: ");
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d(TAG, "Connection failed: " + connectionResult.toString());
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(TAG, "Firing onLocationChanged..............................................");
-        mCurrentLocation = location;
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        if (startUpload == false) {
-            runnable.run();
-        }
-    }
 
     private void updateUI() {
         Log.d(TAG, "UI update initiated .............");
-       /* if (Connectivity.isConnected(this)) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        long date = System.currentTimeMillis() / 1000;
 
-            if (null != mCurrentLocation && !vanType.isEmpty()) {
-                startUpload = true;
-                LocationModel locationModel = new LocationModel();
-                locationModel.setLattitude(mCurrentLocation.getLatitude());
-                locationModel.setLongitude(mCurrentLocation.getLongitude());
-                locationModel.setVanType(vanType.toString());
-                String userId = databaseReference.push().getKey();
-                locationModel.setUniqKey(userId);
-                locationModel.setDateStamp(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
+        String url = String.format(IUrls.URL_GET_BUS_LOCATION, date, "Moshi", "Morning");
 
-                if (stopUpload == false && lat != mCurrentLocation.getLatitude() && lng != mCurrentLocation.getLongitude()) {
-                    databaseReference.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(userId).setValue(locationModel);
-                    lat = mCurrentLocation.getLatitude();
-                    lng = mCurrentLocation.getLongitude();
-                }
-
-
-            } else {
-                Log.d(TAG, "location is null ...............");
+        CallWebService.getWebserviceObject(LocationUpdateService.this, false, false, Request.Method.POST, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
+            @Override
+            public void onResponse(BusLocationsModel[] object) {
             }
-        }*/
+
+            @Override
+            public void onResponse(BusLocationsModel busLocationsModel) {
+                serviceCallbacks.doSomething(busLocationsModel);
+            }
+
+            @Override
+            public void onResponse() {
+            }
+
+            @Override
+            public void onError(String message) {
+                // stopSelf();
+            }
+        }, BusLocationsModel.class);
     }
 
    /* @Override
@@ -210,15 +143,6 @@ public class LocationUpdateService extends Service implements
         stopLocationUpdates();
     }*/
 
-    public void stopLocationUpdates() {
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(
-                    mGoogleApiClient, this);
-            handler.removeCallbacks(runnable);
-            stopUpload = true;
-            Log.d(TAG, "Location update stopped .......................");
-        }
-    }
 
     /*@Override
     public void onResume() {
@@ -231,7 +155,12 @@ public class LocationUpdateService extends Service implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getStringExtra("VANTYPE") != null) {
+        if (intent.getStringExtra(Constants.ROUTE_TYPE) != null && intent.getStringExtra(Constants.TRIP_TYPE) != null) {
+            rootType = intent.getStringExtra(Constants.ROUTE_TYPE);
+            tripType = intent.getStringExtra(Constants.TRIP_TYPE);
+            runnable.run();
+        }
+       /* if (intent.getStringExtra("VANTYPE") != null) {
             vanType = intent.getStringExtra("VANTYPE");
             if (mGoogleApiClient != null) {
                 mGoogleApiClient.connect();
@@ -241,7 +170,7 @@ public class LocationUpdateService extends Service implements
                 startLocationUpdates();
                 Log.d(TAG, "Location update resumed .....................");
             }
-        }
+        }*/
         return START_REDELIVER_INTENT;
     }
 
@@ -253,8 +182,6 @@ public class LocationUpdateService extends Service implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopLocationUpdates();
-        mGoogleApiClient.disconnect();
     }
 
     public class LocalBinder extends Binder {

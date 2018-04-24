@@ -429,18 +429,18 @@ public class TrackerService extends Service implements LocationListener {
 
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.busRoute, busLocationsModel.getBusRoute());
-        hashMap.put(IJson.busTripType, busLocationsModel.getBusTripType());
+        hashMap.put(IJson.busRoute, "Moshi");
+        hashMap.put(IJson.busTripType, "Morning");
         hashMap.put(IJson.latitude, busLocationsModel.getLatitude());
         hashMap.put(IJson.longitude, busLocationsModel.getLongitude());
 
-   /*     CallWebService.getWebserviceObject(this, true, true, Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<StudentRewardsModel>() {
+        CallWebService.getWebserviceObject(TrackerService.this, false, false, Request.Method.POST, IUrls.URL_ADD_BUS_LOCATION, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
-            public void onResponse(StudentRewardsModel[] object) {
+            public void onResponse(BusLocationsModel[] object) {
             }
 
             @Override
-            public void onResponse(StudentRewardsModel studentData) {
+            public void onResponse(BusLocationsModel studentData) {
             }
 
             @Override
@@ -459,7 +459,7 @@ public class TrackerService extends Service implements LocationListener {
                 GcmNetworkManager.getInstance(TrackerService.this).schedule(task);
                 stopSelf();
             }
-        }, StudentRewardsModel.class);*/
+        }, BusLocationsModel.class);
 
     }
 

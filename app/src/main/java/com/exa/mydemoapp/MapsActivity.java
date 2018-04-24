@@ -1,13 +1,17 @@
 package com.exa.mydemoapp;
 
 import android.animation.ValueAnimator;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -19,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -29,8 +34,14 @@ import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.database.DbInvoker;
+import com.exa.mydemoapp.model.BusLocationsModel;
 import com.exa.mydemoapp.model.UserModel;
+import com.exa.mydemoapp.service.LocationUpdateService;
+import com.exa.mydemoapp.service.ServiceCallbacks;
 import com.exa.mydemoapp.tracker.TrackerActivity;
+import com.exa.mydemoapp.webservice.CallWebService;
+import com.exa.mydemoapp.webservice.IUrls;
+import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,6 +67,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -65,7 +77,7 @@ import java.util.Set;
 
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
-public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
+public class MapsActivity extends CommonActivity implements OnMapReadyCallback, ServiceCallbacks {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     SupportMapFragment mapFragment;
@@ -88,8 +100,11 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     private Spinner spnVehicle;
     private Button btnSearch;
     private List<String> vehicleList;
-    private List<LatLng> demoList;
+    private List<BusLocationsModel> demoList;
     private int listCount = 0;
+    LocationUpdateService myservice;
+    private boolean bound = false;
+    private boolean isMapMoving = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +182,10 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                 .bearing(30)
                 .tilt(10)
                 .build()));
-        demoLatLong();
+
+        demoList = new ArrayList<>();
+        updateUI();
+
     }
 
 
@@ -502,24 +520,37 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                 finish();
                 break;
             case R.id.menu_map_demo:
-                DemoMap(0);
+                //   DemoMap();
                 break;
         }
         return true;
     }
 
-    private void DemoMap(int count) {
+    private void DemoMap() {
         String requestUrl = null;
+        isMapMoving = true;
         try {
-            final double latitude = demoList.get(count).latitude;
-            double longitude = demoList.get(count).longitude;
-
+            String sourceLatitude;
+            String sourceLongitude;
+            String destLatitude;
+            String destLongitude;
+          //  if (demoList.size() == 2) {
+                sourceLatitude = demoList.get(listCount).getLatitude();
+                sourceLongitude = demoList.get(listCount).getLongitude();
+                destLatitude = demoList.get(listCount + 1).getLatitude();
+                destLongitude = demoList.get(listCount + 1).getLongitude();
+           /* } else {
+                sourceLatitude = demoList.get(listCount - 1).getLatitude();
+                sourceLongitude = demoList.get(listCount - 1).getLongitude();
+                destLatitude = demoList.get(listCount).getLatitude();
+                destLongitude = demoList.get(listCount).getLongitude();
+            }*/
 
             requestUrl = "https://maps.googleapis.com/maps/api/directions/json?" +
                     "mode=driving&"
                     + "transit_routing_preference=less_driving&"
-                    + "origin=" + latitude + "," + longitude + "&"
-                    + "destination=" + demoList.get(count + 1).latitude + "," + demoList.get(count + 1).longitude + "&"
+                    + "origin=" + sourceLatitude + "," + sourceLongitude + "&"
+                    + "destination=" + destLatitude + "," + destLongitude + "&"
                     + "key=" + BuildConfig.google_directions_key + "+&sensor=true";
             Log.d(TAG, requestUrl);
 
@@ -622,10 +653,11 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                                             if (demoList.size() > listCount) {
                                                 listCount++;
                                                 if (demoList.get(listCount) != null) {
-                                                    DemoMap(listCount);
+                                                    DemoMap();
                                                 }
                                             } else {
                                                 setFixMarker();
+                                                isMapMoving = false;
                                             }
                                             return;
                                         }
@@ -682,7 +714,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
 
     private void demoLatLong() {
         demoList = new ArrayList<>();
-        demoList.add(new LatLng(18.530745, 73.847019));
+       /* demoList.add(new LatLng(18.530745, 73.847019));
         demoList.add(new LatLng(18.524380, 73.853885));
         demoList.add(new LatLng(18.520710, 73.855558));
         demoList.add(new LatLng(18.515342, 73.856266));
@@ -690,6 +722,77 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         demoList.add(new LatLng(18.500918, 73.858523));
         if (demoList.size() > 1) {
             DemoMap(listCount);
+        }*/
+    }
+
+
+    private void updateUI() {
+        Log.d(TAG, "UI update initiated .............");
+        HashMap<String, Object> hashMap = new HashMap<>();
+        long date = System.currentTimeMillis() / 1000;
+        String url = String.format(IUrls.URL_GET_BUS_LOCATION, date, "Moshi", "Morning");
+        CallWebService.getWebservice(MapsActivity.this, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
+            @Override
+            public void onResponse(BusLocationsModel[] object) {
+                demoList.addAll(Arrays.asList(object));
+                if (demoList.size() > 1) {
+                    if (!isMapMoving) {
+                        DemoMap();
+                    }
+                }
+            }
+
+            @Override
+            public void onResponse() {
+            }
+
+            @Override
+            public void onResponse(BusLocationsModel object) {
+
+            }
+
+            @Override
+            public void onError(String message) {
+            }
+        }, BusLocationsModel[].class);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+     /*   Intent intent = new Intent(this, LocationUpdateService.class);
+        intent.putExtra(Constants.TRIP_TYPE, "Morning");
+        intent.putExtra(Constants.ROUTE_TYPE, "Moshi");
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        startService(intent);*/
+    }
+
+    public ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // cast the IBinder and get MyService instance
+            LocationUpdateService.LocalBinder binder = (LocationUpdateService.LocalBinder) service;
+            myservice = binder.getService();
+            bound = true;
+            myservice.setCallbacks(MapsActivity.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            bound = false;
+        }
+    };
+
+    @Override
+    public void doSomething(BusLocationsModel busLocationsModel) {
+        Log.e("Location Updation", "Updated");
+        demoList.add(busLocationsModel);
+
+        if (demoList.size() > 1) {
+            if (!isMapMoving) {
+                DemoMap();
+            }
         }
     }
 }

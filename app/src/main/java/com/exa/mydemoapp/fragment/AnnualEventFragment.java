@@ -234,11 +234,11 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
 
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.eventName, "" + annualCalenderMasterModel.getEventName());
-        hashMap.put(IJson.eventDate, "" + annualCalenderMasterModel.getEventDate());
-        hashMap.put(IJson.eventType, "" + annualCalenderMasterModel.getEventType());
-        hashMap.put(IJson.className, "" + annualCalenderMasterModel.getClassName());
-        //hashMap.put(IJson.divisionId, "" + annualCalenderMasterModel.getdi());
+        hashMap.put(IJson.eventName,  annualCalenderMasterModel.getEventName());
+        hashMap.put(IJson.eventDate,  annualCalenderMasterModel.getEventDate());
+        hashMap.put(IJson.eventType,  annualCalenderMasterModel.getEventType());
+        hashMap.put(IJson.className,  annualCalenderMasterModel.getClassName());
+        hashMap.put(IJson.division,  null);
 
         CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_EVENTS, hashMap, new VolleyResponseListener<AnnualCalenderMasterModel>() {
             @Override

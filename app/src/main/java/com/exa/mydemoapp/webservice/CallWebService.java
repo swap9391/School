@@ -218,7 +218,7 @@ public class CallWebService {
                         // Now you can use any deserializer to make sense of data
                         JSONObject obj = new JSONObject(res);
                         String message = obj.getString(Constants.RESPONSE_MESSAGE);
-                        if (message != null && !message.isEmpty()) {
+                        if (toastFlag && message != null && !message.isEmpty()) {
                             volleyResponseListener.onError(message);
                         }
                     } catch (UnsupportedEncodingException e1) {

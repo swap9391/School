@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.DropdownMasterModel;
+import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.model.StudentRewardsModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
@@ -55,13 +57,17 @@ public class RewardsPointsFragment extends CommonFragment {
     private EditText edt_description;
     @ViewById(R.id.edt_point)
     private EditText edt_points;
+    @ViewById(R.id.spinner_division)
+    private Spinner spnDivision;
+    @ViewById(R.id.lbl_division)
+    private TextView txtDivisionSpinnerTitle;
 
-    List<DropdownMasterModel> listClass;
-    List<String> listStudentName;
+    private List<DropdownMasterModel> listClass;
+    private List<DropdownMasterModel> listDivision;
+    private List<StudentModel> listStudent;
     List<DropdownMasterModel> listRewardType;
-    List<UserModel> listStudentClassWise;
     StudentRewardsModel rewardModel;
-
+    boolean apiFlag = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,10 +85,6 @@ public class RewardsPointsFragment extends CommonFragment {
 
         rewardModel = new StudentRewardsModel();
 
-        listStudentName = new ArrayList<>();
-
-        listStudentClassWise = new ArrayList<>();
-
         listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
         ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<DropdownMasterModel>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
         classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -96,31 +98,54 @@ public class RewardsPointsFragment extends CommonFragment {
         rewardAdapter.notifyDataSetChanged();
 
 
-        spnClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        DropdownMasterModel allDropdownMasterModel = new DropdownMasterModel();
+        allDropdownMasterModel.setDropdownValue("All");
+        allDropdownMasterModel.setServerValue(null);
+        listDivision = new ArrayList<>();
+        listDivision.add(allDropdownMasterModel);
+        listDivision = getMyActivity().getDbInvoker().getDropDownByType("DEVISION");
+        ArrayAdapter<DropdownMasterModel> divisionAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
+        divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnDivision.setAdapter(divisionAdapter);
+        divisionAdapter.notifyDataSetChanged();
+
+
+        spnDivision.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                /*if (!listClass.get(position).equals("All")) {
-                    listStudentClassWise = getMyActivity().getDbInvoker().getStudentListByClass(listClass.get(position).getDropdownValue());
-                    if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
-                        for (UserModel bean : listStudentClassWise) {
-                            listStudentName.add(bean.getFirstName() + " " + bean.getUserInfoModel().getRegistrationId());
-                        }
-                        spinnerStudentName.setVisibility(View.VISIBLE);
-                        txtStudentSpinnerTitle.setVisibility(View.VISIBLE);
-                        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listStudentName);
-                        classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerStudentName.setAdapter(classAdapter);
-                        classAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    spinnerStudentName.setVisibility(View.GONE);
-                    txtStudentSpinnerTitle.setVisibility(View.GONE);
-                }*/
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getStudent(listClass.get(spnClass.getSelectedItemPosition()).getServerValue(), listDivision.get(position).getServerValue());
+
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spnClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (listClass.get(spnClass.getSelectedItemPosition()).getDropdownValue().equals("All")) {
+                    spnDivision.setVisibility(View.GONE);
+                    spinnerStudentName.setVisibility(View.GONE);
+                    txtDivisionSpinnerTitle.setVisibility(View.GONE);
+                    txtStudentSpinnerTitle.setVisibility(View.GONE);
+                    rewardModel.setStudentId(null);
+                    rewardModel.setDivisionName(null);
+                } else {
+                    spnDivision.setVisibility(View.VISIBLE);
+                    spinnerStudentName.setVisibility(View.VISIBLE);
+                    txtDivisionSpinnerTitle.setVisibility(View.VISIBLE);
+                    txtStudentSpinnerTitle.setVisibility(View.VISIBLE);
+                    getStudent(listClass.get(position).getServerValue(), listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
@@ -129,15 +154,16 @@ public class RewardsPointsFragment extends CommonFragment {
 
     private void bindModel() {
         rewardModel.setClassName(spnClass.getSelectedItem().toString());
-        if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
-            String studentId = listStudentClassWise.get(spinnerStudentName.getSelectedItemPosition()).getPkeyId();
-            if (studentId != null) {
-                rewardModel.setStudentId(studentId);
-            }
-        }
         rewardModel.setDescription(edt_description.getText().toString().trim());
         rewardModel.setRewardType(spinnerRewardType.getSelectedItem().toString());
         rewardModel.setPoints(CommonUtils.asInt(edt_points.getText().toString(), 0));
+        if (rewardModel.getClassName().equals("All")) {
+            rewardModel.setStudentId(null);
+            rewardModel.setDivisionName(null);
+        } else {
+            rewardModel.setStudentId(listStudent.get(spinnerStudentName.getSelectedItemPosition()).getPkeyId());
+            rewardModel.setDivisionName(listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
+        }
     }
 
     private void setPoints(String rewardType) {
@@ -235,6 +261,7 @@ public class RewardsPointsFragment extends CommonFragment {
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.className, rewardModel.getClassName());
+        hashMap.put(IJson.division, rewardModel.getDivisionName());
         hashMap.put(IJson.studentId, rewardModel.getStudentId());
         hashMap.put(IJson.rewardType, rewardModel.getRewardType());
         hashMap.put(IJson.points, rewardModel.getPoints());
@@ -263,6 +290,56 @@ public class RewardsPointsFragment extends CommonFragment {
             }
         }, StudentRewardsModel.class);
 
+    }
+
+
+    public void getStudent(String classId, String divisionId) {
+        if (!apiFlag) {
+            apiFlag = true;
+            HashMap<String, Object> hashMap = new HashMap<>();
+      /*  hashMap.put(IJson.userId, userModel.getPkeyId());
+        hashMap.put(IJson.otp, txtOtp.getText().toString());*/
+            String url = String.format(IUrls.URL_CLASS_WISE_STUDENT, classId, divisionId);
+            Log.d("url", url);
+            CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentModel>() {
+                @Override
+                public void onResponse(StudentModel[] object) {
+                    listStudent = new ArrayList<>();
+                    StudentModel allStudent = new StudentModel();
+                    allStudent.setFullName("All");
+                    allStudent.setPkeyId(null);
+                    listStudent.add(allStudent);
+                    for (StudentModel studentModel : object) {
+                        listStudent.add(studentModel);
+                    }
+                    ArrayAdapter<StudentModel> studentAdapter = new ArrayAdapter(getMyActivity(), android.R.layout.simple_spinner_item, listStudent);
+                    studentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerStudentName.setAdapter(studentAdapter);
+                    studentAdapter.notifyDataSetChanged();
+                    apiFlag = false;
+                }
+
+                @Override
+                public void onResponse() {
+                }
+
+                @Override
+                public void onResponse(StudentModel object) {
+
+                }
+
+                @Override
+                public void onError(String message) {
+                    spinnerStudentName.setVisibility(View.GONE);
+                    txtStudentSpinnerTitle.setVisibility(View.GONE);
+                    if (message != null && !message.isEmpty()) {
+                        getMyActivity().showToast(message);
+                    }
+                    apiFlag = false;
+                }
+            }, StudentModel[].class);
+
+        }
     }
 
 

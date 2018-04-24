@@ -18,7 +18,7 @@ public interface IUrls {
     String URL_USER_LIST = BASE_URL + "users/list";
     String URL_ADD_REWARD = BASE_URL + "student/rewards";
     String URL_GET_REWARDS = BASE_URL + "student/%1$s/rewards";
-    String URL_ADD_EVENTS = BASE_URL + "annualcalender/event";
+    String URL_ADD_EVENTS = BASE_URL + "annual-calender/event";
     String URL_GET_EVENTS = BASE_URL + "annualcalender/event/%1$s/%2$s";
     String URL_ADD_ATTENDANCE = BASE_URL + "markattendance";
     String URL_GET_ATTENDANCE = BASE_URL + "getattendance";
@@ -27,5 +27,6 @@ public interface IUrls {
     String URL_DROPDOWN_LIST = BASE_URL + "dropdown/list";
     String URL_LOG_OUT = BASE_URL + "signout";
     String URL_CLASS_WISE_STUDENT= BASE_URL + "users/classwise/%1$s/%2$s";
-
+    String URL_ADD_BUS_LOCATION= BASE_URL + "bus-location/";
+    String URL_GET_BUS_LOCATION= BASE_URL + "bus-location/list/%1$s/%2$s/%3$s";
 }

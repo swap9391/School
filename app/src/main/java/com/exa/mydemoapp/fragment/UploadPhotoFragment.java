@@ -77,7 +77,7 @@ import java.util.Map;
  * Created by Swapnil Jadhav on 3/8/17.
  */
 
-public class UploadPhotoFragment extends CommonFragment implements View.OnClickListener, ServiceCallbacks {
+public class UploadPhotoFragment extends CommonFragment implements View.OnClickListener {
 
     Uri fileView;
     //List<Uri> imglist = new ArrayList<>();
@@ -681,10 +681,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         }
     };*/
 
-    @Override
-    public void doSomething() {
-        Log.e("Update", "Updated");
-    }
 
     public void getStudents(String className) {
         listStudents = new ArrayList<>();

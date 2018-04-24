@@ -23,8 +23,7 @@ import com.exa.mydemoapp.service.ServiceCallbacks;
 
 import static com.exa.mydemoapp.Common.Constants.LAST_VAN_TYPE;
 //not used
-public class UpdateBusLocation extends CommonActivity implements
-        ServiceCallbacks {
+public class UpdateBusLocation extends CommonActivity {
 
     @ViewById(R.id.txt_van_type)
     EditText edtVanType;
@@ -71,7 +70,6 @@ public class UpdateBusLocation extends CommonActivity implements
                 if (myservice != null) {
                     isbound = getApplicationContext().bindService(new Intent(getApplicationContext(), LocationUpdateService.class), serviceConnection, Context.BIND_AUTO_CREATE);
                     if (isbound) {
-                        myservice.stopLocationUpdates();
                         getApplicationContext().unbindService(serviceConnection);
                         stopService(new Intent(UpdateBusLocation.this, LocationUpdateService.class));
                     }
@@ -89,7 +87,6 @@ public class UpdateBusLocation extends CommonActivity implements
             LocationUpdateService.LocalBinder binder = (LocationUpdateService.LocalBinder) service;
             myservice = binder.getService();
             bound = true;
-            myservice.setCallbacks(UpdateBusLocation.this);
           /*  myService.setCallbacks(DashboardFragment.this); // register
             myService.setCount(DashboardFragment.this);*/
         }
@@ -100,8 +97,4 @@ public class UpdateBusLocation extends CommonActivity implements
         }
     };
 
-    @Override
-    public void doSomething() {
-        showToast("Location Updated");
-    }
 }
