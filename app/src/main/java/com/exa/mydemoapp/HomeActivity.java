@@ -37,6 +37,7 @@ import com.exa.mydemoapp.fragment.CalenderViewFragment;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.ContactUsFragment;
 import com.exa.mydemoapp.fragment.DashboardFragment;
+import com.exa.mydemoapp.fragment.EventListFragment;
 import com.exa.mydemoapp.fragment.GalleryViewFragment;
 import com.exa.mydemoapp.fragment.HomeWorkFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
@@ -94,6 +95,7 @@ public class HomeActivity extends CommonActivity {
     public HomeWorkFragment homeWorkFragment;
     public PagerFragment pagerFragment;
     public UpdateFeesFragment updateFeesFragment;
+    public EventListFragment eventListFragment;
     public List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
     public boolean isGallery = true;
     public boolean isGuest = false;
@@ -113,7 +115,7 @@ public class HomeActivity extends CommonActivity {
         Intent intent = getIntent();
         db = new Database(HomeActivity.this);
         dbInvoker = new DbInvoker(this);
-        listUsers= new ArrayList<>();
+        listUsers = new ArrayList<>();
         AWSMobileClient.getInstance().initialize(this).execute();
         String studentId = CommonUtils.getSharedPref(Constants.STUDENT_ID, this);
         if (studentId != null) {
@@ -230,6 +232,9 @@ public class HomeActivity extends CommonActivity {
             showFragment(dashboardFragment, null);
         } else if (annualEventFragment != null && annualEventFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
+            showFragment(eventListFragment, null);
+        } else if (eventListFragment != null && eventListFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else if (galleryViewFragment != null && galleryViewFragment.getClass() == currentFragment.getClass()) {
             showFragment(albumViewFragment, null);
@@ -315,8 +320,9 @@ public class HomeActivity extends CommonActivity {
         attendanceFragment = new AttendanceFragment();
         contactUsFragment = new ContactUsFragment();
         homeWorkFragment = new HomeWorkFragment();
-        pagerFragment= new PagerFragment();
-        updateFeesFragment= new UpdateFeesFragment();
+        pagerFragment = new PagerFragment();
+        updateFeesFragment = new UpdateFeesFragment();
+        eventListFragment = new EventListFragment();
     }
 
     public List<AlbumMasterModel> getListAlbumChild() {
@@ -462,7 +468,7 @@ public class HomeActivity extends CommonActivity {
 
     public void getLogOutApi() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        CallWebService.getWebserviceObject(HomeActivity.this,true,true, Request.Method.DELETE, IUrls.URL_LOG_OUT, hashMap, new VolleyResponseListener<UserModel>() {
+        CallWebService.getWebserviceObject(HomeActivity.this, true, true, Request.Method.DELETE, IUrls.URL_LOG_OUT, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
             public void onResponse(UserModel[] object) {
 
@@ -520,7 +526,7 @@ public class HomeActivity extends CommonActivity {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.token, token);
         hashMap.put(IJson.userId, "" + CommonUtils.getSharedPref(Constants.STUDENT_ID, HomeActivity.this));
-        CallWebService.getWebserviceObject(HomeActivity.this,true,true, Request.Method.POST, IUrls.URL_FIREBASE_REG, hashMap, new VolleyResponseListener<FirebaseRegistrationModel>() {
+        CallWebService.getWebserviceObject(HomeActivity.this, true, true, Request.Method.POST, IUrls.URL_FIREBASE_REG, hashMap, new VolleyResponseListener<FirebaseRegistrationModel>() {
             @Override
             public void onResponse(FirebaseRegistrationModel[] object) {
 

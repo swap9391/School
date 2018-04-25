@@ -1,6 +1,8 @@
 package com.exa.mydemoapp.fragment;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -23,8 +26,10 @@ import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.AnnualCalenderMasterModel;
 import com.exa.mydemoapp.model.DropdownMasterModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -40,16 +45,29 @@ import java.util.List;
  * Created by midt-006 on 11/10/17.
  */
 
-public class AnnualEventFragment extends Fragment implements View.OnClickListener {
+public class AnnualEventFragment extends CommonFragment implements View.OnClickListener {
+    @ViewById(R.id.date_picker_event)
     private Button datePicker;
+    @ViewById(R.id.txt_selected_date)
     private TextView txtSelectedDate;
+    @ViewById(R.id.spinner_event_type)
     private Spinner spinnerType;
+    @ViewById(R.id.spinner_class)
     private Spinner spinnerClass;
+    @ViewById(R.id.edt_event_name)
     private EditText edtEventName;
+    @ViewById(R.id.lbl_division)
+    private TextView txtDivisionSpinnerTitle;
+    @ViewById(R.id.spinner_division)
+    private Spinner spnDivision;
+
     private AnnualCalenderMasterModel annualCalenderMasterModel;
-    List<AnnualCalenderMasterModel> listEvent = new ArrayList<>();
     boolean flag = false;
 
+    private List<DropdownMasterModel> listClass;
+    private List<DropdownMasterModel> listDivision;
+    private List<DropdownMasterModel> listEventType;
+    boolean isEdit = false;
     View view;
 
     @Override
@@ -64,36 +82,106 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
         view = inflater.inflate(R.layout.layout_annual_event, container, false);
         getMyActivity().toolbar.setTitle("Add Event");
         getMyActivity().init();
+        initViewBinding(view);
 
-        annualCalenderMasterModel = new AnnualCalenderMasterModel();
-        datePicker = (Button) view.findViewById(R.id.date_picker_event);
-        txtSelectedDate = (TextView) view.findViewById(R.id.txt_selected_date);
-        spinnerType = (Spinner) view.findViewById(R.id.spinner_event_type);
-        spinnerClass = (Spinner) view.findViewById(R.id.spinner_class);
-        edtEventName = (EditText) view.findViewById(R.id.edt_event_name);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            annualCalenderMasterModel = (AnnualCalenderMasterModel) bundle.getSerializable(Constants.INTENT_TYPE_EVENT_DATA);
+            if (annualCalenderMasterModel != null) {
+                isEdit = true;
+                bindView();
+            }
+        } else {
+            annualCalenderMasterModel= new AnnualCalenderMasterModel();
+            isEdit = false;
+        }
         datePicker.setOnClickListener(this);
 
-        List<DropdownMasterModel> listEventType = getMyActivity().getDbInvoker().getDropDownByType("EVENTTYPE");
+        listEventType = getMyActivity().getDbInvoker().getDropDownByType("EVENTTYPE");
         ArrayAdapter<DropdownMasterModel> eventAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listEventType);
         eventAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(eventAdapter);
         eventAdapter.notifyDataSetChanged();
 
-        List<DropdownMasterModel> listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
+        listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
         ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<DropdownMasterModel>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
         classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
 
-        getCalenderEvents();
+
+        DropdownMasterModel allDropdownMasterModel = new DropdownMasterModel();
+        allDropdownMasterModel.setDropdownValue("All");
+        allDropdownMasterModel.setServerValue(null);
+        listDivision = new ArrayList<>();
+        listDivision.add(allDropdownMasterModel);
+        listDivision.addAll(getMyActivity().getDbInvoker().getDropDownByType("DEVISION"));
+        ArrayAdapter<DropdownMasterModel> divisionAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
+        divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnDivision.setAdapter(divisionAdapter);
+        divisionAdapter.notifyDataSetChanged();
+
+        spinnerClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (listClass.get(spinnerClass.getSelectedItemPosition()).getDropdownValue().equals("All")) {
+                    spnDivision.setVisibility(View.GONE);
+                    txtDivisionSpinnerTitle.setVisibility(View.GONE);
+                } else {
+                    spnDivision.setVisibility(View.VISIBLE);
+                    txtDivisionSpinnerTitle.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        //getCalenderEvents();
         return view;
     }
 
+    private void bindView() {
+        int classPostion = 0;
+        int divisionPosition = 0;
+        int eventPosition = 0;
+        for (int i = 0; i < listClass.size(); i++) {
+            if (listClass.get(i).getDropdownValue().equals(annualCalenderMasterModel.getClassName())) {
+                classPostion = i;
+                break;
+            }
+        }
+        for (int i = 0; i < listDivision.size(); i++) {
+            if (listDivision.get(i).getDropdownValue().equals(annualCalenderMasterModel.getDivisionName())) {
+                divisionPosition = i;
+                break;
+            }
+        }
+        for (int i = 0; i < listEventType.size(); i++) {
+            if (listEventType.get(i).getDropdownValue().equals(annualCalenderMasterModel.getEventType())) {
+                eventPosition = i;
+                break;
+            }
+        }
+
+        spinnerClass.setSelection(classPostion);
+        spnDivision.setSelection(divisionPosition);
+        spinnerType.setSelection(eventPosition);
+        edtEventName.setText(annualCalenderMasterModel.getEventName());
+        long date = annualCalenderMasterModel.getEventDate();
+        datePicker.setText(CommonUtils.formatDateForDisplay(new Date(date), Constants.ONLY_DATE_FORMAT));
+}
 
     private void bindModel() {
-        annualCalenderMasterModel.setEventType(spinnerType.getSelectedItem().toString());
-        annualCalenderMasterModel.setClassName(spinnerClass.getSelectedItem().toString());
+        annualCalenderMasterModel.setEventType(listEventType.get(spinnerType.getSelectedItemPosition()).getServerValue());
+        annualCalenderMasterModel.setClassName(listClass.get(spinnerClass.getSelectedItemPosition()).getServerValue());
         annualCalenderMasterModel.setEventName(edtEventName.getText().toString());
+        if (!spinnerClass.getSelectedItem().toString().equals("All")) {
+            annualCalenderMasterModel.setDivisionName(listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
+        }
+
     }
 
     @Override
@@ -124,14 +212,25 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                bindModel();
-                if (check()) {
-                    if (Connectivity.isConnected(getMyActivity())) {
-                        //saveUserInformation();
-                        save();
-                    } else {
-                        getMyActivity().showToast("Please Connect to internet !!");
-                    }
+                try {
+                    AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.app_name), getString(R.string.save_msg));
+                    builder.setPositiveButton(getString(R.string.dialog_button_save), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            bindModel();
+                            if (check()) {
+                                save();
+                            }
+                        }
+                    }).setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+
+                        }
+                    }).show();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
                 }
                 break;
 
@@ -141,19 +240,19 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
 
     private boolean check() {
         if (annualCalenderMasterModel.getEventName() == null || annualCalenderMasterModel.getEventName().trim().length() <= 0) {
-            CommonUtils.showToast(getMyActivity(), "Please Enter Event Name");
+            CommonUtils.showToast(getMyActivity(), getString(R.string.valid_event_name));
             return false;
         }
         if (annualCalenderMasterModel.getEventDate() <= 0) {
-            CommonUtils.showToast(getMyActivity(), "Please Select Event Date");
+            CommonUtils.showToast(getMyActivity(), getString(R.string.valid_event_date));
             return false;
         }
         if (annualCalenderMasterModel.getEventType() == null || annualCalenderMasterModel.getEventType().trim().length() <= 0) {
-            CommonUtils.showToast(getMyActivity(), "Please Select Event Type");
+            CommonUtils.showToast(getMyActivity(), getString(R.string.valid_event_type));
             return false;
         }
         if (annualCalenderMasterModel.getClassName() == null || annualCalenderMasterModel.getClassName().trim().length() <= 0) {
-            CommonUtils.showToast(getMyActivity(), "Please Select Event Class");
+            CommonUtils.showToast(getMyActivity(), getString(R.string.valid_class_name));
             return false;
         }
 
@@ -161,7 +260,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
         return true;
     }
 
-    private void getCalenderEvents() {
+ /*   private void getCalenderEvents() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put(IJson.classId, "All");
         hashMap.put(IJson.divisionId, "");
@@ -186,7 +285,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             }
         }, AnnualCalenderMasterModel[].class);
 
-    }
+    }*/
 
 
     private void showDatePicker() {
@@ -223,7 +322,7 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
             Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
             String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT);
             annualCalenderMasterModel.setEventDate(date.getTime());
-            txtSelectedDate.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
+            txtSelectedDate.setText(CommonUtils.formatDateForDisplay(date, Constants.ONLY_DATE_FORMAT));
         }
     };
 
@@ -234,13 +333,20 @@ public class AnnualEventFragment extends Fragment implements View.OnClickListene
 
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.eventName,  annualCalenderMasterModel.getEventName());
-        hashMap.put(IJson.eventDate,  annualCalenderMasterModel.getEventDate());
-        hashMap.put(IJson.eventType,  annualCalenderMasterModel.getEventType());
-        hashMap.put(IJson.className,  annualCalenderMasterModel.getClassName());
-        hashMap.put(IJson.division,  null);
+        hashMap.put(IJson.eventName, annualCalenderMasterModel.getEventName());
+        hashMap.put(IJson.eventDate, annualCalenderMasterModel.getEventDate());
+        hashMap.put(IJson.eventType, annualCalenderMasterModel.getEventType());
+        hashMap.put(IJson.className, annualCalenderMasterModel.getClassName());
+        hashMap.put(IJson.division, annualCalenderMasterModel.getDivisionName());
+        int method;
+        if (annualCalenderMasterModel.getPkeyId() != null) {
+            hashMap.put(IJson.id, annualCalenderMasterModel.getPkeyId().toString());
+            method= Request.Method.PUT;
+        } else {
+            method= Request.Method.POST;
+        }
 
-        CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_EVENTS, hashMap, new VolleyResponseListener<AnnualCalenderMasterModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), true, true, method, IUrls.URL_ADD_EVENTS, hashMap, new VolleyResponseListener<AnnualCalenderMasterModel>() {
             @Override
             public void onResponse(AnnualCalenderMasterModel[] object) {
             }

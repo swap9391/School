@@ -23,6 +23,7 @@ import com.exa.mydemoapp.fragment.AttendanceFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.ContactUsFragment;
+import com.exa.mydemoapp.fragment.EventListFragment;
 import com.exa.mydemoapp.fragment.FeeStructureFragment;
 import com.exa.mydemoapp.fragment.HomeWorkFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
@@ -95,7 +96,7 @@ public class HomeGridAdapter extends BaseAdapter {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-
+                String userType = CommonUtils.getSharedPref(Constants.USER_TYPE, context);
                 Bundle bundle = new Bundle();
                 switch (result[position]) {
                     case "About School":
@@ -140,7 +141,11 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new AttendanceFragment(), null);
                         break;
                     case "Annual Event":
-                        context.showFragment(new AnnualEventFragment(), null);
+                        if (userType.equals(Constants.USER_TYPE_ADMIN)) {
+                            context.showFragment(new EventListFragment(), null);
+                        }else {
+                            context.showFragment(new AnnualEventFragment(), null);
+                        }
                         break;
                     case "Add Reward Points":
                         context.showFragment(new RewardsPointsFragment(), null);
@@ -149,7 +154,6 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new PagerFragment(), null);
                         break;
                     case "Fees Structure":
-                        String userType = CommonUtils.getSharedPref(Constants.USER_TYPE, context);
                         if (userType.equals(Constants.USER_TYPE_ADMIN)) {
                             context.showFragment(new UpdateFeesFragment(), null);
                         }else {

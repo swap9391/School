@@ -5,6 +5,8 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
 
+
+
     <string-array name="event_type">
         <item>Holiday</item>
         <item>Exam</item>
@@ -297,6 +299,7 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="lbl_select_division">Select Division</string>
     <string name="lbl_select_bus_type">Select Bus Route</string>
     <string name="lbl_select_trip_type">Select Trip Type</string>
+    <string name="lbl_select_event">Select Event Type</string>
     <string name="hint_album_name">Enter Album Name</string>
     <string name="hint_points">Enter Points</string>
     <string name="hint_subject">Enter Subject</string>
@@ -311,5 +314,8 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="lbl_payment_status">Payment Status</string>
     <string name="lbl_payment_mode">Payment Mode</string>
     <string name="btn_pay">Pay Now</string>
+    <string name="valid_event_name">Please enter event name</string>
+    <string name="valid_event_date">Please select event date</string>
+    <string name="valid_event_type">Please select event type</string>
 
 </resources>

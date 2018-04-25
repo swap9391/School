@@ -31,9 +31,9 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         //  String msgType=remoteMessage.getData().get("type");
         Map<String, String> params = remoteMessage.getData();
         JSONObject object = new JSONObject(params);
-        String msg = remoteMessage.getData().get("gcm.notification.message");
-        String title = remoteMessage.getData().get("gcm.notification.title");
-        ;
+        String msg = remoteMessage.getData().get("message");
+        String title = remoteMessage.getData().get("title");
+
         /*if(msgType.equals(IConstants.MSG_TYPE_ALL)){
             showNotification(msg,title);
         }
@@ -61,7 +61,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 .setSmallIcon(R.mipmap.ic_launcher) // notification icon
                 .setContentTitle(Title) // notification title
                 .setContentText(message)
-                .setVibrate(new long[]{500, 500, 500, 500, 500})
+               // .setVibrate(new long[]{500, 500, 500, 500, 500})
                 .setLights(Color.CYAN, 3000,
                         3000)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)

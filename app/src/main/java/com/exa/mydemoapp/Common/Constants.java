@@ -60,6 +60,7 @@ public interface Constants {
     public static String INTENT_VALUE_CHAT= "community";
     public static String INTENT_IS_DROPDOWN= "dropdown";
     public static String INTENT_TYPE_USER_DATA = "userdata";
+    public static String INTENT_TYPE_EVENT_DATA= "eventdata";
     public static String TRIP_TYPE = "tripType";
     public static String ROUTE_TYPE = "routType";
 
