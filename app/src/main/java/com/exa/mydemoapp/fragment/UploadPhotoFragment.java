@@ -4,16 +4,13 @@ package com.exa.mydemoapp.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -51,7 +48,6 @@ import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
 import com.exa.mydemoapp.s3Upload.S3UploadActivity;
 import com.exa.mydemoapp.service.LocationUpdateService;
-import com.exa.mydemoapp.service.ServiceCallbacks;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -67,7 +63,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -313,7 +308,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 imageFiles.remove(file);
                 AlbumImagesModel imageModel = new AlbumImagesModel();
                 imageModel.setImageUrl(url);
-                albumImagesModel.getAlbumImagesModels().add(imageModel);
+                albumImagesModel.getAlbumImagesModel().add(imageModel);
                 progressDialog.dismiss();
                 count = imageFiles.size();
                 if (count > 0) {
@@ -729,7 +724,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         hashMap.put(IJson.division, albumImagesModel.getDivisionName());
         hashMap.put(IJson.studentId, albumImagesModel.getStudentId());
 
-        hashMap.put(IJson.images, albumImagesModel.getAlbumImagesModels());
+        hashMap.put(IJson.images, albumImagesModel.getAlbumImagesModel());
 
         CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
             @Override

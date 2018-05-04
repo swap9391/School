@@ -18,6 +18,7 @@ import com.exa.mydemoapp.adapter.GalleryAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.AlbumImagesModel;
 import com.exa.mydemoapp.model.AlbumMasterModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -118,11 +119,11 @@ public class AlbumViewFragment extends CommonFragment {
         }*/
         List<AlbumMasterModel> newImagereqList = new ArrayList<>();
         for (AlbumMasterModel albumImagesModel : albumImagesModelList) {
-            for (int i = 0; i < albumImagesModel.getAlbumImagesModels().size(); i++) {
+            for (int i = 0; i < albumImagesModel.getAlbumImagesModel().size(); i++) {
                 AlbumMasterModel iRequest = new AlbumMasterModel();
                 iRequest.setAlbumTitle(albumImagesModel.getAlbumTitle());
-                iRequest.setAlbumImagesModels(albumImagesModel.getAlbumImagesModels());
-                iRequest.setImg(albumImagesModel.getAlbumImagesModels().get(i).getImageUrl());
+                iRequest.setAlbumImagesModel(albumImagesModel.getAlbumImagesModel());
+                iRequest.setImg(albumImagesModel.getAlbumImagesModel().get(i).getImageUrl());
                 newImagereqList.add(i, iRequest);
                 break;
             }
@@ -161,13 +162,26 @@ public class AlbumViewFragment extends CommonFragment {
     private void getImageList() {
         Map<Integer, AlbumMasterModel> td = new HashMap<>();
         Map<String, AlbumMasterModel> mapAlbum = new HashMap<>();
-        String studentId = "0";
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.studentId, studentId);
-        hashMap.put(IJson.imageType, getStringById(R.string.img_type_gallery));
-        // hashMap.put(IJson.password, "" + studentId);
 
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_LIST, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+
+
+        UserModel userModel = getMyActivity().getUserModel();
+        String imageType = getStringById(R.string.img_type_gallery);
+        String className = userModel.getUserInfoModel().getClassName();
+        String divisionName = userModel.getUserInfoModel().getDivisionName();
+        String studentId = userModel.getPkeyId();
+
+        String url;
+        if (userModel.getUserType().equals(getStringById(R.string.user_type_student))) {
+            url = String.format(IUrls.URL_IMAGE_LIST, imageType, className, divisionName, studentId);
+        }
+        else  {
+            url = String.format(IUrls.URL_IMAGE_LIST, imageType, "All", "All", "All");
+        }
+
+        //http://localhost:8080/kalpataru/api/album/images?albumType=Gallery&className=All&divisionName=All&studentId=All
+        CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
             @Override
             public void onResponse(AlbumMasterModel[] object) {
                 if (object[0] instanceof AlbumMasterModel) {
@@ -177,7 +191,7 @@ public class AlbumViewFragment extends CommonFragment {
                         if (mapAlbum.get(bean.getAlbumTitle()) != null) {
                             ArrayList<AlbumImagesModel> tempList = new ArrayList<>();
                             AlbumMasterModel tempAlbumImagesModel = new AlbumMasterModel();
-                            bean.getAlbumImagesModels().addAll(mapAlbum.get(bean.getAlbumTitle()).getAlbumImagesModels());
+                            bean.getAlbumImagesModel().addAll(mapAlbum.get(bean.getAlbumTitle()).getAlbumImagesModel());
                             mapAlbum.put(bean.getAlbumTitle(), bean);
                         } else {
                             mapAlbum.put(bean.getAlbumTitle(), bean);
@@ -195,6 +209,7 @@ public class AlbumViewFragment extends CommonFragment {
 
                 }
             }
+
             @Override
             public void onResponse() {
             }

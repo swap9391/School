@@ -14,12 +14,12 @@ public interface IUrls {
  //   String URL_LOGIN = BASE_URL + "login";
     String URL_LOGIN = BASE_URL + "signin";
     String URL_IMAGE_UPLOAD = BASE_URL + "album/add";
-    String URL_IMAGE_LIST = BASE_URL + "getimages";
+    String URL_IMAGE_LIST = BASE_URL + "/album/images?albumType=%1$s&className=%2$s&divisionName=%3$s&studentId=%4$s";
     String URL_USER_LIST = BASE_URL + "users/list";
     String URL_ADD_REWARD = BASE_URL + "student/rewards";
     String URL_GET_REWARDS = BASE_URL + "student/%1$s/rewards";
     String URL_ADD_EVENTS = BASE_URL + "annual-calender/event";
-    String URL_GET_EVENTS = BASE_URL + "annualcalender/event/%1$s/%2$s";
+    String URL_GET_EVENTS = BASE_URL + "annual-calender/event/%1$s/%2$s";
     String URL_ADD_ATTENDANCE = BASE_URL + "markattendance";
     String URL_GET_ATTENDANCE = BASE_URL + "getattendance";
     String URL_FIREBASE_REG = BASE_URL + "inserttoken";
@@ -28,5 +28,6 @@ public interface IUrls {
     String URL_LOG_OUT = BASE_URL + "signout";
     String URL_CLASS_WISE_STUDENT= BASE_URL + "users/classwise/%1$s/%2$s";
     String URL_ADD_BUS_LOCATION= BASE_URL + "bus-location/";
-    String URL_GET_BUS_LOCATION= BASE_URL + "bus-location/list/%1$s/%2$s/%3$s";
+    String URL_GET_BUS_LOCATION_LIST= BASE_URL + "bus-location/list/%1$s/%2$s/%3$s";
+    String URL_GET_BUS_LATEST_LOCATION= BASE_URL + "bus-location/%1$s/%2$s/latest/";
 }

@@ -10,7 +10,6 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CirclePageIndicator;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
@@ -127,13 +126,13 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
                 }
             }
 
-        if (selectedItem.getAlbumImagesModels() != null && selectedItem.getAlbumImagesModels().size() > 0) {
+        if (selectedItem.getAlbumImagesModel() != null && selectedItem.getAlbumImagesModel().size() > 0) {
 
         }else {
             holder.mContainer.setVisibility(View.GONE);
         }
 
-        slidingImageAdapter = new SlidingImageAdapter(context, listAlbumChild.get(0).getAlbumImagesModels(), feed);
+        slidingImageAdapter = new SlidingImageAdapter(context, listAlbumChild.get(0).getAlbumImagesModel(), feed);
         holder.mPager.setAdapter(slidingImageAdapter);
 
         holder.indicator.setViewPager(holder.mPager);

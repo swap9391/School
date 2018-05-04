@@ -54,11 +54,11 @@ public class GalleryViewFragment extends CommonFragment {
     private void ShowList(List<AlbumMasterModel> albumImagesModelList) {
         List<AlbumMasterModel> newImagereqList = new ArrayList<>();
         for (AlbumMasterModel albumImagesModel : albumImagesModelList) {
-            for (int i = 0; i < albumImagesModel.getAlbumImagesModels().size(); i++) {
+            for (int i = 0; i < albumImagesModel.getAlbumImagesModel().size(); i++) {
                 AlbumMasterModel iRequest = new AlbumMasterModel();
                 iRequest.setAlbumTitle(albumImagesModel.getAlbumTitle());
-                iRequest.setAlbumImagesModels(albumImagesModel.getAlbumImagesModels());
-                iRequest.setImg(albumImagesModel.getAlbumImagesModels().get(i).getImageUrl());
+                iRequest.setAlbumImagesModel(albumImagesModel.getAlbumImagesModel());
+                iRequest.setImg(albumImagesModel.getAlbumImagesModel().get(i).getImageUrl());
                 newImagereqList.add(i, iRequest);
             }
         }

@@ -114,7 +114,7 @@ public class LocationUpdateService extends Service {
         HashMap<String, Object> hashMap = new HashMap<>();
         long date = System.currentTimeMillis() / 1000;
 
-        String url = String.format(IUrls.URL_GET_BUS_LOCATION, date, "Moshi", "Morning");
+        String url = String.format(IUrls.URL_GET_BUS_LOCATION_LIST, date, "Moshi", "Morning");
 
         CallWebService.getWebserviceObject(LocationUpdateService.this, false, false, Request.Method.POST, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override

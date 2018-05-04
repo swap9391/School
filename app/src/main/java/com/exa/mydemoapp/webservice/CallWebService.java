@@ -262,6 +262,7 @@ public class CallWebService {
                     }
                     HashMap<String, String> headers = new HashMap();
                     if (userModel != null) {
+                        headers.put("Content-Type", "application/json");
                         headers.put("X-AUTH-TOKEN", userModel.getSessionKey());
                     }
                     return headers;

@@ -18,6 +18,7 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.NewsFeedsAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.AlbumMasterModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -80,13 +81,21 @@ public class NewsFeedFragment extends CommonFragment {
     private void getImageList() {
         Map<Integer, AlbumMasterModel> td = new HashMap<>();
         Map<String, AlbumMasterModel> mapAlbum = new HashMap<>();
-        String studentId = "0";
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.studentId, studentId);
-        hashMap.put(IJson.imageType, feed);
-        // hashMap.put(IJson.password, "" + studentId);
+        UserModel userModel = getMyActivity().getUserModel();
+        String className = userModel.getUserInfoModel().getClassName();
+        String divisionName = userModel.getUserInfoModel().getDivisionName();
+        String studentId = userModel.getPkeyId();
 
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_LIST, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
+        String url;
+        if (userModel.getUserType().equals(getStringById(R.string.user_type_student))) {
+            url = String.format(IUrls.URL_IMAGE_LIST, feed, className, divisionName, studentId);
+        } else {
+            url = String.format(IUrls.URL_IMAGE_LIST, feed, "All", "All", "All");
+        }
+
+        //http://localhost:8080/kalpataru/api/album/images?albumType=Gallery&className=All&divisionName=All&studentId=All
+        CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
             @Override
             public void onResponse(AlbumMasterModel[] object) {
                 if (object[0] instanceof AlbumMasterModel) {
@@ -111,9 +120,11 @@ public class NewsFeedFragment extends CommonFragment {
 
                 }
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onResponse(AlbumMasterModel object) {
 

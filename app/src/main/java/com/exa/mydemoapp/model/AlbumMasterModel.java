@@ -1,8 +1,6 @@
 package com.exa.mydemoapp.model;
 
-import com.exa.mydemoapp.annotation.Required;
 import com.exa.mydemoapp.database.BasicBean;
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ public class AlbumMasterModel extends BasicBean implements Serializable {
     private String studentId;
     private String img;
 
-    private List<AlbumImagesModel> albumImagesModels= new ArrayList<>();
+    private List<AlbumImagesModel> albumImagesModel = new ArrayList<>();
 
     public String getAlbumTitle() {
         return albumTitle;
@@ -80,12 +78,12 @@ public class AlbumMasterModel extends BasicBean implements Serializable {
         this.studentId = studentId;
     }
 
-    public List<AlbumImagesModel> getAlbumImagesModels() {
-        return albumImagesModels;
+    public List<AlbumImagesModel> getAlbumImagesModel() {
+        return albumImagesModel;
     }
 
-    public void setAlbumImagesModels(List<AlbumImagesModel> albumImagesModels) {
-        this.albumImagesModels = albumImagesModels;
+    public void setAlbumImagesModel(List<AlbumImagesModel> albumImagesModel) {
+        this.albumImagesModel = albumImagesModel;
     }
 
     public String getImg() {

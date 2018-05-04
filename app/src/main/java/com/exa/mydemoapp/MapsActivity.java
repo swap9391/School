@@ -730,11 +730,16 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         Log.d(TAG, "UI update initiated .............");
         HashMap<String, Object> hashMap = new HashMap<>();
         long date = System.currentTimeMillis() / 1000;
-        String url = String.format(IUrls.URL_GET_BUS_LOCATION, date, "Moshi", "Morning");
-        CallWebService.getWebservice(MapsActivity.this, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
+        String url = String.format(IUrls.URL_GET_BUS_LATEST_LOCATION, "Moshi", "Morning");
+        CallWebService.getWebserviceObject(MapsActivity.this, true,true,Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
-                demoList.addAll(Arrays.asList(object));
+
+            }
+
+            @Override
+            public void onResponse(BusLocationsModel object) {
+                demoList.add(object);
                 if (demoList.size() > 1) {
                     if (!isMapMoving) {
                         DemoMap();
@@ -744,18 +749,16 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
 
             @Override
             public void onResponse() {
-            }
-
-            @Override
-            public void onResponse(BusLocationsModel object) {
 
             }
 
             @Override
             public void onError(String message) {
+
             }
-        }, BusLocationsModel[].class);
+        }, BusLocationsModel.class);
     }
+
 
     @Override
     protected void onStart() {
