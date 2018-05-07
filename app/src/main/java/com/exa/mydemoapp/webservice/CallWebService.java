@@ -168,7 +168,9 @@ public class CallWebService {
             progressDialog = new ProgressDialog(context);
             if (progressFlag) {
                 progressDialog.setTitle("Loading...");
+
                 progressDialog.show();
+
                 progressDialog.setCancelable(false);
             }
             Gson gson = new Gson();
