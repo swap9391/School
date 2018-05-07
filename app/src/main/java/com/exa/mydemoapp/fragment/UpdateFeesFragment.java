@@ -33,6 +33,7 @@ import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -126,9 +127,10 @@ public class UpdateFeesFragment extends CommonFragment {
             CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentModel>() {
                 @Override
                 public void onResponse(StudentModel[] object) {
-                    for (StudentModel studentModel : object) {
+                    /*for (StudentModel studentModel : object) {
                         listStudent.add(studentModel);
-                    }
+                    }*/
+                    listStudent.addAll(Arrays.asList(object) );
                     cardView.setVisibility(View.VISIBLE);
                     ArrayAdapter<StudentModel> studentAdapter = new ArrayAdapter(getMyActivity(), android.R.layout.simple_spinner_item, listStudent);
                     studentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

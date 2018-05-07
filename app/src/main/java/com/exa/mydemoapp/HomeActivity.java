@@ -175,7 +175,7 @@ public class HomeActivity extends CommonActivity {
                                 break;
                             case R.id.action_item2:
                                 showToolbar();
-                                bundle.putString(Constants.FEED, Constants.FEED_TYPE_NEWS);
+                                bundle.putString(Constants.FEED, getStringById(R.string.img_type_news));
                                 showFragment(newsFeedFragment, bundle);
                                 break;
                             case R.id.action_item3:

@@ -191,7 +191,7 @@
         <item>@string/user_type_driver</item>
     </string-array>
 
-    <string name="img_type_news">News Feed</string>
+    <string name="img_type_news">News</string>
     <string name="img_type_blog">Blog</string>
     <string name="img_type_archive">Achievement</string>
     <string name="img_type_gallery">Gallery</string>

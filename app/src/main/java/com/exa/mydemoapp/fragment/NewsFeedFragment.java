@@ -81,17 +81,22 @@ public class NewsFeedFragment extends CommonFragment {
     private void getImageList() {
         Map<Integer, AlbumMasterModel> td = new HashMap<>();
         Map<String, AlbumMasterModel> mapAlbum = new HashMap<>();
+
         HashMap<String, Object> hashMap = new HashMap<>();
+
+
         UserModel userModel = getMyActivity().getUserModel();
+        String imageType = feed;
         String className = userModel.getUserInfoModel().getClassName();
         String divisionName = userModel.getUserInfoModel().getDivisionName();
         String studentId = userModel.getPkeyId();
 
         String url;
         if (userModel.getUserType().equals(getStringById(R.string.user_type_student))) {
-            url = String.format(IUrls.URL_IMAGE_LIST, feed, className, divisionName, studentId);
-        } else {
-            url = String.format(IUrls.URL_IMAGE_LIST, feed, "All", "All", "All");
+            url = String.format(IUrls.URL_IMAGE_LIST, imageType, className, divisionName, studentId);
+        }
+        else  {
+            url = String.format(IUrls.URL_IMAGE_LIST, imageType, "All", "All", "All");
         }
 
         //http://localhost:8080/kalpataru/api/album/images?albumType=Gallery&className=All&divisionName=All&studentId=All

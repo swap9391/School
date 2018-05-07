@@ -268,10 +268,17 @@ public class SignUpFragment extends CommonFragment {
         int schoolPostion = 0;
         int classPostion = 0;
         int divisionPosition = 0;
-        int installmentPosition = 0;
+        int userTypePosition = 0;
+
         for (int i = 0; i < listSchool.size(); i++) {
             if (listSchool.get(i).equals(userModel.getUserInfoModel().getSchoolName())) {
                 schoolPostion = i;
+                break;
+            }
+        }
+        for (int i = 0; i < listUserType.size(); i++) {
+            if (listUserType.get(i).getServerValue().equals(userModel.getUserType())) {
+                userTypePosition = i;
                 break;
             }
         }
@@ -290,6 +297,7 @@ public class SignUpFragment extends CommonFragment {
         spnClass.setSelection(classPostion);
         spnSchoolName.setSelection(schoolPostion);
         spnDivision.setSelection(divisionPosition);
+        spnUserType.setSelection(userTypePosition);
         edtFirstName.setText(userModel.getFirstName());
         edtMiddleName.setText(userModel.getMiddleName());
         edtLastName.setText(userModel.getLastName());
@@ -585,14 +593,17 @@ public class SignUpFragment extends CommonFragment {
         hashMap.put(IJson.userInfoModel, userModel.getUserInfoModel());
         hashMap.put(IJson.busRoute, "Moshi");
         int method;
+        String url;
         if (userModel.getPkeyId() != null) {
             hashMap.put(IJson.id, userModel.getPkeyId().toString());
-            method= Request.Method.PUT;
+            method = Request.Method.PUT;
+            url = String.format(IUrls.UPDATE_USER, userModel.getPkeyId().toString());
         } else {
             hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
-            method= Request.Method.POST;
+            method = Request.Method.POST;
+            url = IUrls.SIGN_UP;
         }
-        CallWebService.getWebserviceObject(getMyActivity(),true,true, method, IUrls.SIGN_UP, hashMap, new VolleyResponseListener<UserModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), true, true, method, url, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
             public void onResponse(UserModel[] object) {
                 if (object[0] instanceof UserModel) {

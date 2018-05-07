@@ -250,7 +250,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
     private void bindModel() {
         albumImagesModel.setAlbumTitle(edt_title.getText().toString().trim());
         albumImagesModel.setAlbumDescription(edt_description.getText().toString().trim());
-        albumImagesModel.setAlbumType(spinnerType.getSelectedItem().toString());
+        albumImagesModel.setAlbumType(listEventType.get(spinnerType.getSelectedItemPosition()).getServerValue());
         albumImagesModel.setClassName(spnClass.getSelectedItem().toString());
         if (albumImagesModel.getClassName().equals("All")) {
             albumImagesModel.setStudentId(null);
@@ -565,10 +565,7 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 return false;
             }
         }
-        if (albumImagesModel.getCreatedBy() == null || albumImagesModel.getCreatedBy().equals("")) {
-            getMyActivity().showToast(getString(R.string.valid_user_name));
-            return false;
-        }
+
         if (albumImagesModel.getAlbumTitle() == null || albumImagesModel.getAlbumTitle().equals("")) {
             getMyActivity().showToast(getString(R.string.valid_album_title));
             return false;
@@ -721,12 +718,12 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         // hashMap.put(IJson.userName, albumImagesModel.getCreatedBy());
         hashMap.put(IJson.imageType, albumImagesModel.getAlbumType());
         hashMap.put(IJson.className, albumImagesModel.getClassName());
-        hashMap.put(IJson.division, albumImagesModel.getDivisionName());
-        hashMap.put(IJson.studentId, albumImagesModel.getStudentId());
+        hashMap.put(IJson.division, albumImagesModel.getDivisionName() == null ? "All" : albumImagesModel.getDivisionName());
+        hashMap.put(IJson.studentId, albumImagesModel.getStudentId() == null ? "All" : albumImagesModel.getStudentId());
 
         hashMap.put(IJson.images, albumImagesModel.getAlbumImagesModel());
 
-        CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_IMAGE_UPLOAD, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
             @Override
             public void onResponse(AlbumMasterModel[] object) {
 

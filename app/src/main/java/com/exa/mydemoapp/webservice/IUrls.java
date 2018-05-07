@@ -11,6 +11,7 @@ public interface IUrls {
     String BASE_URL = "http://app.kalpatarukids.com:8080/kalpatarukidsdev/api/";
 
     String SIGN_UP = BASE_URL + "signup";
+    String UPDATE_USER = BASE_URL + "users/%1$s";
  //   String URL_LOGIN = BASE_URL + "login";
     String URL_LOGIN = BASE_URL + "signin";
     String URL_IMAGE_UPLOAD = BASE_URL + "album/add";

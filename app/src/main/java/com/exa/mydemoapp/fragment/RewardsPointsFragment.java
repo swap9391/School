@@ -309,9 +309,10 @@ public class RewardsPointsFragment extends CommonFragment {
                     allStudent.setFullName("All");
                     allStudent.setPkeyId(null);
                     listStudent.add(allStudent);
-                    for (StudentModel studentModel : object) {
+                    listStudent.addAll(Arrays.asList(object) );
+                    /* for (StudentModel studentModel : object) {
                         listStudent.add(studentModel);
-                    }
+                    }*/
                     ArrayAdapter<StudentModel> studentAdapter = new ArrayAdapter(getMyActivity(), android.R.layout.simple_spinner_item, listStudent);
                     studentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerStudentName.setAdapter(studentAdapter);
