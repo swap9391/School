@@ -283,13 +283,13 @@ public class SignUpFragment extends CommonFragment {
             }
         }
         for (int i = 0; i < listClass.size(); i++) {
-            if (listClass.get(i).getDropdownValue().equals(userModel.getUserInfoModel().getClassName())) {
+            if (listClass.get(i).getServerValue().equals(userModel.getUserInfoModel().getClassName())) {
                 classPostion = i;
                 break;
             }
         }
         for (int i = 0; i < listDivision.size(); i++) {
-            if (listDivision.get(i).getDropdownValue().equals(userModel.getUserInfoModel().getDivisionName())) {
+            if (listDivision.get(i).getServerValue().equals(userModel.getUserInfoModel().getDivisionName())) {
                 divisionPosition = i;
                 break;
             }
@@ -356,9 +356,9 @@ public class SignUpFragment extends CommonFragment {
         userModel.setUsername(edtUsername.getText().toString().trim());
         userModel.setContactNumber(edtContactNumber.getText().toString().trim());
         userModel.setEmail(edtEmail.getText().toString().trim());
-        userModel.getUserInfoModel().setSchoolName(spnSchoolName.getSelectedItem().toString());
-        userModel.getUserInfoModel().setClassName(spnClass.getSelectedItem().toString().trim());
-        userModel.getUserInfoModel().setDivisionName(spnDivision.getSelectedItem().toString().trim());
+        userModel.getUserInfoModel().setSchoolName(listSchool.get(spnSchoolName.getSelectedItemPosition()));
+        userModel.getUserInfoModel().setClassName(listClass.get(spnClass.getSelectedItemPosition()).getServerValue());
+        userModel.getUserInfoModel().setDivisionName(listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
         if (rdGirl.isChecked()) {
             userModel.getUserInfoModel().setGender("Girl");
         } else if (rdBoy.isChecked()) {

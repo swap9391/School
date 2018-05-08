@@ -278,7 +278,7 @@ public class PagerFragment extends CommonFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                getMyActivity().showFragment(getMyActivity().signUpFragment, null);
+                getMyActivity().showFragment(new SignUpFragment(), null);
                 break;
         }
         return true;
