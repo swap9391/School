@@ -421,8 +421,8 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
 
         if (requestCode == PICK_IMAGE && resultCode == getMyActivity().RESULT_OK
                 && null != data) {
-            System.out.println("++data" + data.getClipData().getItemCount());// Get count of image here.
-            System.out.println("++count" + data.getClipData().getItemCount());
+          /*  System.out.println("++data" + data.getClipData().getItemCount());// Get count of image here.
+            System.out.println("++count" + data.getClipData().getItemCount());*/
             List<Uri> listOfUri = new ArrayList<>();
 
             for (int i = 0; i < data.getClipData().getItemCount(); i++) {

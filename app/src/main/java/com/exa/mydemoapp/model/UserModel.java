@@ -30,6 +30,7 @@ public class UserModel extends BasicBean implements Serializable {
     private boolean accountExpired;
     private boolean accountLocked;
     private boolean isActive;
+    private String deviceToken;
     private String loginFrom = "APP";
     private StudentFeesModel studentFeesModel = new StudentFeesModel();
     private UserInfoModel userInfoModel = new UserInfoModel();
@@ -204,7 +205,13 @@ public class UserModel extends BasicBean implements Serializable {
         this.userDevice = userDevice;
     }
 
+    public String getDeviceToken() {
+        return deviceToken;
+    }
 
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 
     @Override
     public void dbBinding(ContentHolder holder) {
@@ -219,7 +226,7 @@ public class UserModel extends BasicBean implements Serializable {
         holder.getValues().put("lastName", getLastName());
         holder.getValues().put("profilePicUrl", getProfilePicUrl());
         holder.getValues().put("email", getEmail());
-        holder.getValues().put("contactNumber",  getContactNumber());
+        holder.getValues().put("contactNumber", getContactNumber());
         holder.getValues().put("busRoute", getBusRoute());
         holder.getValues().put("sessionKey", getSessionKey());
 

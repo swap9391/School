@@ -291,6 +291,41 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter User Name"
+                    android:imeOptions="actionDone"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp">
+
+                <EditText
+                    android:id="@+id/edt_qualification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Qualification"
+                    android:imeOptions="actionNext"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:minLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp">
+
+                <EditText
+                    android:id="@+id/edt_speciality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Speciality"
                     android:imeOptions="actionNext"
                     android:maxLength="25"
                     android:maxLines="1"
@@ -308,7 +343,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Total Fees"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLength="6"
                     android:maxLines="1"

@@ -230,10 +230,12 @@ public class LoginActivity extends CommonActivity {
 
     private void Login() {
         HashMap<String, Object> hashMap = new HashMap<>();
+        String token = FirebaseInstanceId.getInstance().getToken();
         hashMap.put(IJson.username, userModel.getUsername());
         hashMap.put(IJson.password, userModel.getPassword());
         hashMap.put(IJson.loginFrom, userModel.getLoginFrom());
         hashMap.put(IJson.deviceDetails, userModel.getUserDevice());
+        hashMap.put(IJson.deviceToken, token);
 
         CallWebService.getWebserviceObject(this,true,true, Request.Method.POST, IUrls.URL_LOGIN, hashMap, new VolleyResponseListener<UserModel>() {
             @Override

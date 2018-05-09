@@ -63,7 +63,9 @@ public interface IJson {
 
     //Homework
     String subject = "subject";
+    //device
     String deviceDetails = "deviceDetails";
+    String deviceToken = "deviceToken";
 
     //otp
     String otp="otp";

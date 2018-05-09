@@ -304,12 +304,13 @@ public class RewardsPointsFragment extends CommonFragment {
             CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentModel>() {
                 @Override
                 public void onResponse(StudentModel[] object) {
+                    spinnerStudentName.setVisibility(View.VISIBLE);
                     listStudent = new ArrayList<>();
                     StudentModel allStudent = new StudentModel();
                     allStudent.setFullName("All");
                     allStudent.setPkeyId(null);
                     listStudent.add(allStudent);
-                    listStudent.addAll(Arrays.asList(object) );
+                    listStudent.addAll(Arrays.asList(object));
                     /* for (StudentModel studentModel : object) {
                         listStudent.add(studentModel);
                     }*/

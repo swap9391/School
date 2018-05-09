@@ -108,6 +108,10 @@ public class SignUpFragment extends CommonFragment {
     private EditText edtTotalFees;
     @ViewById(R.id.edt_email)
     private EditText edtEmail;
+    @ViewById(R.id.edt_qualification)
+    private EditText edtQualification;
+    @ViewById(R.id.edt_speciality)
+    private EditText edtSpeciality;
     @ViewById(R.id.rd_girl)
     RadioButton rdGirl;
     @ViewById(R.id.rd_boy)
@@ -167,13 +171,23 @@ public class SignUpFragment extends CommonFragment {
         spnUserType.setAdapter(userTypeadapter);
         userTypeadapter.notifyDataSetChanged();
 
-
+        txtAddFees.setVisibility(View.GONE);
+        viewFees.setVisibility(View.GONE);
+        layout1.setVisibility(View.GONE);
+        edtTotalFees.setVisibility(View.GONE);
+        txtClassName.setVisibility(View.GONE);
+        txtDivision.setVisibility(View.GONE);
+        spnClass.setVisibility(View.GONE);
+        spnDivision.setVisibility(View.GONE);
+        edtQualification.setVisibility(View.GONE);
+        edtSpeciality.setVisibility(View.GONE);
         Bundle bundle = getArguments();
         if (bundle != null) {
             userModel = (UserModel) bundle.getSerializable(Constants.INTENT_TYPE_USER_DATA);
             if (userModel != null) {
                 isEdit = true;
                 bindView();
+
             }
         } else {
             userModel = new UserModel();
@@ -208,24 +222,50 @@ public class SignUpFragment extends CommonFragment {
                         txtDivision.setVisibility(View.GONE);
                         spnClass.setVisibility(View.GONE);
                         spnDivision.setVisibility(View.GONE);
+
+                        txtAddFees.setVisibility(View.GONE);
+                        viewFees.setVisibility(View.GONE);
+                        layout1.setVisibility(View.GONE);
+                        edtTotalFees.setVisibility(View.GONE);
+                        edtQualification.setVisibility(View.GONE);
+                        edtSpeciality.setVisibility(View.GONE);
                         break;
                     case "TEACHER":
                         txtClassName.setVisibility(View.VISIBLE);
                         txtDivision.setVisibility(View.VISIBLE);
                         spnClass.setVisibility(View.VISIBLE);
                         spnDivision.setVisibility(View.VISIBLE);
+                        edtQualification.setVisibility(View.VISIBLE);
+                        edtSpeciality.setVisibility(View.VISIBLE);
+
+                        txtAddFees.setVisibility(View.GONE);
+                        viewFees.setVisibility(View.GONE);
+                        layout1.setVisibility(View.GONE);
+                        edtTotalFees.setVisibility(View.GONE);
                         break;
                     case "DRIVER":
                         txtClassName.setVisibility(View.GONE);
                         txtDivision.setVisibility(View.GONE);
                         spnClass.setVisibility(View.GONE);
                         spnDivision.setVisibility(View.GONE);
+                        edtQualification.setVisibility(View.GONE);
+                        edtSpeciality.setVisibility(View.GONE);
+                        txtAddFees.setVisibility(View.GONE);
+                        viewFees.setVisibility(View.GONE);
+                        layout1.setVisibility(View.GONE);
+                        edtTotalFees.setVisibility(View.GONE);
                         break;
                     case "STUDENT":
                         txtClassName.setVisibility(View.VISIBLE);
                         txtDivision.setVisibility(View.VISIBLE);
                         spnClass.setVisibility(View.VISIBLE);
                         spnDivision.setVisibility(View.VISIBLE);
+                        edtQualification.setVisibility(View.GONE);
+                        edtSpeciality.setVisibility(View.GONE);
+                        txtAddFees.setVisibility(View.VISIBLE);
+                        viewFees.setVisibility(View.VISIBLE);
+                        layout1.setVisibility(View.VISIBLE);
+                        edtTotalFees.setVisibility(View.VISIBLE);
                         break;
                 }
 
@@ -294,6 +334,8 @@ public class SignUpFragment extends CommonFragment {
                 break;
             }
         }
+        edtUsername.setEnabled(false);
+        spnUserType.setEnabled(false);
         spnClass.setSelection(classPostion);
         spnSchoolName.setSelection(schoolPostion);
         spnDivision.setSelection(divisionPosition);
@@ -306,6 +348,8 @@ public class SignUpFragment extends CommonFragment {
         edtAddress.setText(userModel.getUserInfoModel().getAddress());
         edtBloodGrp.setText(userModel.getUserInfoModel().getBloodGroup());
         edtUsername.setText(userModel.getUsername());
+        edtSpeciality.setText(userModel.getUserInfoModel().getSpeciality());
+        edtQualification.setText(userModel.getUserInfoModel().getQualification());
         edtTotalFees.setText(userModel.getStudentFeesModel().getTotalFees() + "");
         long dob = CommonUtils.toLong(userModel.getUserInfoModel().getDateOfBirth());
         btnDob.setText(CommonUtils.formatDateForDisplay(new Date(dob), Constants.ONLY_DATE_FORMAT));
@@ -340,9 +384,7 @@ public class SignUpFragment extends CommonFragment {
                         return false;
                     }
                 })
-                .into(imgProfile)
-
-        ;
+                .into(imgProfile);
 
 
     }
@@ -357,8 +399,15 @@ public class SignUpFragment extends CommonFragment {
         userModel.setContactNumber(edtContactNumber.getText().toString().trim());
         userModel.setEmail(edtEmail.getText().toString().trim());
         userModel.getUserInfoModel().setSchoolName(listSchool.get(spnSchoolName.getSelectedItemPosition()));
-        userModel.getUserInfoModel().setClassName(listClass.get(spnClass.getSelectedItemPosition()).getServerValue());
-        userModel.getUserInfoModel().setDivisionName(listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
+        if (userModel.getUserType().equals(Constants.USER_TYPE_STUDENT) || userModel.getUserType().equals(Constants.USER_TYPE_TEACHER)) {
+            userModel.getUserInfoModel().setClassName(listClass.get(spnClass.getSelectedItemPosition()).getServerValue());
+            userModel.getUserInfoModel().setDivisionName(listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
+        }
+        if (userModel.getUserType().equals(Constants.USER_TYPE_TEACHER)) {
+            userModel.getUserInfoModel().setQualification(edtQualification.getText().toString().trim());
+            userModel.getUserInfoModel().setSpeciality(edtSpeciality.getText().toString().trim());
+        }
+
         if (rdGirl.isChecked()) {
             userModel.getUserInfoModel().setGender("Girl");
         } else if (rdBoy.isChecked()) {
@@ -496,8 +545,16 @@ public class SignUpFragment extends CommonFragment {
             getMyActivity().showToast("Please Enter User Name");
             return false;
         }
-        if (edtTotalFees.getText().toString().isEmpty()) {
+        if (userModel.getUserType().equals(Constants.USER_TYPE_STUDENT) && edtTotalFees.getText().toString().isEmpty()) {
             getMyActivity().showToast("Please Enter Total Fees");
+            return false;
+        }
+        if (userModel.getUserType().equals(Constants.USER_TYPE_TEACHER) && edtQualification.getText().toString().isEmpty()) {
+            getMyActivity().showToast("Please Enter Qualification");
+            return false;
+        }
+        if (userModel.getUserType().equals(Constants.USER_TYPE_TEACHER) && edtSpeciality.getText().toString().isEmpty()) {
+            getMyActivity().showToast("Please Enter Speciality");
             return false;
         }
 
@@ -611,15 +668,25 @@ public class SignUpFragment extends CommonFragment {
 
                     }
                 }
+                if (isEdit) {
+                    getMyActivity().showFragment(getMyActivity().dashboardFragment, null);
+                }
             }
 
             @Override
             public void onResponse() {
+                if (isEdit) {
+                    getMyActivity().showFragment(getMyActivity().dashboardFragment, null);
+                }
             }
 
             @Override
             public void onResponse(UserModel object) {
-                showOtpDialog(object);
+                if (isEdit) {
+                    getMyActivity().showFragment(getMyActivity().dashboardFragment, null);
+                } else {
+                    showOtpDialog(object);
+                }
             }
 
             @Override
