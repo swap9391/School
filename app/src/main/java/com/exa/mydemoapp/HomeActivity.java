@@ -476,7 +476,10 @@ public class HomeActivity extends CommonActivity {
 
             @Override
             public void onResponse(UserModel object) {
-
+                CommonUtils.removeAllPref(HomeActivity.this);
+                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
             }
 
             @Override
