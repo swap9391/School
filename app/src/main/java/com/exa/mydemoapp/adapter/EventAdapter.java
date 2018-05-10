@@ -88,7 +88,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.MyViewHolder
         holder.txtEventName.setText(selectedItem.getEventName());
         holder.txtEventType.setText(selectedItem.getEventType());
         holder.txtClassName.setText("Class Name:"+selectedItem.getClassName());
-        holder.txtDivision.setText("Division:"+selectedItem.getDivisionName() != null ? selectedItem.getDivisionName() : "");
+        holder.txtDivision.setText(selectedItem.getDivisionName() != null ?"Division:"+ selectedItem.getDivisionName() : "");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(selectedItem.getEventDate());
         Date date = calendar.getTime();

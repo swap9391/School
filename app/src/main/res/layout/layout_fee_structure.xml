@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -37,14 +38,14 @@
 
 
     <TextView
-        android:id="@+id/caption_first_installment"
+        android:id="@+id/caption_installment_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/caption_total_fees"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="7dp"
         android:ems="10"
-        android:text="First Installment"
+        android:text="No. Of Installments"
         android:textSize="19sp"
         android:textStyle="bold|italic" />
 
@@ -55,99 +56,18 @@
         android:layout_below="@+id/txt_total_fees"
         android:layout_marginLeft="7dp"
         android:layout_marginTop="7dp"
-        android:layout_toRightOf="@+id/caption_first_installment"
+        android:layout_toRightOf="@+id/caption_installment_count"
         android:ems="10"
         android:gravity="center_vertical"
         android:text="-20000"
         android:textColor="@color/green"
         android:textSize="19sp" />
 
-    <TextView
-        android:id="@+id/caption_second_installment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/caption_first_installment"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="7dp"
-        android:ems="10"
-        android:text="Second Installment"
-        android:textSize="19sp"
-        android:textStyle="bold|italic" />
 
-    <TextView
-        android:id="@+id/txt_second_installment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_first_installment"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="7dp"
-        android:layout_toRightOf="@+id/caption_second_installment"
-        android:ems="10"
-        android:gravity="center_vertical"
-        android:text="-20000"
-        android:textColor="@color/green"
-        android:textSize="19sp" />
-
-    <TextView
-        android:id="@+id/caption_third_installment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/caption_second_installment"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="7dp"
-        android:ems="10"
-        android:text="Third Installment"
-        android:textSize="19sp"
-        android:textStyle="bold|italic" />
-
-    <TextView
-        android:id="@+id/txt_third_installment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_second_installment"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="7dp"
-        android:layout_toRightOf="@+id/caption_third_installment"
-        android:ems="10"
-        android:gravity="center_vertical"
-        android:text="-20000"
-        android:textColor="@color/green"
-        android:textSize="19sp" />
-
-    <View
-        android:id="@+id/divider"
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/caption_third_installment"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="7dp"
-        android:background="@color/caldroid_gray" />
-
-    <TextView
-        android:id="@+id/caption_balance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/divider"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="7dp"
-        android:ems="10"
-        android:text="Balance to pay"
-        android:textSize="19sp"
-        android:textStyle="bold|italic" />
-
-    <TextView
-        android:id="@+id/txt_balance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/divider"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="7dp"
-        android:layout_toRightOf="@+id/caption_balance"
-        android:ems="10"
-        android:gravity="center_vertical"
-        android:text="-20000"
-        android:textColor="@color/caldroid_light_red"
-        android:textSize="19sp" />
-
+        android:layout_height="match_parent"
+        android:layout_below="@+id/txt_first_installment"
+        android:layout_margin="10dp" />
 </RelativeLayout>

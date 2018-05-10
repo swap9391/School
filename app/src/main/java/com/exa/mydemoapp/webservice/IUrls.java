@@ -31,4 +31,5 @@ public interface IUrls {
     String URL_ADD_BUS_LOCATION= BASE_URL + "bus-location/";
     String URL_GET_BUS_LOCATION_LIST= BASE_URL + "bus-location/list/%1$s/%2$s/%3$s";
     String URL_GET_BUS_LATEST_LOCATION= BASE_URL + "bus-location/%1$s/%2$s/latest/";
+    String URL_GET_FEES= BASE_URL + "fees/%1$s";
 }

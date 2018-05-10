@@ -1,6 +1,5 @@
 package com.exa.mydemoapp.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -8,26 +7,23 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.Request;
-import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.FeesAdapter;
-import com.exa.mydemoapp.adapter.UserAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.FeesInstallmentsModel;
-import com.exa.mydemoapp.model.OtpMasterModel;
+import com.exa.mydemoapp.model.StudentFeesModel;
 import com.exa.mydemoapp.model.StudentModel;
-import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
@@ -59,8 +55,12 @@ public class UpdateFeesFragment extends CommonFragment {
     private Spinner spnStudent;
     @ViewById(R.id.layCard)
     private CardView cardView;
+    @ViewById(R.id.txt_total_fees)
+    private TextView edtTotalFees;
+    @ViewById(R.id.txt_no_isntallment)
+    private TextView edtNoOfFees;
     private View view;
-    private List<FeesInstallmentsModel> adminList = new ArrayList<>();
+    private List<FeesInstallmentsModel> listFees;
     boolean apiFlag = false;
 
 
@@ -74,6 +74,7 @@ public class UpdateFeesFragment extends CommonFragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.update_fees_structure, container, false);
         initViewBinding(view);
+        listFees = new ArrayList<>();
         cardView.setVisibility(View.GONE);
         listClass = getMyActivity().getDbInvoker().getDropDownExceptValue("CLASSTYPE", "All");
         ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
@@ -113,6 +114,19 @@ public class UpdateFeesFragment extends CommonFragment {
             }
         });
 
+        spnStudent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getFees(listStudent.get(spnStudent.getSelectedItemPosition()).getPkeyId());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         return view;
     }
 
@@ -120,8 +134,7 @@ public class UpdateFeesFragment extends CommonFragment {
         if (!apiFlag) {
             apiFlag = true;
             HashMap<String, Object> hashMap = new HashMap<>();
-      /*  hashMap.put(IJson.userId, userModel.getPkeyId());
-        hashMap.put(IJson.otp, txtOtp.getText().toString());*/
+
             String url = String.format(IUrls.URL_CLASS_WISE_STUDENT, classId, divisionId);
             Log.d("url", url);
             CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentModel>() {
@@ -130,7 +143,7 @@ public class UpdateFeesFragment extends CommonFragment {
                     /*for (StudentModel studentModel : object) {
                         listStudent.add(studentModel);
                     }*/
-                    listStudent.addAll(Arrays.asList(object) );
+                    listStudent.addAll(Arrays.asList(object));
                     cardView.setVisibility(View.VISIBLE);
                     ArrayAdapter<StudentModel> studentAdapter = new ArrayAdapter(getMyActivity(), android.R.layout.simple_spinner_item, listStudent);
                     studentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -161,8 +174,49 @@ public class UpdateFeesFragment extends CommonFragment {
     }
 
 
+    public void getFees(String studentId) {
+        if (!apiFlag) {
+            apiFlag = true;
+            HashMap<String, Object> hashMap = new HashMap<>();
+
+            String url = String.format(IUrls.URL_GET_FEES, studentId);
+            Log.d("url", url);
+            CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentFeesModel>() {
+                @Override
+                public void onResponse(StudentFeesModel[] object) {
+
+
+                }
+
+                @Override
+                public void onResponse() {
+                }
+
+                @Override
+                public void onResponse(StudentFeesModel object) {
+                    for (FeesInstallmentsModel feesInstallmentsModel:object.getFeesInstallmentsModels()){
+                        listFees.add(feesInstallmentsModel);
+                    }
+                    edtTotalFees.setText(""+object.getTotalFees());
+                    edtNoOfFees.setText(""+object.getNoOfInstallments());
+                    initAdapter();
+                }
+
+                @Override
+                public void onError(String message) {
+                    if (message != null && !message.isEmpty()) {
+                        getMyActivity().showToast(message);
+                    }
+                    apiFlag = false;
+                }
+            }, StudentFeesModel.class);
+
+        }
+    }
+
+
     private void initAdapter() {
-        mAdapter = new FeesAdapter(adminList, getMyActivity());
+        mAdapter = new FeesAdapter(listFees, getMyActivity());
         LinearLayoutManager mLayoutManager =
                 new LinearLayoutManager(getMyActivity());
         recyclerView.setLayoutManager(mLayoutManager);

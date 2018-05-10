@@ -84,17 +84,7 @@ public class AnnualEventFragment extends CommonFragment implements View.OnClickL
         getMyActivity().init();
         initViewBinding(view);
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            annualCalenderMasterModel = (AnnualCalenderMasterModel) bundle.getSerializable(Constants.INTENT_TYPE_EVENT_DATA);
-            if (annualCalenderMasterModel != null) {
-                isEdit = true;
-                bindView();
-            }
-        } else {
-            annualCalenderMasterModel= new AnnualCalenderMasterModel();
-            isEdit = false;
-        }
+
         datePicker.setOnClickListener(this);
 
         listEventType = getMyActivity().getDbInvoker().getDropDownByType("EVENTTYPE");
@@ -138,6 +128,18 @@ public class AnnualEventFragment extends CommonFragment implements View.OnClickL
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            annualCalenderMasterModel = (AnnualCalenderMasterModel) bundle.getSerializable(Constants.INTENT_TYPE_EVENT_DATA);
+            if (annualCalenderMasterModel != null) {
+                isEdit = true;
+                bindView();
+            }
+        } else {
+            annualCalenderMasterModel= new AnnualCalenderMasterModel();
+            isEdit = false;
+        }
 
         //getCalenderEvents();
         return view;
@@ -353,11 +355,12 @@ public class AnnualEventFragment extends CommonFragment implements View.OnClickL
 
             @Override
             public void onResponse(AnnualCalenderMasterModel studentData) {
-                getMyActivity().showFragment(new DashboardFragment(), null);
+                getMyActivity().showFragment(new EventListFragment(), null);
             }
 
             @Override
             public void onResponse() {
+                getMyActivity().showFragment(new EventListFragment(), null);
             }
 
             @Override

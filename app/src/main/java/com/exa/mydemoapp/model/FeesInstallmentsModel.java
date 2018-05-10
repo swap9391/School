@@ -20,6 +20,9 @@ public class FeesInstallmentsModel extends BasicBean implements Serializable {
     private String chequeNo;
     private String chequeImage;
 
+
+
+
     public String getStudentFeeId() {
         return studentFeeId;
     }
