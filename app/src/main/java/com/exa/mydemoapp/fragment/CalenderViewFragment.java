@@ -6,10 +6,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -18,6 +23,8 @@ import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.adapter.CalenderEventAdapter;
+import com.exa.mydemoapp.adapter.UserAdapter;
 import com.exa.mydemoapp.model.AnnualCalenderMasterModel;
 import com.exa.mydemoapp.model.DateModel;
 import com.exa.mydemoapp.webservice.CallWebService;
@@ -38,6 +45,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by midt-006 on 4/10/17.
@@ -47,11 +55,13 @@ public class CalenderViewFragment extends Fragment {
     private boolean undo = false;
     private CaldroidFragment caldroidFragment;
     private CaldroidFragment dialogCaldroidFragment;
-    private TextView textview;
+    private RecyclerView recyclerView;
     List<AnnualCalenderMasterModel> listEvent = new ArrayList<>();
     List<DateModel> listDate;
     ProgressDialog progressDialog;
     View view;
+    Map<String, String> datemap;
+    CalenderEventAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +77,7 @@ public class CalenderViewFragment extends Fragment {
         getMyActivity().toolbar.setTitle(getString(R.string.dashboard_calender));
         getMyActivity().init();
 
-        textview = (TextView) view.findViewById(R.id.txt_event_name);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
         // Setup caldroid fragment
         // **** If you want normal CaldroidFragment, use below line ****
@@ -121,20 +131,27 @@ public class CalenderViewFragment extends Fragment {
 
             @Override
             public void onSelectDate(Date date, View view) {
+
+                List<String> eventList= new ArrayList<>();
+
                 for (DateModel bean : listDate) {
                     if (date.compareTo(bean.getDate()) == 0) {
-                        textview.setText(listEvent.get(bean.getPosition()).getEventName());
-                        return;
-                    } else {
-                        textview.setText("");
+                        eventList.add(listEvent.get(bean.getPosition()).getEventName());
                     }
                 }
+
+                adapter = new CalenderEventAdapter(eventList, getMyActivity());
+                LinearLayoutManager mLayoutManager =
+                        new LinearLayoutManager(getMyActivity());
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                recyclerView.setAdapter(adapter);
+
             }
 
             @Override
             public void onChangeMonth(int month, int year) {
                 countWeekendDays(year, month);
-                textview.setText("");
                 if (listEvent.size() > 0) {
                     initCalender();
                 } else {
@@ -318,6 +335,7 @@ public class CalenderViewFragment extends Fragment {
     private void initCalender() {
         int count = 0;
         listDate = new ArrayList<>();
+        datemap = new HashMap<>();
         for (AnnualCalenderMasterModel bean : listEvent) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(bean.getEventDate());
@@ -327,6 +345,7 @@ public class CalenderViewFragment extends Fragment {
             dateModel.setDate(date);
             dateModel.setEventType(bean.getEventType());
             listDate.add(dateModel);
+            datemap.put(CommonUtils.formatDateForDisplay(date, Constants.ONLY_DATE_FORMAT), bean.getEventName());
             count++;
         }
         ColorDrawable skyblue = new ColorDrawable(getResources().getColor(R.color.caldroid_sky_blue));
