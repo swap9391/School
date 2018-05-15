@@ -703,7 +703,7 @@ public class SignUpFragment extends CommonFragment {
         if (userModel.getStudentFeesModel().getFeesInstallmentsModels().size() > 0) {
 
         }
-        AddFeesDialogFragment dialog = new AddFeesDialogFragment(getMyActivity(), feesInstallmentsModel, userModel.getStudentFeesModel().getFeesInstallmentsModels(), new DialogResultListner() {
+        AddFeesDialogFragment dialog = new AddFeesDialogFragment(getMyActivity(), feesInstallmentsModel, userModel.getStudentFeesModel().getFeesInstallmentsModels(),false, new DialogResultListner() {
             @Override
             public void getResult(FeesInstallmentsModel feesInstallmentsModel) {
                 int position = -1;

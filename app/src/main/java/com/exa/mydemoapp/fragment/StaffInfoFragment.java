@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 
 import com.android.volley.Request;
 import com.exa.mydemoapp.Common.Connectivity;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.GalleryAdapter;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.AlbumMasterModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
@@ -30,8 +32,7 @@ import java.util.Map;
  */
 
 public class StaffInfoFragment extends CommonFragment {
-    private ArrayList<AlbumMasterModel> images;
-    private GalleryAdapter mAdapter;
+    private List<UserModel> teacherList = new ArrayList<>();
     @ViewById(R.id.recycler_view)
     private RecyclerView recyclerView;
     View view;
@@ -48,86 +49,41 @@ public class StaffInfoFragment extends CommonFragment {
         getMyActivity().toolbar.setTitle("Staff Information");
         getMyActivity().init();
         initViewBinding(view);
-        images = new ArrayList<>();
+        getTeacherList();
 
-        if (Connectivity.isConnected(getMyActivity())) {
-            getImageList();
-        } else {
-            getMyActivity().showToast("Please Connect to internet !!");
-        }
         return view;
     }
 
-    private void getImageList() {
-        Map<Integer, AlbumMasterModel> td = new HashMap<>();
-        Map<String, AlbumMasterModel> mapAlbum = new HashMap<>();
-        String studentId = "0";
+    public void getTeacherList() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.studentId, studentId);
-        hashMap.put(IJson.imageType, getStringById(R.string.img_type_staff));
         // hashMap.put(IJson.password, "" + studentId);
-
-        CallWebService.getWebservice(getMyActivity(), Request.Method.POST, IUrls.URL_IMAGE_LIST, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
+        CallWebService.getWebservice(getMyActivity(), Request.Method.GET, IUrls.URL_USER_LIST, hashMap, new VolleyResponseListener<UserModel>() {
             @Override
-            public void onResponse(AlbumMasterModel[] object) {
-                if (object[0] instanceof AlbumMasterModel) {
-                    for (AlbumMasterModel bean : object) {
-                        images.add(bean);
+            public void onResponse(UserModel[] object) {
+                for (UserModel userModel : object) {
+                    if (userModel.getUserType().equals(Constants.USER_TYPE_TEACHER)) {
+                        teacherList.add(userModel);
                     }
-                    ShowList(images);
-
+                }
+                if (teacherList.size() > 0) {
+                    getMyActivity().showFragment(new StudentListFragment(teacherList), null);
                 }
             }
 
-            @Override
-            public void onResponse(AlbumMasterModel object) {
-
-            }
             @Override
             public void onResponse() {
             }
+
+            @Override
+            public void onResponse(UserModel object) {
+
+            }
+
             @Override
             public void onError(String message) {
+                getMyActivity().showToast(message);
             }
-        }, AlbumMasterModel[].class);
-
-    }
-
-    /*private void getImageData() {
-        String userId = getMyActivity().databaseReference.push().getKey();
-        DatabaseReference ref1 = getMyActivity().databaseReference.child(Constants.MAIN_TABLE);
-        DatabaseReference ref2 = ref1.child(Constants.IMAGE_TABLE);
-        Query query = ref2.orderByChild("imageType").equalTo("Staff Information");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    AlbumMasterModel albumImagesModel = Snapshot.getValue(AlbumMasterModel.class);
-                    if (albumImagesModel.getVisiblity().equalsIgnoreCase("TRUE")) {
-                        images.add(albumImagesModel);
-                    }
-                }
-                ShowList(images);
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Exception", "onCancelled", databaseError.toException());
-                progressDialog.dismiss();
-            }
-        });
-
-    }*/
-
-
-    private void ShowList(final List<AlbumMasterModel> albumImagesModelList) {
-        mAdapter = new GalleryAdapter(getMyActivity(), albumImagesModelList, albumImagesModelList.size(), "Staff");
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getMyActivity(), 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
-
+        }, UserModel[].class);
     }
 
     public HomeActivity getMyActivity() {

@@ -356,13 +356,13 @@ public class CalenderViewFragment extends Fragment {
         for (DateModel dateModel : listDate) {
 
             switch (dateModel.getEventType()) {
-                case "Holiday":
+                case "HL":
                     caldroidFragment.setBackgroundDrawableForDate(skyblue, dateModel.getDate());
                     break;
-                case "Exam":
+                case "EX":
                     caldroidFragment.setBackgroundDrawableForDate(yellow, dateModel.getDate());
                     break;
-                case "Curricular":
+                case "CR":
                     caldroidFragment.setBackgroundDrawableForDate(green, dateModel.getDate());
                     break;
                 default:

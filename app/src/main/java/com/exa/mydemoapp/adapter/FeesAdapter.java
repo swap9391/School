@@ -15,7 +15,9 @@ import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.fragment.AddFeesDialogFragment;
 import com.exa.mydemoapp.fragment.SignUpFragment;
+import com.exa.mydemoapp.listner.DialogResultListner;
 import com.exa.mydemoapp.model.FeesInstallmentsModel;
 import com.exa.mydemoapp.model.UserModel;
 
@@ -90,12 +92,23 @@ public class FeesAdapter extends RecyclerView.Adapter<FeesAdapter.MyViewHolder> 
             holder.btnPay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    showFeesDialog(selectedItem);
                 }
             });
         } else {
             holder.btnPay.setVisibility(View.GONE);
         }
+    }
+
+
+    private void showFeesDialog(FeesInstallmentsModel feesInstallmentsModel) {
+        AddFeesDialogFragment dialog = new AddFeesDialogFragment(context, feesInstallmentsModel, null, true, new DialogResultListner() {
+            @Override
+            public void getResult(FeesInstallmentsModel feesInstallmentsModel) {
+
+            }
+        });
+        dialog.show(context.getFragmentManager(), "FeesDialog");
     }
 
 

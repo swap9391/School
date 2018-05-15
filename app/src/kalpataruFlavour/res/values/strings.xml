@@ -191,12 +191,12 @@
         <item>@string/user_type_driver</item>
     </string-array>
 
-    <string name="img_type_news">News</string>
-    <string name="img_type_blog">Blog</string>
-    <string name="img_type_archive">Achievement</string>
-    <string name="img_type_gallery">Gallery</string>
-    <string name="img_type_staff">Staff Information</string>
-    <string name="img_type_facilities">School Facilities</string>
+    <string name="img_type_news">NF</string>
+    <string name="img_type_blog">BL</string>
+    <string name="img_type_archive">AH</string>
+    <string name="img_type_gallery">GL</string>
+    <string name="img_type_staff">SI</string>
+    <string name="img_type_facilities">SF</string>
 
     <string name="dashboard_about_school">About School</string>
     <string name="dashboard_home">Home</string>

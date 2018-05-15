@@ -33,8 +33,10 @@ import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.model.BusLocationsModel;
+import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.service.LocationUpdateService;
 import com.exa.mydemoapp.service.ServiceCallbacks;
@@ -95,9 +97,9 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
     private Polyline blackPolyline, greyPolyLine;
     private boolean driveStarted = false;
     private String vanType;
-
+    @ViewById(R.id.toolbar)
     private Toolbar toolbar;
-    private Spinner spnVehicle;
+    @ViewById(R.id.btn_search)
     private Button btnSearch;
     private List<String> vehicleList;
     private List<BusLocationsModel> demoList;
@@ -105,19 +107,28 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
     LocationUpdateService myservice;
     private boolean bound = false;
     private boolean isMapMoving = false;
+    @ViewById(R.id.spinner_trip_type)
+    private Spinner spnTripType;
+    @ViewById(R.id.spinner_route_type)
+    private Spinner spnRoute;
+    private List<DropdownMasterModel> listTripType;
+    private List<DropdownMasterModel> listRouteType;
+    DbInvoker dbInvoker;
+    View view;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_bus_locator);
         init();
+        view = getWindow().getDecorView();
+        initViewBinding(view);
+        dbInvoker = new DbInvoker(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        spnVehicle = (Spinner) findViewById(R.id.spinner_vehicle);
-        btnSearch = (Button) findViewById(R.id.btn_search);
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setTitle("Bus Location");
         setSupportActionBar(toolbar);
@@ -127,30 +138,27 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         Log.d(TAG, destination);
         mapFragment.getMapAsync(MapsActivity.this);
 
-        if (Connectivity.isConnected(MapsActivity.this)) {
-            //   getVanType();
-            getVehicleList();
-        } else {
-            showToast("Please Connect to internet !!");
-        }
+
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (spnVehicle.getSelectedItem().toString() != null) {
-                    String vehicleNumber = spnVehicle.getSelectedItem().toString();
-                    if (Connectivity.isConnected(MapsActivity.this)) {
-                        //   getVanType();
-                        loadPreviousStatuses(vehicleNumber);
-                    } else {
-                        showToast("Please Connect to internet !!");
-                    }
-
-                } else {
-                    showToast("No vehicle found");
-                }
+                updateUI();
             }
         });
 
+
+        listRouteType = dbInvoker.getDropDownByType("BUSROUTE");
+        ArrayAdapter<DropdownMasterModel> routeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listRouteType);
+        routeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnRoute.setAdapter(routeAdapter);
+        routeAdapter.notifyDataSetChanged();
+
+
+        listTripType = dbInvoker.getDropDownByType("TRIPTYPE");
+        ArrayAdapter<DropdownMasterModel> tripTypeAdapter = new ArrayAdapter<DropdownMasterModel>(this, android.R.layout.simple_spinner_item, listTripType);
+        tripTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnTripType.setAdapter(tripTypeAdapter);
+        tripTypeAdapter.notifyDataSetChanged();
     }
 
 
@@ -184,7 +192,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                 .build()));
 
         demoList = new ArrayList<>();
-        updateUI();
+
 
     }
 
@@ -354,136 +362,6 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                                 .build()));
     }
 
-    /*public void getVanType() {
-        DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
-        Query ref2 = ref1.child(Constants.LOCATION_TABLE).orderByKey().limitToLast(1);
-        ref2.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    LocationModel locationModel = Snapshot.getValue(LocationModel.class);
-                    vanType = locationModel.getVanType();
-                }
-
-                if (vanType != null && !vanType.isEmpty()) {
-                    if (Connectivity.isConnected(MapsActivity.this)) {
-                        getDriveData();
-                    } else {
-                        showToast("Please Connect to internet !!");
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Exception", "onCancelled", databaseError.toException());
-            }
-        });
-    }*/
-
-    private void loadPreviousStatuses(String vehicleNumber) {
-        LinkedList<Map<String, Object>> mTransportStatuses = new LinkedList<>();
-        polyLineList = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child(Constants.MAIN_TABLE).child(Constants.LOCATION_TABLE).child(vehicleNumber).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot != null) {
-                    for (DataSnapshot transportStatus : snapshot.getChildren()) {
-                        try {
-                            mTransportStatuses.add(0,
-                                    (Map<String, Object>) transportStatus.getValue());
-
-                            Map<String, Object> status = (Map<String, Object>) transportStatus.getValue();
-                            //LocationModel locationModel = transportStatus.getValue(LocationModel.class);
-                            Location locationForStatus = new Location("");
-                            locationForStatus.setLatitude((double) status.get("lattitude"));
-                            locationForStatus.setLongitude((double) status.get("longitude"));
-
-
-                            polyLineList.add(new LatLng(locationForStatus.getLatitude(), locationForStatus.getLongitude()));
-                            // if (driveStarted == false && polyLineList.size() > 10) {
-                            if (driveStarted == false) {
-                                startDrive();
-                                driveStarted = true;
-                            }
-                        } catch (Exception e) {
-                            Log.e("Firebase Error", e.getMessage());
-                        }
-
-
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // TODO: Handle gracefully
-            }
-        });
-    }
-
-
-    public void getVehicleList() {
-        LinkedList<Map<String, Object>> linkedList = new LinkedList<>();
-        DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
-        //Query ref2 = ref1.child(Constants.LOCATION_TABLE).orderByKey().limitToLast(20);
-        DatabaseReference ref2 = ref1.child(Constants.LOCATION_TABLE);
-        vehicleList = new ArrayList<>();
-        ref2.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    String key = Snapshot.getKey();
-                    vehicleList.add(key);
-                }
-                Set<String> set = new HashSet<String>(vehicleList);
-                List<String> sortedList = new ArrayList<>();
-                sortedList.addAll(set);
-                ArrayAdapter<String> vehicleAdapter = new ArrayAdapter<String>(MapsActivity.this, android.R.layout.simple_spinner_item, sortedList);
-                vehicleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spnVehicle.setAdapter(vehicleAdapter);
-                vehicleAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Exception", "onCancelled", databaseError.toException());
-            }
-        });
-
-    }
-
-    /*public void getDriveData() {
-        DatabaseReference ref1 = databaseReference.child(Constants.MAIN_TABLE);
-        //Query ref2 = ref1.child(Constants.LOCATION_TABLE).orderByKey().limitToLast(20);
-        DatabaseReference ref2 = ref1.child(Constants.LOCATION_TABLE);
-        Query query = ref2.orderByChild("vanType").equalTo(vanType);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(final DataSnapshot dataSnapshot) {
-                for (DataSnapshot Snapshot : dataSnapshot.getChildren()) {
-                    LocationModel locationModel = Snapshot.getValue(LocationModel.class);
-                    Location location = new Location("");
-                    location.setLatitude(locationModel.getLattitude());
-                    location.setLongitude(locationModel.getLongitude());
-                    polyLineList.add(new LatLng(locationModel.getLattitude(), locationModel.getLongitude()));
-                    if (driveStarted == false && polyLineList.size() > 10) {
-                        startDrive();
-                        driveStarted = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Exception", "onCancelled", databaseError.toException());
-            }
-        });
-
-    }*/
-
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -534,11 +412,11 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
             String sourceLongitude;
             String destLatitude;
             String destLongitude;
-          //  if (demoList.size() == 2) {
-                sourceLatitude = demoList.get(listCount).getLatitude();
-                sourceLongitude = demoList.get(listCount).getLongitude();
-                destLatitude = demoList.get(listCount + 1).getLatitude();
-                destLongitude = demoList.get(listCount + 1).getLongitude();
+            //  if (demoList.size() == 2) {
+            sourceLatitude = demoList.get(listCount).getLatitude();
+            sourceLongitude = demoList.get(listCount).getLongitude();
+            destLatitude = demoList.get(listCount + 1).getLatitude();
+            destLongitude = demoList.get(listCount + 1).getLongitude();
            /* } else {
                 sourceLatitude = demoList.get(listCount - 1).getLatitude();
                 sourceLongitude = demoList.get(listCount - 1).getLongitude();
@@ -730,8 +608,8 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         Log.d(TAG, "UI update initiated .............");
         HashMap<String, Object> hashMap = new HashMap<>();
         long date = System.currentTimeMillis() / 1000;
-        String url = String.format(IUrls.URL_GET_BUS_LATEST_LOCATION, "Moshi", "Morning");
-        CallWebService.getWebserviceObject(MapsActivity.this, true,true,Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
+        String url = String.format(IUrls.URL_GET_BUS_LATEST_LOCATION, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
+        CallWebService.getWebserviceObject(MapsActivity.this, true, true, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
 
@@ -754,7 +632,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
 
             @Override
             public void onError(String message) {
-
+            showToast(message);
             }
         }, BusLocationsModel.class);
     }

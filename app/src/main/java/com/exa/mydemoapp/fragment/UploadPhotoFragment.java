@@ -423,12 +423,17 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
                 && null != data) {
           /*  System.out.println("++data" + data.getClipData().getItemCount());// Get count of image here.
             System.out.println("++count" + data.getClipData().getItemCount());*/
-            List<Uri> listOfUri = new ArrayList<>();
+          try {
+              List<Uri> listOfUri = new ArrayList<>();
 
-            for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                listOfUri.add(data.getClipData().getItemAt(i).getUri());
-            }
-            setImage(listOfUri);
+              for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                  listOfUri.add(data.getClipData().getItemAt(i).getUri());
+              }
+              setImage(listOfUri);
+          }catch (Exception e){
+              getMyActivity().showToast("Please Select Photos Option");
+          }
+
 
         } else {
 

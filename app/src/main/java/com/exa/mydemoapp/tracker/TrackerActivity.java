@@ -91,14 +91,14 @@ public class TrackerActivity extends CommonActivity {
         mStartButton = (Button) findViewById(R.id.button_start);
         mStopButton = (Button) findViewById(R.id.button_stop);
 
-        listRouteType = dbInvoker.getDropDownByType("IMAGETYPE");
+        listRouteType = dbInvoker.getDropDownByType("BUSROUTE");
         ArrayAdapter<DropdownMasterModel> routeAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listRouteType);
         routeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnRoute.setAdapter(routeAdapter);
         routeAdapter.notifyDataSetChanged();
 
 
-        listTripType = dbInvoker.getDropDownByType("CLASSTYPE");
+        listTripType = dbInvoker.getDropDownByType("TRIPTYPE");
         ArrayAdapter<DropdownMasterModel> tripTypeAdapter = new ArrayAdapter<DropdownMasterModel>(this, android.R.layout.simple_spinner_item, listTripType);
         tripTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnTripType.setAdapter(tripTypeAdapter);
@@ -182,8 +182,8 @@ public class TrackerActivity extends CommonActivity {
             Toast.makeText(TrackerActivity.this, R.string.missing_inputs, Toast.LENGTH_SHORT).show();
         } else {
             // Store values.
-            CommonUtils.insertSharedPref(TrackerActivity.this, Constants.ROUTE_TYPE, spnRoute.getSelectedItem().toString());
-            CommonUtils.insertSharedPref(TrackerActivity.this, Constants.TRIP_TYPE, spnTripType.getSelectedItem().toString());
+            CommonUtils.insertSharedPref(TrackerActivity.this, Constants.ROUTE_TYPE, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue());
+            CommonUtils.insertSharedPref(TrackerActivity.this, Constants.TRIP_TYPE, listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
             // Validate permissions.
             checkLocationPermission();
         }

@@ -90,16 +90,18 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
     File chequeFile;
     private int REQUEST_CAMERA = 101;
     List<FeesInstallmentsModel> list;
+    boolean isEdit = false;
 
     public AddFeesDialogFragment() {
     }
 
     @SuppressLint("ValidFragment")
-    public AddFeesDialogFragment(HomeActivity activity, FeesInstallmentsModel feesInstallmentsModel, List<FeesInstallmentsModel> list, DialogResultListner dialogResultListner) {
+    public AddFeesDialogFragment(HomeActivity activity, FeesInstallmentsModel feesInstallmentsModel, List<FeesInstallmentsModel> list, boolean isEdit, DialogResultListner dialogResultListner) {
         this.activity = activity;
         this.dialogResultListner = dialogResultListner;
         this.feesInstallmentsModel = feesInstallmentsModel;
         this.list = list;
+        this.isEdit = isEdit;
     }
 
     @Override
@@ -127,28 +129,35 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
                 } else {
                     datePickerInvest.setVisibility(View.VISIBLE);
                 }
-                for (FeesInstallmentsModel feesInstallmentsModel : list) {
-                    if (feesInstallmentsModel.getInstallmentLocalValue().equals(listFees.get(position).getDropdownValue())) {
-                        bindView(feesInstallmentsModel);
-                        break;
-                    } else {
-                        edtBankName.setText("");
-                        edtChequeNumber.setText("");
-                        Glide.with(activity)
-                                .load("")
-                                .asBitmap()
-                                .override(300, 300)
-                                .fitCenter()
-                                .placeholder(R.drawable.defualt_album_icon)
-                                .error(R.drawable.defualt_album_icon)
-                                .into(imgCheque);
-                        edtInstallmentAmount.setText("");
-                        chkPaid.setChecked(false);
-                    }
-
-
+                if (feesInstallmentsModel!=null){
+                    bindView(feesInstallmentsModel);
                 }
+                if (list != null) {
+                    for (FeesInstallmentsModel feesInstallmentsModel : list) {
+                        if (feesInstallmentsModel.getInstallmentLocalValue().equals(listFees.get(position).getDropdownValue())) {
+                            bindView(feesInstallmentsModel);
+                            break;
+                        } else {
+                            edtBankName.setText("");
+                            edtChequeNumber.setText("");
+                            Glide.with(activity)
+                                    .load("")
+                                    .asBitmap()
+                                    .override(300, 300)
+                                    .fitCenter()
+                                    .placeholder(R.drawable.defualt_album_icon)
+                                    .error(R.drawable.defualt_album_icon)
+                                    .into(imgCheque);
+                            edtInstallmentAmount.setText("");
+                            chkPaid.setChecked(false);
+                        }
 
+
+                    }
+                }
+                if (isEdit) {
+                    spnFeesType.setVisibility(View.GONE);
+                }
 
             }
 
@@ -159,7 +168,7 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
         });
 
 
-        listPaymentMode =  activity.getDbInvoker().getDropDownByType("PAYMENTMODE");
+        listPaymentMode = activity.getDbInvoker().getDropDownByType("PAYMENTMODE");
         ArrayAdapter<DropdownMasterModel> paymentModeAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, listPaymentMode);
         paymentModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnPaymentMode.setAdapter(paymentModeAdapter);

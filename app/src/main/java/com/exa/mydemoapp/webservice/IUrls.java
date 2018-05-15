@@ -16,6 +16,7 @@ public interface IUrls {
     String URL_LOGIN = BASE_URL1 + "signin";
     String URL_IMAGE_UPLOAD = BASE_URL + "album/add";
     String URL_IMAGE_LIST = BASE_URL + "album/images?albumType=%1$s&className=%2$s&divisionName=%3$s&studentId=%4$s";
+    String URL_IMAGE_LIST_NEWS_COMMON = BASE_URL + "album/images?albumType=%1$s";
     String URL_USER_LIST = BASE_URL + "users/list";
     String URL_ADD_REWARD = BASE_URL + "student/rewards";
     String URL_GET_REWARDS = BASE_URL + "student/%1$s/rewards";

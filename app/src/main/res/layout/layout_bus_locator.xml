@@ -15,13 +15,29 @@
         android:gravity="center"
         android:orientation="horizontal">
 
+
         <Spinner
-            android:id="@+id/spinner_vehicle"
+            android:id="@+id/spinner_route_type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="2"
-            android:padding="10dp"></Spinner>
+            android:layout_below="@+id/lbl_route_type"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"></Spinner>
+
+
+        <Spinner
+            android:id="@+id/spinner_trip_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lbl_trip_type"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"></Spinner>
 
         <Button
             android:id="@+id/btn_search"

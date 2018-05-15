@@ -96,7 +96,7 @@ public class NewsFeedFragment extends CommonFragment {
             url = String.format(IUrls.URL_IMAGE_LIST, imageType, className, divisionName, studentId);
         }
         else  {
-            url = String.format(IUrls.URL_IMAGE_LIST, imageType, "All", "All", "All");
+            url = String.format(IUrls.URL_IMAGE_LIST_NEWS_COMMON, imageType);
         }
 
         //http://localhost:8080/kalpataru/api/album/images?albumType=Gallery&className=All&divisionName=All&studentId=All
