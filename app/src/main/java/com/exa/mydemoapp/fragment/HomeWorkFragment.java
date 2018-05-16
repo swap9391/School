@@ -3,29 +3,36 @@ package com.exa.mydemoapp.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
 import com.exa.mydemoapp.model.DailyHomeworkModel;
 import com.exa.mydemoapp.model.DropdownMasterModel;
+import com.exa.mydemoapp.model.StudentModel;
+import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,17 +43,41 @@ import java.util.List;
 
 public class HomeWorkFragment extends CommonFragment {
     View view;
-    @ViewById(R.id.spinner_class_name)
-    private Spinner spnClass;
-    @ViewById(R.id.edt_subject)
-    private TextView edtSubject;
+    @ViewById(R.id.date_picker_event)
+    private Button datePicker;
+    @ViewById(R.id.txt_selected_date)
+    private TextView txtSelectedDate;
     @ViewById(R.id.edt_description)
-    private EditText edt_description;
+    private EditText edtDescription;
 
-    List<DropdownMasterModel> listClass;
-    List<String> listRewardType;
-    DailyHomeworkModel homeWorkModel;
+    @ViewById(R.id.lbl_class_name)
+    private TextView txtClassName;
+    @ViewById(R.id.spinner_class)
+    private Spinner spnClass;
+    @ViewById(R.id.lbl_division)
+    private TextView txtDivisionSpinnerTitle;
+    @ViewById(R.id.spinner_division)
+    private Spinner spnDivision;
+    @ViewById(R.id.lbl_student)
+    private TextView txtStudent;
+    @ViewById(R.id.spinner_student_name)
+    private Spinner spnStudent;
+    @ViewById(R.id.spinner_subject)
+    private Spinner spnSubject;
+    @ViewById(R.id.lbl_subject_name)
+    private TextView txtSubject;
 
+    DailyHomeworkModel dailyHomeworkModel;
+
+    private List<DropdownMasterModel> listClass;
+    private List<DropdownMasterModel> listDivision;
+    private List<DropdownMasterModel> listSubject;
+    private List<StudentModel> listStudent;
+    private List<UserModel> listStudents;
+    private List<String> listStudentName;
+
+    boolean isEdit = false;
+    boolean apiFlag = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,13 +88,21 @@ public class HomeWorkFragment extends CommonFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.layout_homework, container, false);
-        getMyActivity().toolbar.setTitle(getStringById(R.string.dashboard_reward));
+        view = inflater.inflate(R.layout.layout_add_homework, container, false);
+        getMyActivity().toolbar.setTitle(getStringById(R.string.dashboard_add_homework));
         getMyActivity().init();
         initViewBinding(view);
 
-        homeWorkModel = new DailyHomeworkModel();
+        dailyHomeworkModel = new DailyHomeworkModel();
 
+        if (getMyActivity().getUserModel().getUserType().equals(Constants.USER_TYPE_ADMIN)) {
+            txtClassName.setVisibility(View.VISIBLE);
+            spnClass.setVisibility(View.VISIBLE);
+            txtDivisionSpinnerTitle.setVisibility(View.VISIBLE);
+            spnDivision.setVisibility(View.VISIBLE);
+        } else {
+            getStudent(getMyActivity().getUserModel().getUserInfoModel().getClassName(), getMyActivity().getUserModel().getUserInfoModel().getDivisionName());
+        }
 
         listClass = getMyActivity().getDbInvoker().getDropDownByType("CLASSTYPE");
         ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<DropdownMasterModel>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
@@ -71,58 +110,78 @@ public class HomeWorkFragment extends CommonFragment {
         spnClass.setAdapter(classAdapter);
         classAdapter.notifyDataSetChanged();
 
+        DropdownMasterModel allDropdownMasterModel = new DropdownMasterModel();
+        allDropdownMasterModel.setDropdownValue("All");
+        allDropdownMasterModel.setServerValue(null);
+        listDivision = new ArrayList<>();
+        listDivision.add(allDropdownMasterModel);
+        listDivision = getMyActivity().getDbInvoker().getDropDownByType("DEVISION");
+        ArrayAdapter<DropdownMasterModel> divisionAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
+        divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnDivision.setAdapter(divisionAdapter);
+        divisionAdapter.notifyDataSetChanged();
 
-        /*spnClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        spnDivision.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (!listClass.get(position).equals("All")) {
-                    listStudentClassWise = getMyActivity().getDbInvoker().getStudentListByClass(listClass.get(position));
-                    if (listStudentClassWise != null && listStudentClassWise.size() > 0) {
-                        listStudentClassWise = new ArrayList<>();
-                        for (UserModel bean : listStudentClassWise) {
-                            listStudentName.add(bean.getStudentName() + " " + bean.getRegistrationId());
-                        }
-                        spinnerStudentName.setVisibility(View.VISIBLE);
-                        txtStudentSpinnerTitle.setVisibility(View.VISIBLE);
-                        ArrayAdapter<String> classAdapter = new ArrayAdapter<String>(getMyActivity(), android.R.layout.simple_spinner_item, listStudentName);
-                        classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerStudentName.setAdapter(classAdapter);
-                        classAdapter.notifyDataSetChanged();
-                    }
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getStudent(listClass.get(spnClass.getSelectedItemPosition()).getServerValue(), listDivision.get(position).getServerValue());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spnClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (listClass.get(spnClass.getSelectedItemPosition()).getDropdownValue().equals("All")) {
+                    spnDivision.setVisibility(View.GONE);
+                    spnStudent.setVisibility(View.GONE);
+                    txtDivisionSpinnerTitle.setVisibility(View.GONE);
+                    txtStudent.setVisibility(View.GONE);
+                    dailyHomeworkModel.setStudentId(null);
+                    dailyHomeworkModel.setDivisionName(null);
                 } else {
-                    spinnerStudentName.setVisibility(View.GONE);
-                    txtStudentSpinnerTitle.setVisibility(View.GONE);
+                    spnDivision.setVisibility(View.VISIBLE);
+                    spnStudent.setVisibility(View.VISIBLE);
+                    txtDivisionSpinnerTitle.setVisibility(View.VISIBLE);
+                    txtStudent.setVisibility(View.VISIBLE);
+                    getStudent(listClass.get(position).getServerValue(), listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-*/
         return view;
     }
 
     private void bindModel() {
-        homeWorkModel.setClassName(spnClass.getSelectedItem().toString());
-        homeWorkModel.setSubjectName(edtSubject.getText().toString().trim());
-        homeWorkModel.setDescription(edt_description.getText().toString().trim());
+        //dailyHomeworkModel.setClassName(spnClass.getSelectedItem().toString());
+        //dailyHomeworkModel.setSubjectName(spnSubject.getText().toString().trim());
+        // dailyHomeworkModel.setDescription(edtDescription.getText().toString().trim());
         //homeWorkModel.setHomeworkDate(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
     }
 
 
     private boolean check() {
-        if (homeWorkModel.getClassName() == null || homeWorkModel.getClassName().equals("")) {
+        if (dailyHomeworkModel.getClassName() == null || dailyHomeworkModel.getClassName().equals("")) {
             getMyActivity().showToast(getStringById(R.string.valid_class_name));
             return false;
         }
-        if (homeWorkModel.getSubjectName() == null || homeWorkModel.getSubjectName().equals("")) {
+        if (dailyHomeworkModel.getSubjectName() == null || dailyHomeworkModel.getSubjectName().equals("")) {
             getMyActivity().showToast(getStringById(R.string.valid_subject));
             return false;
         }
 
-        if (homeWorkModel.getDescription() == null || homeWorkModel.getDescription().equals("")) {
+        if (dailyHomeworkModel.getDescription() == null || dailyHomeworkModel.getDescription().equals("")) {
             getMyActivity().showToast(getStringById(R.string.valid_description));
             return false;
         }
@@ -175,14 +234,67 @@ public class HomeWorkFragment extends CommonFragment {
     }
 
 
+    public void getStudent(String classId, String divisionId) {
+        if (!apiFlag) {
+            apiFlag = true;
+            HashMap<String, Object> hashMap = new HashMap<>();
+      /*  hashMap.put(IJson.userId, userModel.getPkeyId());
+        hashMap.put(IJson.otp, txtOtp.getText().toString());*/
+            String url = String.format(IUrls.URL_CLASS_WISE_STUDENT, classId, divisionId);
+            Log.d("url", url);
+            CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentModel>() {
+                @Override
+                public void onResponse(StudentModel[] object) {
+                    txtStudent.setVisibility(View.VISIBLE);
+                    spnStudent.setVisibility(View.VISIBLE);
+                    listStudent = new ArrayList<>();
+                    StudentModel allStudent = new StudentModel();
+                    allStudent.setFullName("All");
+                    allStudent.setPkeyId(null);
+                    listStudent.add(allStudent);
+                    for (StudentModel studentModel : object) {
+                        listStudent.add(studentModel);
+                    }
+                    ArrayAdapter<StudentModel> studentAdapter = new ArrayAdapter(getMyActivity(), android.R.layout.simple_spinner_item, listStudent);
+                    studentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spnStudent.setAdapter(studentAdapter);
+                    studentAdapter.notifyDataSetChanged();
+                    apiFlag = false;
+                }
+
+                @Override
+                public void onResponse() {
+                }
+
+                @Override
+                public void onResponse(StudentModel object) {
+
+                }
+
+                @Override
+                public void onError(String message) {
+                    spnStudent.setVisibility(View.GONE);
+                    txtStudent.setVisibility(View.GONE);
+                    if (message != null && !message.isEmpty()) {
+                        getMyActivity().showToast(message);
+                    }
+                    apiFlag = false;
+                }
+            }, StudentModel[].class);
+
+        }
+    }
+
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.classId, "" + homeWorkModel.getClassName());
-        hashMap.put(IJson.subject, "" + homeWorkModel.getSubjectName());
-        hashMap.put(IJson.dateStamp, "" + homeWorkModel.getHomeworkDate());
-        hashMap.put(IJson.description, "" + homeWorkModel.getDescription());
+        hashMap.put(IJson.classId, dailyHomeworkModel.getClassName());
+        hashMap.put(IJson.divisionId, dailyHomeworkModel.getDivisionName());
+        hashMap.put(IJson.studentId, dailyHomeworkModel.getStudentId());
+        hashMap.put(IJson.subject, dailyHomeworkModel.getSubjectName());
+        hashMap.put(IJson.dateStamp, dailyHomeworkModel.getHomeworkDate());
+        hashMap.put(IJson.description, dailyHomeworkModel.getDescription());
 
-        CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<DailyHomeworkModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<DailyHomeworkModel>() {
             @Override
             public void onResponse(DailyHomeworkModel[] object) {
             }
@@ -191,9 +303,11 @@ public class HomeWorkFragment extends CommonFragment {
             public void onResponse(DailyHomeworkModel studentData) {
 
             }
+
             @Override
             public void onResponse() {
             }
+
             @Override
             public void onError(String message) {
                 Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
@@ -201,7 +315,6 @@ public class HomeWorkFragment extends CommonFragment {
         }, DailyHomeworkModel.class);
 
     }
-
 
 
     private HomeActivity getMyActivity() {

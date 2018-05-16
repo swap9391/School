@@ -313,6 +313,7 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="lbl_installment_date">Date</string>
     <string name="lbl_payment_status">Payment Status</string>
     <string name="lbl_payment_mode">Payment Mode</string>
+    <string name="lbl_subject">Select Subject</string>
     <string name="btn_pay">Pay Now</string>
     <string name="valid_event_name">Please enter event name</string>
     <string name="valid_event_date">Please select event date</string>

@@ -24,6 +24,7 @@ import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -137,10 +138,7 @@ public class ProfileFragment extends CommonFragment {
         CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentRewardsModel>() {
             @Override
             public void onResponse(StudentRewardsModel[] object) {
-
-                for (StudentRewardsModel rewardModel : object) {
-                    rewardModelList.add(rewardModel);
-                }
+                rewardModelList.addAll(Arrays.asList(object));
                 /*if (object[0] instanceof UserModel) {
                  for (S)
                 }*/
