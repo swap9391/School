@@ -37,13 +37,13 @@ android {
         kalpataruFlavour {
             applicationId
             "com.exa.mydemoapp"
-            applicationIdSuffix ".viewer"
+            applicationIdSuffix ".kalpatarukids"
             versionName "1.0.0"
             versionCode 1000
             resValue "string", "app_name", "Kalpataru Kids"
             buildConfigField "String", "MAIN_TABLE_NAME", "\"KALPATARU_SCHOOL\""
-            buildConfigField "String", "map_api_key", "\"AIzaSyA-2OJ_dYLKEZ8V8XOmN2UqFSzUl79hoCY\""
-            buildConfigField "String", "google_directions_key", "\"AIzaSyABqf3JePqGL_7vRByYzCYtEb9Ys7VPupI\""
+            buildConfigField "String", "map_api_key", "\"AIzaSyDxMAnvVtocXjjdgbOkweKm-42mRnHDEZQ\""
+            buildConfigField "String", "google_directions_key", "\"AIzaSyDxMAnvVtocXjjdgbOkweKm-42mRnHDEZQ\""
         }
 
     }

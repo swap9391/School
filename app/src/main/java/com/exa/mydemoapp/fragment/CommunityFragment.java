@@ -355,7 +355,7 @@ public class CommunityFragment extends Fragment implements View.OnClickListener,
         final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
         progressDialog.setTitle("Uploading");
         progressDialog.show();
-        StorageReference riversRef = getMyActivity().mStorageRef.child("images/image" + Calendar.getInstance().getTime() + ".jpg");
+        StorageReference riversRef = getMyActivity().mStorageRef.child("Kalpataru_Images" + Calendar.getInstance().getTime() + ".jpg");
         riversRef.putFile(imglist.get(0))
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
