@@ -29,6 +29,7 @@ import com.exa.mydemoapp.listner.AttendanceListner;
 import com.exa.mydemoapp.model.AttendanceMasterModel;
 import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.StudentAttendanceDetailsModel;
+import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
@@ -52,6 +53,8 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     private RecyclerView recyclerView;
     @ViewById(R.id.spinner_class_name)
     private Spinner spinnerClass;
+    @ViewById(R.id.spinner_division)
+    private Spinner spinnerDivision;
     @ViewById(R.id.btn_in)
     private Button btnIn;
     @ViewById(R.id.btn_out)
@@ -66,6 +69,10 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     StudentAttendaceAdapter mAdapter;
     AttendanceMasterModel attendanceMasterModel;
     int lastClassName;
+
+    private List<DropdownMasterModel> listDivision;
+
+    boolean apiFlag = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +110,18 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 // your code here
             }
         });
+
+        DropdownMasterModel allDropdownMasterModel = new DropdownMasterModel();
+        allDropdownMasterModel.setDropdownValue("All");
+        allDropdownMasterModel.setServerValue(null);
+        listDivision = new ArrayList<>();
+        listDivision.add(allDropdownMasterModel);
+        listDivision = getMyActivity().getDbInvoker().getDropDownByType("DEVISION");
+        ArrayAdapter<DropdownMasterModel> divisionAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
+        divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDivision.setAdapter(divisionAdapter);
+        divisionAdapter.notifyDataSetChanged();
+
 
 
         btnIn.setOnClickListener(new View.OnClickListener()
@@ -285,23 +304,6 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 if (message != null && message.isEmpty()) {
                     Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
                 }
-             /*   UserModel studentModel0 = new UserModel();
-                studentModel0.setId(1);
-                studentModel0.setStudentName("Swapnil");
-                UserModel studentModel1 = new UserModel();
-                studentModel1.setId(2);
-                studentModel1.setStudentName("Vaibhav");
-                UserModel studentModel2 = new UserModel();
-                studentModel2.setId(3);
-                studentModel2.setStudentName("Manohar");
-                UserModel studentModel3 = new UserModel();
-                studentModel3.setId(4);
-                studentModel3.setStudentName("Uday");
-                listStudent.add(studentModel0);
-                listStudent.add(studentModel1);
-                listStudent.add(studentModel2);
-                listStudent.add(studentModel3);
-*/
                 listStudent = dbInvoker.getUserListByStudent(className);
                 for (UserModel userModel : listStudent) {
                     StudentAttendanceDetailsModel attendanceModel = new StudentAttendanceDetailsModel();

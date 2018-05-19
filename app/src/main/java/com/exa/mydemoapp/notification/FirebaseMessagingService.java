@@ -33,12 +33,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         JSONObject object = new JSONObject(params);
         String msg = remoteMessage.getData().get("message");
         String title = remoteMessage.getData().get("title");
-
+        showNotification(msg, title);
         /*if(msgType.equals(IConstants.MSG_TYPE_ALL)){
             showNotification(msg,title);
         }
         if(msgType.equals(IConstants.MSG_TYPE_PERSONAL)&&imei.equals(myImei)){*/
-        showNotification(msg, title);
+
         //}
 
 
