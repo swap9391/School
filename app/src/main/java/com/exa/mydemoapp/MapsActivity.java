@@ -1,8 +1,10 @@
 package com.exa.mydemoapp;
 
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
@@ -101,7 +103,6 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
     private Toolbar toolbar;
     @ViewById(R.id.btn_search)
     private Button btnSearch;
-    private List<String> vehicleList;
     private List<BusLocationsModel> demoList;
     private int listCount = 0;
     LocationUpdateService myservice;
@@ -142,7 +143,23 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateUI();
+                CharSequence options[] = new CharSequence[]{"Location from start", "Current Location"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                builder.setTitle("Select Option");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // the user clicked on colors[which]
+                        if (which == 0) {
+                         listOfLocation();
+                        } else if (which == 1) {
+                            updateUI();
+                        }
+                    }
+                });
+                builder.show();
+
             }
         });
 
@@ -632,9 +649,42 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
 
             @Override
             public void onError(String message) {
-            showToast(message);
+                showToast(message);
             }
         }, BusLocationsModel.class);
+    }
+
+
+    private void listOfLocation() {
+        Log.d(TAG, "UI update initiated .............");
+        HashMap<String, Object> hashMap = new HashMap<>();
+        long date = System.currentTimeMillis() / 1000;
+        String url = String.format(IUrls.URL_GET_BUS_LOCATION_LIST, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue(),date);
+        CallWebService.getWebservice(MapsActivity.this, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
+            @Override
+            public void onResponse(BusLocationsModel[] object) {
+              demoList.addAll(Arrays.asList(object));
+                if (demoList.size() > 1) {
+                    if (!isMapMoving) {
+                        DemoMap();
+                    }
+                }
+            }
+            @Override
+            public void onResponse(BusLocationsModel object) {
+
+            }
+
+            @Override
+            public void onResponse() {
+
+            }
+
+            @Override
+            public void onError(String message) {
+                showToast(message);
+            }
+        }, BusLocationsModel[].class);
     }
 
 

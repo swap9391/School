@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,16 +63,12 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     @ViewById(R.id.date_picker_event)
     private Button datePicker;
 
-    private List<UserModel> listStudent;
     private List<StudentAttendanceDetailsModel> selectedStudents;
-    HashMap<String, Object> selectedStudentMap = new HashMap<>();
-    private DbInvoker dbInvoker;
     StudentAttendaceAdapter mAdapter;
     AttendanceMasterModel attendanceMasterModel;
     int lastClassName;
-
     private List<DropdownMasterModel> listDivision;
-
+    private List<StudentAttendanceDetailsModel> listStudentAttendanceDetailsModels;
     boolean apiFlag = false;
 
     @Override
@@ -84,9 +81,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_attendance, container, false);
-        dbInvoker = new DbInvoker(getMyActivity());
         attendanceMasterModel = new AttendanceMasterModel();
-        listStudent = new ArrayList<>();
         getMyActivity().toolbar.setTitle(getString(R.string.dashboard_attendance));
         setHasOptionsMenu(true);
         initViewBinding(view);
@@ -102,12 +97,25 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 selectedStudents = new ArrayList<>();
                 lastClassName = spinnerClass.getLastVisiblePosition();
-                getAttendance(listClass.get(position).getDropdownValue());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
+            }
+        });
+
+
+        spinnerDivision.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getStudent(listClass.get(spinnerClass.getSelectedItemPosition()).getServerValue(), listDivision.get(position).getServerValue());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -121,7 +129,6 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
         divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDivision.setAdapter(divisionAdapter);
         divisionAdapter.notifyDataSetChanged();
-
 
 
         btnIn.setOnClickListener(new View.OnClickListener()
@@ -161,6 +168,51 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     }
 
 
+    public void getStudent(String classId, String divisionId) {
+        if (!apiFlag) {
+            apiFlag = true;
+            HashMap<String, Object> hashMap = new HashMap<>();
+            String url = String.format(IUrls.URL_CLASS_WISE_STUDENT, classId, divisionId);
+            Log.d("url", url);
+            CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentModel>() {
+                @Override
+                public void onResponse(StudentModel[] object) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    listStudentAttendanceDetailsModels = new ArrayList<>();
+                    for (StudentModel studentModel : object) {
+                        StudentAttendanceDetailsModel model = new StudentAttendanceDetailsModel();
+                        model.setStudentId(studentModel.getPkeyId());
+                        model.setStudentName(studentModel.getFullName());
+                        listStudentAttendanceDetailsModels.add(model);
+                    }
+                    apiFlag = false;
+
+                    initAdapter(listStudentAttendanceDetailsModels);
+                }
+
+                @Override
+                public void onResponse() {
+                }
+
+                @Override
+                public void onResponse(StudentModel object) {
+
+                }
+
+                @Override
+                public void onError(String message) {
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    if (message != null && !message.isEmpty()) {
+                        getMyActivity().showToast(message);
+                    }
+                    apiFlag = false;
+                }
+            }, StudentModel[].class);
+
+        }
+    }
+
+
     private void initAdapter(List<StudentAttendanceDetailsModel> listStudent) {
         //if (listStudent != null && listStudent.size() > 0) {
         mAdapter = new StudentAttendaceAdapter(listStudent, getMyActivity(), this);
@@ -186,7 +238,6 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     public void setSelectedStudents(List<StudentAttendanceDetailsModel> selectedStudents) {
         this.selectedStudents = selectedStudents;
     }
-
 
     @Override
     public void present(StudentAttendanceDetailsModel bean, int position) {
@@ -241,7 +292,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                     hashMap.put(IJson.id, attendanceMasterModel.getPkeyId());
                 }
 
-                CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.POST, IUrls.URL_ADD_ATTENDANCE, hashMap, new VolleyResponseListener<AttendanceMasterModel>() {
+                CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_ATTENDANCE, hashMap, new VolleyResponseListener<AttendanceMasterModel>() {
                     @Override
                     public void onResponse(AttendanceMasterModel[] object) {
                     }
@@ -250,9 +301,11 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                     public void onResponse(AttendanceMasterModel studentData) {
                         getMyActivity().showFragment(new DashboardFragment(), null);
                     }
+
                     @Override
                     public void onResponse() {
                     }
+
                     @Override
                     public void onError(String message) {
                         Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
@@ -267,54 +320,6 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 dialog.dismiss();
             }
         }).show();
-
-
-    }
-
-    private void getAttendance(String className) {
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.dateStamp, CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.ONLY_DATE_FORMAT));
-        hashMap.put(IJson.classId, className);
-        CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.POST, IUrls.URL_GET_ATTENDANCE, hashMap, new VolleyResponseListener<AttendanceMasterModel>() {
-
-            @Override
-            public void onResponse(AttendanceMasterModel[] object) {
-
-            }
-            @Override
-            public void onResponse() {
-            }
-            @Override
-            public void onResponse(AttendanceMasterModel object) {
-
-                attendanceMasterModel = object;
-                for (StudentAttendanceDetailsModel attendanceModel : object.getStudentList()) {
-                    UserModel userModel = dbInvoker.getStudentById(attendanceModel.getStudentId());
-                    attendanceModel.setStudentName(userModel.getFirstName()+" "+userModel.getLastName());
-                    attendanceModel.setStudentId(userModel.getPkeyId());
-                    selectedStudents.add(attendanceModel);
-                }
-
-                initAdapter(selectedStudents);
-
-            }
-
-            @Override
-            public void onError(String message) {
-                if (message != null && message.isEmpty()) {
-                    Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
-                }
-                listStudent = dbInvoker.getUserListByStudent(className);
-                for (UserModel userModel : listStudent) {
-                    StudentAttendanceDetailsModel attendanceModel = new StudentAttendanceDetailsModel();
-                    attendanceModel.setStudentName(userModel.getFirstName()+" "+userModel.getLastName());
-                    attendanceModel.setStudentId(userModel.getPkeyId());
-                    selectedStudents.add(attendanceModel);
-                }
-
-                initAdapter(selectedStudents);
-            }
-        }, AttendanceMasterModel.class);
 
 
     }

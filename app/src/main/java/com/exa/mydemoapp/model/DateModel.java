@@ -10,6 +10,7 @@ public class DateModel {
     Date date;
     int position;
     String eventType;
+    boolean isPresent;
 
     public String getEventType() {
         return eventType;
@@ -33,5 +34,13 @@ public class DateModel {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public boolean isPresent() {
+        return isPresent;
+    }
+
+    public void setPresent(boolean present) {
+        isPresent = present;
     }
 }
