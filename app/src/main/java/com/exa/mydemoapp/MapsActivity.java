@@ -625,7 +625,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         Log.d(TAG, "UI update initiated .............");
         HashMap<String, Object> hashMap = new HashMap<>();
         long date = System.currentTimeMillis() / 1000;
-        String url = String.format(IUrls.URL_GET_BUS_LATEST_LOCATION, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
+        String url = String.format(IUrls.URL_GET_BUS_LATEST_LOCATION, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue(),date);
         CallWebService.getWebserviceObject(MapsActivity.this, true, true, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
@@ -659,7 +659,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         Log.d(TAG, "UI update initiated .............");
         HashMap<String, Object> hashMap = new HashMap<>();
         long date = System.currentTimeMillis() / 1000;
-        String url = String.format(IUrls.URL_GET_BUS_LOCATION_LIST, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue(),date);
+        String url = String.format(IUrls.URL_GET_BUS_LOCATION_LIST,date, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
         CallWebService.getWebservice(MapsActivity.this, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
