@@ -75,4 +75,7 @@ public interface IJson {
     String longitude="longitude";
     String busTripType="busTripType";
 
+    //attedance
+    String attendanceDate="attendanceDate";
+
 }

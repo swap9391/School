@@ -57,43 +57,10 @@
         android:text="Select Date" />
 
 
-    <LinearLayout
-        android:id="@+id/layout_inout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_in"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="In"
-            android:textColor="@color/white" />
-
-        <Button
-            android:id="@+id/btn_out"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:text="Out"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/layout_inout"
         android:layout_below="@+id/date_picker_event"
         android:layout_marginTop="7dp" />
 
