@@ -27,11 +27,13 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
     private Activity context;
     private int lastCheckedPosition = -1;
     private AttendanceListner attendanceListner;
+    boolean flagCheckDisable;
 
-    public StudentAttendaceAdapter(List<StudentAttendanceDetailsModel> listUser, Activity context, AttendanceListner attendanceListner) {
+    public StudentAttendaceAdapter(List<StudentAttendanceDetailsModel> listUser, Activity context, AttendanceListner attendanceListner, boolean flagCheckDisable) {
         this.listUser = listUser;
         this.context = context;
         this.attendanceListner = attendanceListner;
+        this.flagCheckDisable = flagCheckDisable;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
@@ -81,6 +83,10 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
 
         holder.txtName.setText(selectedItem.getStudentName());
         // StudentAttendanceModel bean = listUser.get(lastCheckedPosition);
+
+        if (!flagCheckDisable) {
+            holder.chkAttendance.setEnabled(false);
+        }
 
         if (selectedItem.isStudentIn()) {
             holder.txtInOutStatus.setText("IN");

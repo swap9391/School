@@ -19,8 +19,10 @@ import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
+import com.exa.mydemoapp.fragment.AttendanceCalendarFragment;
 import com.exa.mydemoapp.fragment.AttendanceFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
+import com.exa.mydemoapp.fragment.ChooseAttendance;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.ContactUsFragment;
 import com.exa.mydemoapp.fragment.EventListFragment;
@@ -138,12 +140,17 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new UploadPhotoFragment(), null);
                         break;
                     case "Student Attendance":
-                        context.showFragment(new AttendanceFragment(), null);
+                        if (userType.equals(Constants.USER_TYPE_STUDENT)) {
+                            context.showFragment(new AttendanceCalendarFragment(), null);
+                        } else {
+                            context.showFragment(new ChooseAttendance(), null);
+                        }
+
                         break;
                     case "Annual Event":
                         if (userType.equals(Constants.USER_TYPE_ADMIN)) {
                             context.showFragment(new EventListFragment(), null);
-                        }else {
+                        } else {
                             context.showFragment(new AnnualEventFragment(), null);
                         }
                         break;
@@ -156,7 +163,7 @@ public class HomeGridAdapter extends BaseAdapter {
                     case "Fees Structure":
                         if (userType.equals(Constants.USER_TYPE_ADMIN)) {
                             context.showFragment(new UpdateFeesFragment(), null);
-                        }else {
+                        } else {
                             context.showFragment(new FeeStructureFragment(), null);
                         }
                         break;

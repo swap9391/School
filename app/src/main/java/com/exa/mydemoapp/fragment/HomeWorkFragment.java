@@ -1,6 +1,7 @@
 package com.exa.mydemoapp.fragment;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,12 +14,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
@@ -34,6 +37,8 @@ import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,10 +67,8 @@ public class HomeWorkFragment extends CommonFragment {
     private TextView txtStudent;
     @ViewById(R.id.spinner_student_name)
     private Spinner spnStudent;
-    @ViewById(R.id.spinner_subject)
-    private Spinner spnSubject;
-    @ViewById(R.id.lbl_subject_name)
-    private TextView txtSubject;
+    @ViewById(R.id.edt_subject_name)
+    private EditText txtSubject;
 
     DailyHomeworkModel dailyHomeworkModel;
 
@@ -126,8 +129,10 @@ public class HomeWorkFragment extends CommonFragment {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                getStudent(listClass.get(spnClass.getSelectedItemPosition()).getServerValue(), listDivision.get(position).getServerValue());
-
+                if (!listClass.get(spnClass.getSelectedItemPosition()).getDropdownValue().equals("All")) {
+                    getStudent(listClass.get(spnClass.getSelectedItemPosition()).getServerValue(), listDivision.get(position).getServerValue());
+                }
+                dailyHomeworkModel.setDivisionName(listDivision.get(position).getServerValue());
             }
 
             @Override
@@ -154,19 +159,50 @@ public class HomeWorkFragment extends CommonFragment {
                     txtStudent.setVisibility(View.VISIBLE);
                     getStudent(listClass.get(position).getServerValue(), listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
                 }
+                dailyHomeworkModel.setClassName(listClass.get(position).getServerValue());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+
+        datePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePicker();
+            }
+        });
+        datePicker.setText(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), "dd MMM yyyy"));
+        long timestamp = System.currentTimeMillis() / 1000;
+        dailyHomeworkModel.setHomeworkDate(timestamp);
+
         return view;
     }
 
     private void bindModel() {
-        //dailyHomeworkModel.setClassName(spnClass.getSelectedItem().toString());
+        if (dailyHomeworkModel.getClassName().equals("All")) {
+            dailyHomeworkModel.setStudentId(null);
+            dailyHomeworkModel.setDivisionName(null);
+        } else {
+            if (spnStudent.getVisibility() == View.VISIBLE) {
+                if (listStudent.get(spnStudent.getSelectedItemPosition()).equals("All")) {
+                    dailyHomeworkModel.setStudentId("All");
+                } else {
+                    dailyHomeworkModel.setStudentId(listStudent.get(spnStudent.getSelectedItemPosition()).getPkeyId());
+                }
+
+            } else if (spnDivision.getVisibility() == View.VISIBLE) {
+                dailyHomeworkModel.setDivisionName(listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());
+            }
+
+
+        }
+        dailyHomeworkModel.setSubjectName(txtSubject.getText().toString().trim());
         //dailyHomeworkModel.setSubjectName(spnSubject.getText().toString().trim());
-        // dailyHomeworkModel.setDescription(edtDescription.getText().toString().trim());
+        dailyHomeworkModel.setDescription(edtDescription.getText().toString().trim());
+
         //homeWorkModel.setHomeworkDate(CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), Constants.DATE_FORMAT));
     }
 
@@ -238,8 +274,6 @@ public class HomeWorkFragment extends CommonFragment {
         if (!apiFlag) {
             apiFlag = true;
             HashMap<String, Object> hashMap = new HashMap<>();
-      /*  hashMap.put(IJson.userId, userModel.getPkeyId());
-        hashMap.put(IJson.otp, txtOtp.getText().toString());*/
             String url = String.format(IUrls.URL_CLASS_WISE_STUDENT, classId, divisionId);
             Log.d("url", url);
             CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentModel>() {
@@ -273,12 +307,13 @@ public class HomeWorkFragment extends CommonFragment {
 
                 @Override
                 public void onError(String message) {
+                    apiFlag = false;
                     spnStudent.setVisibility(View.GONE);
                     txtStudent.setVisibility(View.GONE);
                     if (message != null && !message.isEmpty()) {
                         getMyActivity().showToast(message);
                     }
-                    apiFlag = false;
+
                 }
             }, StudentModel[].class);
 
@@ -294,18 +329,19 @@ public class HomeWorkFragment extends CommonFragment {
         hashMap.put(IJson.dateStamp, dailyHomeworkModel.getHomeworkDate());
         hashMap.put(IJson.description, dailyHomeworkModel.getDescription());
 
-        CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_REWARD, hashMap, new VolleyResponseListener<DailyHomeworkModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_HOMEWORK, hashMap, new VolleyResponseListener<DailyHomeworkModel>() {
             @Override
             public void onResponse(DailyHomeworkModel[] object) {
             }
 
             @Override
             public void onResponse(DailyHomeworkModel studentData) {
-
+                getMyActivity().showFragment(new DashboardFragment(), null);
             }
 
             @Override
             public void onResponse() {
+                getMyActivity().showFragment(new DashboardFragment(), null);
             }
 
             @Override
@@ -315,6 +351,45 @@ public class HomeWorkFragment extends CommonFragment {
         }, DailyHomeworkModel.class);
 
     }
+
+
+    private void showDatePicker() {
+        DatePickerFragment date = new DatePickerFragment();
+        /**
+         * Set Up Current Date Into dialog
+         */
+        Calendar calender = Calendar.getInstance();
+        Bundle args = new Bundle();
+        args.putInt("year", calender.get(Calendar.YEAR));
+        args.putInt("month", calender.get(Calendar.MONTH));
+        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        date.setArguments(args);
+        /**
+         * Set Call back to capture selected date
+         */
+        date.setCallBack(ondate);
+        date.show(getFragmentManager(), "Date Picker");
+    }
+
+    DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            monthOfYear += 1;
+            String month = "" + monthOfYear;
+            String day = "" + dayOfMonth;
+            if (monthOfYear < 10) {
+                month = "0" + monthOfYear;
+            }
+            if (dayOfMonth < 10) {
+                day = "0" + dayOfMonth;
+            }
+            Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
+            String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.ONLY_DATE_FORMAT);
+            //attendanceMasterModel.setDateStamp(formatedDate);
+            datePicker.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
+        }
+    };
 
 
     private HomeActivity getMyActivity() {

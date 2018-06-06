@@ -63,5 +63,9 @@ public interface Constants {
     public static String INTENT_TYPE_EVENT_DATA= "eventdata";
     public static String TRIP_TYPE = "tripType";
     public static String ROUTE_TYPE = "routType";
+    public static String ATTENDANCE_TYPE = "attendanceType";
+    public static String ATTENDANCE_IN = "in";
+    public static String ATTENDANCE_OUT = "out";
+    public static String ATTENDANCE_UPDATE = "update";
 
 }

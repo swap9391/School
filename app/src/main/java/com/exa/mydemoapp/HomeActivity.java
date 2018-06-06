@@ -32,8 +32,10 @@ import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
+import com.exa.mydemoapp.fragment.AttendanceCalendarFragment;
 import com.exa.mydemoapp.fragment.AttendanceFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
+import com.exa.mydemoapp.fragment.ChooseAttendance;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.ContactUsFragment;
 import com.exa.mydemoapp.fragment.DashboardFragment;
@@ -96,6 +98,8 @@ public class HomeActivity extends CommonActivity {
     public PagerFragment pagerFragment;
     public UpdateFeesFragment updateFeesFragment;
     public EventListFragment eventListFragment;
+    public AttendanceCalendarFragment attendanceCalendarFragment;
+    public ChooseAttendance chooseAttendance;
     public List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
     public boolean isGallery = true;
     public boolean isGuest = false;
@@ -272,7 +276,7 @@ public class HomeActivity extends CommonActivity {
             showFragment(dashboardFragment, null);
         } else if (attendanceFragment != null && attendanceFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
-            showFragment(dashboardFragment, null);
+            showFragment(chooseAttendance, null);
         } else if (rewardGraphFragment != null && rewardGraphFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(profileFragment, null);
@@ -280,6 +284,12 @@ public class HomeActivity extends CommonActivity {
             showToolbar();
             showFragment(dashboardFragment, null);
         } else if (homeWorkFragment != null && homeWorkFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
+        } else if (chooseAttendance != null && chooseAttendance.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
+        } else if (attendanceCalendarFragment != null && attendanceCalendarFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
         } else {
@@ -323,6 +333,9 @@ public class HomeActivity extends CommonActivity {
         pagerFragment = new PagerFragment();
         updateFeesFragment = new UpdateFeesFragment();
         eventListFragment = new EventListFragment();
+        chooseAttendance = new ChooseAttendance();
+        attendanceCalendarFragment = new AttendanceCalendarFragment();
+
     }
 
     public List<AlbumMasterModel> getListAlbumChild() {
