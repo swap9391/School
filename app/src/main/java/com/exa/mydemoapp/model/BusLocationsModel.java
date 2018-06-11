@@ -13,6 +13,7 @@ public class BusLocationsModel extends BasicBean implements Serializable {
     private String longitude;
     private String busRoute;
     private String busTripType;
+    private long tripDate;
 
     public String getLatitude() {
         return latitude;
@@ -44,5 +45,13 @@ public class BusLocationsModel extends BasicBean implements Serializable {
 
     public void setBusTripType(String busTripType) {
         this.busTripType = busTripType;
+    }
+
+    public long getTripDate() {
+        return tripDate;
+    }
+
+    public void setTripDate(long tripDate) {
+        this.tripDate = tripDate;
     }
 }

@@ -1,10 +1,20 @@
 package com.exa.mydemoapp.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,25 +26,39 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.android.volley.Request;
+import com.bumptech.glide.Glide;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.Common.FloatingActionButton;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
+import com.exa.mydemoapp.model.AlbumImagesModel;
+import com.exa.mydemoapp.model.AlbumMasterModel;
 import com.exa.mydemoapp.model.DailyHomeworkModel;
 import com.exa.mydemoapp.model.DropdownMasterModel;
+import com.exa.mydemoapp.model.HomeWorkImageModel;
 import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.model.UserModel;
+import com.exa.mydemoapp.s3Upload.S3FileTransferDelegate;
+import com.exa.mydemoapp.s3Upload.S3UploadActivity;
 import com.exa.mydemoapp.webservice.CallWebService;
 import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -74,13 +98,15 @@ public class HomeWorkFragment extends CommonFragment {
 
     private List<DropdownMasterModel> listClass;
     private List<DropdownMasterModel> listDivision;
-    private List<DropdownMasterModel> listSubject;
     private List<StudentModel> listStudent;
-    private List<UserModel> listStudents;
-    private List<String> listStudentName;
 
     boolean isEdit = false;
     boolean apiFlag = false;
+
+    Uri fileView;
+    List<File> imageFiles = new ArrayList<>();
+    int count = 0;
+    int totalImages;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -150,8 +176,8 @@ public class HomeWorkFragment extends CommonFragment {
                     spnStudent.setVisibility(View.GONE);
                     txtDivisionSpinnerTitle.setVisibility(View.GONE);
                     txtStudent.setVisibility(View.GONE);
-                    dailyHomeworkModel.setStudentId(null);
-                    dailyHomeworkModel.setDivisionName(null);
+                    dailyHomeworkModel.setStudentId("All");
+                    dailyHomeworkModel.setDivisionName("All");
                 } else {
                     spnDivision.setVisibility(View.VISIBLE);
                     spnStudent.setVisibility(View.VISIBLE);
@@ -178,13 +204,34 @@ public class HomeWorkFragment extends CommonFragment {
         long timestamp = System.currentTimeMillis() / 1000;
         dailyHomeworkModel.setHomeworkDate(timestamp);
 
+
+        LinearLayout yourframelayout = (LinearLayout) view.findViewById(R.id.btnFloat);
+        FloatingActionButton fabButton = new FloatingActionButton.Builder(getMyActivity(), yourframelayout)
+                .withDrawable(getResources().getDrawable(R.drawable.ic_add_white))
+                .withButtonColor(Color.parseColor("#F43F68"))
+                .withGravity(Gravity.BOTTOM | Gravity.RIGHT)
+                .withMargins(0, 0, 2, 2)
+                .create();
+
+        fabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bindModel();
+                if (check()) {
+                    picfromGallery();
+                }
+
+            }
+        });
+        imageFiles = new ArrayList<>();
         return view;
     }
 
+
     private void bindModel() {
         if (dailyHomeworkModel.getClassName().equals("All")) {
-            dailyHomeworkModel.setStudentId(null);
-            dailyHomeworkModel.setDivisionName(null);
+            dailyHomeworkModel.setStudentId("All");
+            dailyHomeworkModel.setDivisionName("All");
         } else {
             if (spnStudent.getVisibility() == View.VISIBLE) {
                 if (listStudent.get(spnStudent.getSelectedItemPosition()).equals("All")) {
@@ -246,7 +293,12 @@ public class HomeWorkFragment extends CommonFragment {
                         public void onClick(DialogInterface dialog, int which) {
                             bindModel();
                             if (check()) {
-                                save();
+                                if (!isEdit && imageFiles.size() > 0) {
+                                    // uploadImage();
+                                    uploadImages();
+                                } else {
+                                    save();
+                                }
                             }
                         }
                     }).setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
@@ -322,13 +374,17 @@ public class HomeWorkFragment extends CommonFragment {
 
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.classId, dailyHomeworkModel.getClassName());
-        hashMap.put(IJson.divisionId, dailyHomeworkModel.getDivisionName());
+        hashMap.put(IJson.className, dailyHomeworkModel.getClassName());
+        hashMap.put(IJson.division, dailyHomeworkModel.getDivisionName());
         hashMap.put(IJson.studentId, dailyHomeworkModel.getStudentId());
         hashMap.put(IJson.subject, dailyHomeworkModel.getSubjectName());
-        hashMap.put(IJson.dateStamp, dailyHomeworkModel.getHomeworkDate());
-        hashMap.put(IJson.description, dailyHomeworkModel.getDescription());
-
+        hashMap.put(IJson.homeworkDate, dailyHomeworkModel.getHomeworkDate());
+        hashMap.put(IJson.homeworkDescription, dailyHomeworkModel.getDescription());
+        List<String> listImages = new ArrayList<>();
+        for (HomeWorkImageModel homeWorkImageModel : dailyHomeworkModel.getAlbumImagesModel()) {
+            listImages.add(homeWorkImageModel.getImageUrl());
+        }
+        hashMap.put(IJson.homeworkImage, listImages);
         CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_HOMEWORK, hashMap, new VolleyResponseListener<DailyHomeworkModel>() {
             @Override
             public void onResponse(DailyHomeworkModel[] object) {
@@ -390,6 +446,204 @@ public class HomeWorkFragment extends CommonFragment {
             datePicker.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
         }
     };
+
+    private void startCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "LEFT");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+        imageUri = getMyActivity().getContentResolver().insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+    public void uploadImages() {
+        final ProgressDialog progressDialog = new ProgressDialog(getMyActivity());
+        progressDialog.setTitle(getString(R.string.msg_progress_uploading));
+        progressDialog.show();
+        progressDialog.setCancelable(false);
+        S3UploadActivity.uploadData(getMyActivity(), new S3FileTransferDelegate() {
+            @Override
+            public void onS3FileTransferStateChanged(int id, TransferState state, String url, Object object) {
+                File file = (File) object;
+                imageFiles.remove(file);
+                HomeWorkImageModel homeWorkImageModel = new HomeWorkImageModel();
+                homeWorkImageModel.setImageUrl(url);
+                dailyHomeworkModel.getAlbumImagesModel().add(homeWorkImageModel);
+                progressDialog.dismiss();
+                count = imageFiles.size();
+                if (count > 0) {
+                    uploadImages();
+                } else {
+                    //saveUserInformation();
+                    save();
+                    /* ClearView();
+                    getMyActivity().performBackForDesign();*/
+                }
+            }
+
+            @Override
+            public void onS3FileTransferProgressChanged(int id, String fileName, int percentage) {
+                progressDialog.setTitle(getString(R.string.msg_progress_uploading) + percentage + "%    " + totalImages + "/" + imageFiles.size());
+            }
+
+            @Override
+            public void onS3FileTransferError(int id, String fileName, Exception ex) {
+                progressDialog.dismiss();
+            }
+        }, "schoolImage" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), getString(R.string.date_format_joins)) + count, imageFiles.get(0));
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CAMERA) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    String imageurl = getMyActivity().getRealPathFromURI(imageUri);
+                    // setVehicleImage(imageurl, requestCode);
+                    Log.e("", imageurl);
+                    setImage(imageurl);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    getMyActivity().showToast(getString(R.string.msg_try_agian));
+                }
+
+            } else {
+                getMyActivity().showToast(getString(R.string.msg_capture_cacel));
+            }
+
+
+        }
+
+        if (requestCode == PICK_IMAGE && resultCode == getMyActivity().RESULT_OK
+                && null != data) {
+          /*  System.out.println("++data" + data.getClipData().getItemCount());// Get count of image here.
+            System.out.println("++count" + data.getClipData().getItemCount());*/
+            try {
+                List<Uri> listOfUri = new ArrayList<>();
+
+                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                    listOfUri.add(data.getClipData().getItemAt(i).getUri());
+                }
+                setImage(listOfUri);
+            } catch (Exception e) {
+                getMyActivity().showToast("Please Select Photos Option");
+            }
+
+
+        } else {
+
+            Log.i("SonaSys", "resultCode: " + resultCode);
+            switch (resultCode) {
+                case 0:
+                    Log.i("SonaSys", "User cancelled");
+                    break;
+
+
+            }
+
+        }
+    }
+
+    //for camera image
+    private void setImage(String uristr) {
+
+        Bitmap bitmap = null;
+        try {
+            if (uristr != null) {
+                bitmap = getMyActivity().getBitmap(uristr);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                // Bitmap bt=Bitmap.createScaledBitmap(bitmap, 720, 1100, false);
+                Bitmap bt = getMyActivity().BITMAP_RESIZER(bitmap, 300, 350);
+                bt.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                byte[] vehicleImage = stream.toByteArray();
+                fileView = getMyActivity().getImageUri(getMyActivity(), bt);
+
+
+                //imglist.add(fileView);
+                bindView(fileView, true);
+
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    //for gallery images
+    private void setImage(List<Uri> listOfUri) {
+        totalImages = listOfUri.size();
+        //        Uri selectedImage1 = data.getData();
+        int countOfImage = 0;
+        for (Uri selectedImage : listOfUri) {
+            countOfImage++;
+            try {
+                Bitmap bitmap = null;
+                bitmap = MediaStore.Images.Media.getBitmap(getMyActivity().getContentResolver(), selectedImage);
+                // ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                // Bitmap bt=Bitmap.createScaledBitmap(bitmap, 720, 1100, false);
+                //  Bitmap bt = getMyActivity().BITMAP_RESIZER(bitmap, 300, 350);
+                //  bt.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                // byte[] vehicleImage = stream.toByteArray();
+                //fileView = getMyActivity().getImageUri(getMyActivity(), bitmap);
+
+
+                File filesDir = getMyActivity().getFilesDir();
+                File imageFile = new File(filesDir, "image" + CommonUtils.formatDateForDisplay(Calendar.getInstance().getTime(), getString(R.string.date_format_joins)) + countOfImage + ".JPG");
+
+                OutputStream os;
+                try {
+                    os = new FileOutputStream(imageFile);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, os);
+                    os.flush();
+                    os.close();
+                } catch (Exception e) {
+                    Log.e(getMyActivity().getClass().getSimpleName(), "Error writing bitmap", e);
+                }
+
+                imageFiles.add(imageFile);
+
+                //imglist.add(fileView);
+                bindView(selectedImage, false);
+
+
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    private void bindView(Uri uri, boolean flag) {
+        LinearLayout layout1 = (LinearLayout) view.findViewById(R.id.lay1);
+
+        ImageView imageView = new ImageView(getMyActivity());
+        CardView cardView = new CardView(getMyActivity());
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(5, 5, 5, 5);
+        imageView.setLayoutParams(params);
+        cardView.setLayoutParams(params);
+
+        Glide.with(this)
+                .load(uri)
+                .asBitmap()
+                .override(300, 300)
+                .fitCenter()
+                .into(imageView);
+        if (flag) {
+            imageView.setRotation(90);
+        }
+        cardView.addView(imageView);
+        layout1.addView(cardView);
+
+
+    }
 
 
     private HomeActivity getMyActivity() {

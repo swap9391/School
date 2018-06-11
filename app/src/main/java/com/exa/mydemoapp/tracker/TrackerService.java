@@ -316,6 +316,8 @@ public class TrackerService extends Service implements LocationListener {
         busLocationsModel.setBusTripType(tripType);
         busLocationsModel.setLatitude("" + location.getLatitude());
         busLocationsModel.setLongitude("" + location.getLongitude());
+        long timestamp = System.currentTimeMillis() / 1000;
+        busLocationsModel.setTripDate(timestamp);
 
         if (locationIsAtStatus(location, 1) && locationIsAtStatus(location, 0)) {
             // If the most recent two statuses are approximately at the same
@@ -429,10 +431,11 @@ public class TrackerService extends Service implements LocationListener {
 
     private void save() {
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.busRoute, "Moshi");
-        hashMap.put(IJson.busTripType, "Morning");
+        hashMap.put(IJson.busRoute, busLocationsModel.getBusRoute());
+        hashMap.put(IJson.busTripType, busLocationsModel.getBusTripType());
         hashMap.put(IJson.latitude, busLocationsModel.getLatitude());
         hashMap.put(IJson.longitude, busLocationsModel.getLongitude());
+        hashMap.put(IJson.tripDate, busLocationsModel.getTripDate());
 
         CallWebService.getWebserviceObject(TrackerService.this, false, false, Request.Method.POST, IUrls.URL_ADD_BUS_LOCATION, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override

@@ -3,71 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/txt_spinner_class"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:text="@string/lbl_select_class" />
-
-    <Spinner
-        android:id="@+id/spinner_class_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_spinner_class"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"></Spinner>
-
-    <TextView
-        android:id="@+id/txt_spinner_divvision"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner_class_name"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:text="@string/lbl_select_division" />
-
-    <Spinner
-        android:id="@+id/spinner_division"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_spinner_divvision"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"></Spinner>
-
-    <TextView
-        android:id="@+id/txt_spinner_student"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner_division"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:text="@string/lbl_select_student" />
-
-    <Spinner
-        android:id="@+id/spinner_student"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_spinner_student"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"></Spinner>
-
-
     <Button
         android:id="@+id/date_picker_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner_student"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="10dp"

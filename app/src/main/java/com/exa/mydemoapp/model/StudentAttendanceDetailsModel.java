@@ -12,15 +12,10 @@ import java.io.Serializable;
 public class StudentAttendanceDetailsModel extends BasicBean implements Serializable {
     private String attendanceId;
     private String studentId;
-    @SerializedName("present")
     private boolean isPresent;
-    @SerializedName("studentIn")
     private boolean isStudentIn;
-    @SerializedName("studentOut")
     private boolean isStudentOut;
-    @SerializedName("inSmsSent")
     private boolean isInSmsSent;
-    @SerializedName("outSmsSent")
     private boolean isOutSmsSent;
     private String studentName;
 

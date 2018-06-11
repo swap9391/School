@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Connectivity;
 import com.exa.mydemoapp.Common.Constants;
+import com.exa.mydemoapp.MapsActivity;
 import com.exa.mydemoapp.model.BusLocationsModel;
 import com.exa.mydemoapp.model.StudentRewardsModel;
 import com.exa.mydemoapp.tracker.TrackerService;
@@ -113,10 +114,10 @@ public class LocationUpdateService extends Service {
         Log.d(TAG, "UI update initiated .............");
         HashMap<String, Object> hashMap = new HashMap<>();
         long date = System.currentTimeMillis() / 1000;
-
-        String url = String.format(IUrls.URL_GET_BUS_LOCATION_LIST, date, "Moshi", "Morning");
-
-        CallWebService.getWebserviceObject(LocationUpdateService.this, false, false, Request.Method.POST, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
+        String routType = CommonUtils.getSharedPref(Constants.GET_ROUTE_TYPE, this);
+        String tripType = CommonUtils.getSharedPref(Constants.GET_TRIP_TYPE, this);
+        String url = String.format(IUrls.URL_GET_BUS_LATEST_LOCATION, date, routType, tripType);
+        CallWebService.getWebserviceObject(this, true, true, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
             }

@@ -152,7 +152,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                     public void onClick(DialogInterface dialog, int which) {
                         // the user clicked on colors[which]
                         if (which == 0) {
-                         listOfLocation();
+                            listOfLocation();
                         } else if (which == 1) {
                             updateUI();
                         }
@@ -545,7 +545,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                                         } else {
                                             handler.removeCallbacks(this::run);
 
-                                            if (demoList.size() > listCount) {
+                                            if (demoList.size() - 2 > listCount) {
                                                 listCount++;
                                                 if (demoList.get(listCount) != null) {
                                                     DemoMap();
@@ -625,7 +625,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         Log.d(TAG, "UI update initiated .............");
         HashMap<String, Object> hashMap = new HashMap<>();
         long date = System.currentTimeMillis() / 1000;
-        String url = String.format(IUrls.URL_GET_BUS_LATEST_LOCATION, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue(),date);
+        String url = String.format(IUrls.URL_GET_BUS_LATEST_LOCATION, date, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
         CallWebService.getWebserviceObject(MapsActivity.this, true, true, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
@@ -659,17 +659,18 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         Log.d(TAG, "UI update initiated .............");
         HashMap<String, Object> hashMap = new HashMap<>();
         long date = System.currentTimeMillis() / 1000;
-        String url = String.format(IUrls.URL_GET_BUS_LOCATION_LIST,date, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
+        String url = String.format(IUrls.URL_GET_BUS_LOCATION_LIST, date, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
         CallWebService.getWebservice(MapsActivity.this, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
-              demoList.addAll(Arrays.asList(object));
+                demoList.addAll(Arrays.asList(object));
                 if (demoList.size() > 1) {
                     if (!isMapMoving) {
                         DemoMap();
                     }
                 }
             }
+
             @Override
             public void onResponse(BusLocationsModel object) {
 
@@ -691,9 +692,9 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
     @Override
     protected void onStart() {
         super.onStart();
-     /*   Intent intent = new Intent(this, LocationUpdateService.class);
-        intent.putExtra(Constants.TRIP_TYPE, "Morning");
-        intent.putExtra(Constants.ROUTE_TYPE, "Moshi");
+      /*  Intent intent = new Intent(this, LocationUpdateService.class);
+        intent.putExtra(Constants.TRIP_TYPE, listTripType.get(spnTripType.getSelectedItemPosition()));
+        intent.putExtra(Constants.ROUTE_TYPE, listRouteType.get(spnRoute.getSelectedItemPosition()));
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         startService(intent);*/
     }

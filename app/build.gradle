@@ -43,7 +43,7 @@ android {
             resValue "string", "app_name", "Kalpataru Kids"
             buildConfigField "String", "MAIN_TABLE_NAME", "\"KALPATARU_SCHOOL\""
             buildConfigField "String", "map_api_key", "\"AIzaSyDxMAnvVtocXjjdgbOkweKm-42mRnHDEZQ\""
-            buildConfigField "String", "google_directions_key", "\"AIzaSyDxMAnvVtocXjjdgbOkweKm-42mRnHDEZQ\""
+            buildConfigField "String", "google_directions_key", "\"AIzaSyBIQ8UnxDIEeEkMbUTx8inY0_HDv9Izma4\""
         }
 
     }

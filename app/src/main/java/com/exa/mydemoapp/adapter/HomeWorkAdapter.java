@@ -1,12 +1,13 @@
 package com.exa.mydemoapp.adapter;
 
-import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -14,14 +15,12 @@ import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
-import com.exa.mydemoapp.fragment.SignUpFragment;
 import com.exa.mydemoapp.model.DailyHomeworkModel;
+import com.exa.mydemoapp.model.HomeWorkImageModel;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /*
   Created by Swapnil Jadhav on 22/6/17.
@@ -29,11 +28,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyViewHolder> {
 
-    private List<DailyHomeworkModel> listUser;
+    private List<DailyHomeworkModel> listHomeWork;
     private HomeActivity context;
 
-    public HomeWorkAdapter(List<DailyHomeworkModel> listUser, HomeActivity context) {
-        this.listUser = listUser;
+    public HomeWorkAdapter(List<DailyHomeworkModel> listHomeWork, HomeActivity context) {
+        this.listHomeWork = listHomeWork;
         this.context = context;
     }
 
@@ -41,10 +40,11 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
 
     {
         private TextView txtStudentName;
-        private TextView txtSubject ;
+        private TextView txtSubject;
         private TextView txtDiscription;
         private TextView txtTimeStamp;
         private ImageButton imgEdit;
+        private LinearLayout linearLayout;
 
         public MyViewHolder(View view) {
             super(view);
@@ -53,7 +53,8 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
             txtSubject = (TextView) view.findViewById(R.id.txt_subject_name);
             txtDiscription = (TextView) view.findViewById(R.id.txt_description);
             txtTimeStamp = (TextView) view.findViewById(R.id.txt_time_stamp);
-
+            linearLayout = (LinearLayout) view.findViewById(R.id.lay1);
+            imgEdit = (ImageButton) view.findViewById(R.id.img_edit);
         }
 
         @Override
@@ -75,12 +76,11 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        DailyHomeworkModel selectedItem = listUser.get(position);
+        DailyHomeworkModel selectedItem = listHomeWork.get(position);
 
-        holder.txtStudentName.setText(selectedItem.getSubjectName() );
+        //  holder.txtStudentName.setText(selectedItem.getSubjectName());
         holder.txtSubject.setText(selectedItem.getSubjectName());
         holder.txtDiscription.setText(selectedItem.getDescription());
-
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(selectedItem.getHomeworkDate());
         Date date = calendar.getTime();
@@ -98,20 +98,47 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
         } else {
             holder.imgEdit.setVisibility(View.GONE);
         }
-       /* Glide.with(context)
-                .load(selectedItem.getProfilePicUrl())
-                .asBitmap()
-                .override(300, 300)
-                .fitCenter()
-                .placeholder(R.drawable.defualt_album_icon)
-                .error(R.drawable.defualt_album_icon)
-                .into(holder.circleImageView);
-*/
+
+        if (selectedItem.getAlbumImagesModel() != null && selectedItem.getAlbumImagesModel().size() > 0) {
+            bindView(selectedItem.getAlbumImagesModel(), holder.linearLayout);
+        }
+
+    }
+
+    private void bindView(List<HomeWorkImageModel> images, LinearLayout layout1) {
+
+        for (HomeWorkImageModel image : images) {
+            if (image.getImageUrl() != null) {
+                ImageView imageView = new ImageView(context);
+                CardView cardView = new CardView(context);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                params.setMargins(2, 2, 2, 2);
+                imageView.setLayoutParams(params);
+                cardView.setLayoutParams(params);
+
+                Glide.with(context)
+                        .load(image.getImageUrl())
+                        .asBitmap()
+                        .placeholder(R.drawable.defualt_album_icon)
+                        .error(R.drawable.defualt_album_icon)
+                        .override(300, 300)
+                        .fitCenter()
+                        .into(imageView);
+            /*if (flag) {
+                imageView.setRotation(90);
+            }*/
+                cardView.addView(imageView);
+                layout1.addView(cardView);
+            }
+        }
     }
 
     @Override
     public int getItemCount() {
-        return listUser.size();
+        return listHomeWork.size();
     }
 
 }

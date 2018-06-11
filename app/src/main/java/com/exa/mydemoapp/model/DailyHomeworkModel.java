@@ -1,22 +1,27 @@
 package com.exa.mydemoapp.model;
 
 import com.exa.mydemoapp.database.BasicBean;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by midt-078 on 11/4/18.
  */
 
 public class DailyHomeworkModel extends BasicBean implements Serializable {
+
+
     private String studentId;
     private String className;
     private String divisionName;
     private String subjectName;
     private String description;
     private long homeworkDate;
-    private String imageUrl;
-    private boolean isVisible;
+    @SerializedName("images")
+    private List<HomeWorkImageModel> albumImagesModel = new ArrayList<>();
 
     public String getStudentId() {
         return studentId;
@@ -66,19 +71,11 @@ public class DailyHomeworkModel extends BasicBean implements Serializable {
         this.homeworkDate = homeworkDate;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public List<HomeWorkImageModel> getAlbumImagesModel() {
+        return albumImagesModel;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
-    }
-
-    public void setVisible(boolean visible) {
-        isVisible = visible;
+    public void setAlbumImagesModel(List<HomeWorkImageModel> albumImagesModel) {
+        this.albumImagesModel = albumImagesModel;
     }
 }

@@ -418,7 +418,8 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
             }
             Date date = CommonUtils.toDate(year + "" + month + "" + day, "yyyyMMdd");
             String formatedDate = CommonUtils.formatDateForDisplay(date, Constants.ONLY_DATE_FORMAT);
-            //attendanceMasterModel.setDateStamp(formatedDate);
+            long timestamp = date.getTime();
+            attendanceMasterModel.setAttendanceDate(timestamp);
             datePicker.setText(CommonUtils.formatDateForDisplay(date, "dd MMM yyyy"));
         }
     };

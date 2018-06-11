@@ -62,7 +62,8 @@ public interface IJson {
     String userId = "userId";
 
     //Homework
-    String subject = "subject";
+    String subject = "subjectName";
+    String homeworkDescription = "description";
     //device
     String deviceDetails = "deviceDetails";
     String deviceToken = "deviceToken";
@@ -74,8 +75,13 @@ public interface IJson {
     String latitude="latitude";
     String longitude="longitude";
     String busTripType="busTripType";
+    String tripDate="tripDate";
 
     //attedance
     String attendanceDate="attendanceDate";
+
+    //Homework
+    String homeworkDate="homeworkDate";
+    String homeworkImage="images";
 
 }

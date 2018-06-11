@@ -67,5 +67,7 @@ public interface Constants {
     public static String ATTENDANCE_IN = "in";
     public static String ATTENDANCE_OUT = "out";
     public static String ATTENDANCE_UPDATE = "update";
+    public static String GET_TRIP_TYPE = "gettripType";
+    public static String GET_ROUTE_TYPE = "getroutType";
 
 }
