@@ -541,8 +541,6 @@ public class UploadPhotoFragment extends CommonFragment implements View.OnClickL
         }
         cardView.addView(imageView);
         layout1.addView(cardView);
-
-
     }
 
     private void ClearView() {

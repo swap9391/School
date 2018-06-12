@@ -13,6 +13,7 @@ public class StudentAttendanceDetailsModel extends BasicBean implements Serializ
     private String attendanceId;
     private String studentId;
     private String isPresent;
+    @SerializedName("studentOut")
     private String isOut;
     private String studentName;
 

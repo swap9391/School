@@ -154,7 +154,11 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                         if (which == 0) {
                             listOfLocation();
                         } else if (which == 1) {
-                            updateUI();
+                            CommonUtils.insertSharedPref(MapsActivity.this, Constants.GET_ROUTE_TYPE, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue());
+                            CommonUtils.insertSharedPref(MapsActivity.this, Constants.GET_TRIP_TYPE, listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
+                            Intent intent = new Intent(MapsActivity.this, LocationUpdateService.class);
+                            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+                            startService(intent);
                         }
                     }
                 });

@@ -85,21 +85,23 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
         // StudentAttendanceModel bean = listUser.get(lastCheckedPosition);
 
         if (!flagCheckDisable) {
-            holder.chkAttendance.setEnabled(false);
+            holder.chkAttendance.setVisibility(View.GONE);
+        } else {
+            holder.chkAttendance.setVisibility(View.VISIBLE);
         }
 
-        if (selectedItem.getIsPresent()!=null&& selectedItem.getIsPresent().equals("true")) {
+        if (selectedItem.getIsPresent() != null && selectedItem.getIsPresent().equals("true")) {
             holder.txtInOutStatus.setText("IN");
             holder.chkAttendance.setChecked(true);
         }
-        if (selectedItem.getIsOut()!=null&& selectedItem.getIsOut().equals("true")) {
+        if (selectedItem.getIsOut() != null && selectedItem.getIsOut().equals("true")) {
             holder.txtInOutStatus.setText("OUT");
         }
 
 
-        if (selectedItem.getIsPresent()!=null&&selectedItem.getIsPresent().equals("true")) {
+        if (selectedItem.getIsPresent() != null && selectedItem.getIsPresent().equals("true")) {
             holder.chkAttendance.setChecked(true);
-        } else if (selectedItem.getIsPresent()!=null&&selectedItem.getIsPresent().equals("false")) {
+        } else if (selectedItem.getIsPresent() != null && selectedItem.getIsPresent().equals("false")) {
             holder.chkAttendance.setChecked(false);
         } else {
             holder.chkAttendance.setChecked(true);

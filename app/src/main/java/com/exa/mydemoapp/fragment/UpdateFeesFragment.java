@@ -181,7 +181,7 @@ public class UpdateFeesFragment extends CommonFragment {
 
             String url = String.format(IUrls.URL_GET_FEES, studentId);
             Log.d("url", url);
-            CallWebService.getWebserviceObject(getMyActivity(),true,true, Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentFeesModel>() {
+            CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentFeesModel>() {
                 @Override
                 public void onResponse(StudentFeesModel[] object) {
 
@@ -194,11 +194,12 @@ public class UpdateFeesFragment extends CommonFragment {
 
                 @Override
                 public void onResponse(StudentFeesModel object) {
-                    for (FeesInstallmentsModel feesInstallmentsModel:object.getFeesInstallmentsModels()){
+                    apiFlag = false;
+                    for (FeesInstallmentsModel feesInstallmentsModel : object.getFeesInstallmentsModels()) {
                         listFees.add(feesInstallmentsModel);
                     }
-                    edtTotalFees.setText(""+object.getTotalFees());
-                    edtNoOfFees.setText(""+object.getNoOfInstallments());
+                    edtTotalFees.setText("" + object.getTotalFees());
+                    edtNoOfFees.setText("" + object.getNoOfInstallments());
                     initAdapter();
                 }
 

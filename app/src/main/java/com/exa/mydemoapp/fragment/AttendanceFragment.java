@@ -342,7 +342,7 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
                 HashMap<String, Object> hashMap = new HashMap<>();
                 hashMap.put(IJson.className, "" + attendanceMasterModel.getClassName());
                 hashMap.put(IJson.division, "" + attendanceMasterModel.getDivisionName());
-                hashMap.put(IJson.attendanceDate, "" + attendanceMasterModel.getAttendanceDate());
+                hashMap.put(IJson.attendanceDate,  attendanceMasterModel.getAttendanceDate());
                 hashMap.put(IJson.studentList, studentAttendanceModels);
                 int method;
                 if (attendanceMasterModel.getPkeyId() != null && !attendanceMasterModel.getPkeyId().isEmpty()) {

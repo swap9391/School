@@ -156,11 +156,11 @@ public class LocationUpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getStringExtra(Constants.ROUTE_TYPE) != null && intent.getStringExtra(Constants.TRIP_TYPE) != null) {
+        /*if (intent.getStringExtra(Constants.ROUTE_TYPE) != null && intent.getStringExtra(Constants.TRIP_TYPE) != null) {
             rootType = intent.getStringExtra(Constants.ROUTE_TYPE);
             tripType = intent.getStringExtra(Constants.TRIP_TYPE);
             runnable.run();
-        }
+        }*/
        /* if (intent.getStringExtra("VANTYPE") != null) {
             vanType = intent.getStringExtra("VANTYPE");
             if (mGoogleApiClient != null) {
