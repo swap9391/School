@@ -12,11 +12,8 @@ import java.io.Serializable;
 public class StudentAttendanceDetailsModel extends BasicBean implements Serializable {
     private String attendanceId;
     private String studentId;
-    private boolean isPresent;
-    private boolean isStudentIn;
-    private boolean isStudentOut;
-    private boolean isInSmsSent;
-    private boolean isOutSmsSent;
+    private String isPresent;
+    private String isOut;
     private String studentName;
 
     public String getAttendanceId() {
@@ -35,44 +32,20 @@ public class StudentAttendanceDetailsModel extends BasicBean implements Serializ
         this.studentId = studentId;
     }
 
-    public boolean isPresent() {
+    public String getIsPresent() {
         return isPresent;
     }
 
-    public void setPresent(boolean present) {
-        isPresent = present;
+    public void setIsPresent(String isPresent) {
+        this.isPresent = isPresent;
     }
 
-    public boolean isStudentIn() {
-        return isStudentIn;
+    public String getIsOut() {
+        return isOut;
     }
 
-    public void setStudentIn(boolean studentIn) {
-        isStudentIn = studentIn;
-    }
-
-    public boolean isStudentOut() {
-        return isStudentOut;
-    }
-
-    public void setStudentOut(boolean studentOut) {
-        isStudentOut = studentOut;
-    }
-
-    public boolean isInSmsSent() {
-        return isInSmsSent;
-    }
-
-    public void setInSmsSent(boolean inSmsSent) {
-        isInSmsSent = inSmsSent;
-    }
-
-    public boolean isOutSmsSent() {
-        return isOutSmsSent;
-    }
-
-    public void setOutSmsSent(boolean outSmsSent) {
-        isOutSmsSent = outSmsSent;
+    public void setIsOut(String isOut) {
+        this.isOut = isOut;
     }
 
     public String getStudentName() {

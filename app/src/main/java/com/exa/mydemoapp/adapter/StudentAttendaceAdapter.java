@@ -88,18 +88,18 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
             holder.chkAttendance.setEnabled(false);
         }
 
-        if (selectedItem.isStudentIn()) {
+        if (selectedItem.getIsPresent()!=null&& selectedItem.getIsPresent().equals("true")) {
             holder.txtInOutStatus.setText("IN");
             holder.chkAttendance.setChecked(true);
         }
-        if (selectedItem.isStudentOut()) {
+        if (selectedItem.getIsOut()!=null&& selectedItem.getIsOut().equals("true")) {
             holder.txtInOutStatus.setText("OUT");
         }
 
 
-        if (selectedItem.isPresent()) {
+        if (selectedItem.getIsPresent()!=null&&selectedItem.getIsPresent().equals("true")) {
             holder.chkAttendance.setChecked(true);
-        } else if (!selectedItem.isPresent()) {
+        } else if (selectedItem.getIsPresent()!=null&&selectedItem.getIsPresent().equals("false")) {
             holder.chkAttendance.setChecked(false);
         } else {
             holder.chkAttendance.setChecked(true);

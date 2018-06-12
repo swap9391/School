@@ -287,9 +287,9 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
 
     @Override
     public void present(StudentAttendanceDetailsModel bean, int position) {
-        bean.setPresent(true);
+        bean.setIsPresent("true");
         if (bundle.getString(Constants.ATTENDANCE_TYPE).equals(Constants.ATTENDANCE_OUT)) {
-            bean.setStudentOut(true);
+            bean.setIsOut("true");
         }
         selectedStudents.put(bean.getStudentId(), bean);
     }
@@ -297,9 +297,9 @@ public class AttendanceFragment extends CommonFragment implements AttendanceList
     @Override
     public void absent(StudentAttendanceDetailsModel bean, int position) {
         // getSelectedStudents().get(position).setPresent(false);
-        bean.setPresent(false);
+        bean.setIsPresent("false");
         if (bundle.getString(Constants.ATTENDANCE_TYPE).equals(Constants.ATTENDANCE_OUT)) {
-            bean.setStudentOut(true);
+            bean.setIsOut("true");
         }
         selectedStudents.put(bean.getStudentId(), bean);
     }
