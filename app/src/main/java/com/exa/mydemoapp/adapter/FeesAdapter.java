@@ -86,8 +86,8 @@ public class FeesAdapter extends RecyclerView.Adapter<FeesAdapter.MyViewHolder> 
         holder.txtInstallmentDate.setText(CommonUtils.formatDateForDisplay(new Date(selectedItem.getInstallmentDate()), Constants.ONLY_DATE_FORMAT));
         holder.txtInstallmentAmount.setText(context.getString(R.string.Rs) + " " + selectedItem.getInstallmentAmount());
         holder.txtPaymentMode.setText(selectedItem.getPaymentMode());
-        holder.txtPaymentStatus.setText(selectedItem.isPaid() ? "Paid" : "Unpaid");
-        if (!selectedItem.isPaid()) {
+        holder.txtPaymentStatus.setText(selectedItem.getIsPaid().equals("true") ? "Paid" : "Unpaid");
+        if (!selectedItem.getIsPaid().equals("true")) {
             holder.btnPay.setVisibility(View.VISIBLE);
             holder.btnPay.setOnClickListener(new View.OnClickListener() {
                 @Override

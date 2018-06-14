@@ -90,6 +90,7 @@
                 android:ellipsize="end"
                 android:gravity="right"
                 android:maxLines="1"
+                android:visibility="gone"
                 android:paddingRight="20dp"
                 android:textSize="35px" />
 
@@ -100,6 +101,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/txt_time_stamp"
                 android:layout_margin="3dp"
+                android:visibility="gone"
                 android:src="@drawable/ic_edit" />
 
         </RelativeLayout>

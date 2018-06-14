@@ -114,7 +114,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
     private List<DropdownMasterModel> listRouteType;
     DbInvoker dbInvoker;
     View view;
-    boolean flagEmptyList=false;
+    boolean flagEmptyList = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +152,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                         if (which == 0) {
                             listOfLocation();
                         } else if (which == 1) {
+                            runnable.run();
                            /* CommonUtils.insertSharedPref(MapsActivity.this, Constants.GET_ROUTE_TYPE, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue());
                             CommonUtils.insertSharedPref(MapsActivity.this, Constants.GET_TRIP_TYPE, listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
                             Intent intent = new Intent(MapsActivity.this, LocationUpdateService.class);
@@ -521,7 +522,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                             endPosition = polyLineList.get(next);
                         } else {
                             handler.removeCallbacks(this::run);
-
+                            flagEmptyList = true;
                            /* if (polyLineList.size() - 1 > listCount) {
                                 listCount++;
                                 if (polyLineList.get(listCount) != null) {
@@ -599,6 +600,9 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
             public void onResponse(BusLocationsModel object) {
                 //demoList.add(object);
 
+                if (flagEmptyList) {
+                    polyLineList = new ArrayList<>();
+                }
                 Double currentLatitude = Double.parseDouble(object.getLatitude());
                 Double currentLongitude = Double.parseDouble(object.getLongitude());
                 polyLineList.add(new LatLng(currentLatitude, currentLongitude));
@@ -707,4 +711,17 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         }
     };*/
 
+
+    public Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    handler.postDelayed(this, 15000);
+                    updateLatestLocation();
+                }
+            }, 15000);
+        }
+    };
 }

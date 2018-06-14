@@ -73,6 +73,7 @@ public class TrackerActivity extends CommonActivity {
     private Spinner spnRoute;
     DbInvoker dbInvoker;
     View view;
+
     /**
      * Configures UI elements, and starts validation if inputs have previously been entered.
      */
@@ -185,7 +186,8 @@ public class TrackerActivity extends CommonActivity {
             CommonUtils.insertSharedPref(TrackerActivity.this, Constants.ROUTE_TYPE, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue());
             CommonUtils.insertSharedPref(TrackerActivity.this, Constants.TRIP_TYPE, listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
             // Validate permissions.
-            checkLocationPermission();
+            // checkLocationPermission();
+            checkGpsEnabled();
         }
 
     }

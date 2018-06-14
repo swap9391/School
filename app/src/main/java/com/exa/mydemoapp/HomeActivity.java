@@ -42,6 +42,7 @@ import com.exa.mydemoapp.fragment.DashboardFragment;
 import com.exa.mydemoapp.fragment.EventListFragment;
 import com.exa.mydemoapp.fragment.GalleryViewFragment;
 import com.exa.mydemoapp.fragment.HomeWorkFragment;
+import com.exa.mydemoapp.fragment.HomeWorkListFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.PagerFragment;
 import com.exa.mydemoapp.fragment.ProfileFragment;
@@ -53,6 +54,7 @@ import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UpdateFeesFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
 import com.exa.mydemoapp.fragment.UsersListFragment;
+import com.exa.mydemoapp.fragment.ViewFullImageFullViewFragment;
 import com.exa.mydemoapp.model.AlbumMasterModel;
 import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.FirebaseRegistrationModel;
@@ -99,6 +101,8 @@ public class HomeActivity extends CommonActivity {
     public UpdateFeesFragment updateFeesFragment;
     public EventListFragment eventListFragment;
     public AttendanceCalendarFragment attendanceCalendarFragment;
+    public ViewFullImageFullViewFragment viewFullImageFullViewFragment;
+    public HomeWorkListFragment homeWorkListFragment;
     public ChooseAttendance chooseAttendance;
     public List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
     public boolean isGallery = true;
@@ -292,6 +296,12 @@ public class HomeActivity extends CommonActivity {
         } else if (attendanceCalendarFragment != null && attendanceCalendarFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
+        } else if (homeWorkListFragment != null && homeWorkListFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
+        } else if (viewFullImageFullViewFragment != null && viewFullImageFullViewFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(new HomeWorkListFragment(), null);
         } else {
             exitDialog();
         }
@@ -335,7 +345,8 @@ public class HomeActivity extends CommonActivity {
         eventListFragment = new EventListFragment();
         chooseAttendance = new ChooseAttendance();
         attendanceCalendarFragment = new AttendanceCalendarFragment();
-
+        viewFullImageFullViewFragment = new ViewFullImageFullViewFragment();
+        homeWorkListFragment = new HomeWorkListFragment();
     }
 
     public List<AlbumMasterModel> getListAlbumChild() {

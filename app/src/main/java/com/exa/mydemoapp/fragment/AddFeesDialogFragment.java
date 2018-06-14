@@ -129,7 +129,7 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
                 } else {
                     datePickerInvest.setVisibility(View.VISIBLE);
                 }
-                if (feesInstallmentsModel!=null){
+                if (feesInstallmentsModel != null) {
                     bindView(feesInstallmentsModel);
                 }
                 if (list != null) {
@@ -224,7 +224,12 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
                     .into(imgCheque);
         }
         edtInstallmentAmount.setText(feesInstallmentsModel.getInstallmentAmount() + "");
-        chkPaid.setChecked(feesInstallmentsModel.isPaid());
+        if (feesInstallmentsModel.getIsPaid().equals("true")) {
+            chkPaid.setChecked(true);
+        } else {
+            chkPaid.setChecked(false);
+        }
+
     }
 
     private void initView(View view) {
@@ -329,9 +334,9 @@ public class AddFeesDialogFragment extends DialogFragment implements View.OnClic
         }
 
         if (chkPaid.isChecked()) {
-            feesInstallmentsModel.setPaid(true);
+            feesInstallmentsModel.setIsPaid("true");
         } else {
-            feesInstallmentsModel.setPaid(false);
+            feesInstallmentsModel.setIsPaid("false");
         }
 
     }

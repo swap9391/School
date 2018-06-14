@@ -11,17 +11,26 @@ import java.util.List;
  */
 
 public class StudentFeesModel extends BasicBean implements Serializable {
-    private String userId;
+    private String studentId;
+    private String studentName;
     private double totalFees;
-    private int noOfInstallments;
-    private List<FeesInstallmentsModel> feesInstallmentsModels = new ArrayList<>();
+    private double pendingFees;
+    private String noOfInstallments;
 
-    public String getUserId() {
-        return userId;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
     public double getTotalFees() {
@@ -32,19 +41,19 @@ public class StudentFeesModel extends BasicBean implements Serializable {
         this.totalFees = totalFees;
     }
 
-    public int getNoOfInstallments() {
+    public double getPendingFees() {
+        return pendingFees;
+    }
+
+    public void setPendingFees(double pendingFees) {
+        this.pendingFees = pendingFees;
+    }
+
+    public String getNoOfInstallments() {
         return noOfInstallments;
     }
 
-    public void setNoOfInstallments(int noOfInstallments) {
+    public void setNoOfInstallments(String noOfInstallments) {
         this.noOfInstallments = noOfInstallments;
-    }
-
-    public List<FeesInstallmentsModel> getFeesInstallmentsModels() {
-        return feesInstallmentsModels;
-    }
-
-    public void setFeesInstallmentsModels(List<FeesInstallmentsModel> feesInstallmentsModels) {
-        this.feesInstallmentsModels = feesInstallmentsModels;
     }
 }

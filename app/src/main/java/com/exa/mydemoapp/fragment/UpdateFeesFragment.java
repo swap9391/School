@@ -7,6 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.adapter.FeesAdapter;
@@ -74,6 +78,7 @@ public class UpdateFeesFragment extends CommonFragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.update_fees_structure, container, false);
         initViewBinding(view);
+        setHasOptionsMenu(true);
         listFees = new ArrayList<>();
         cardView.setVisibility(View.GONE);
         listClass = getMyActivity().getDbInvoker().getDropDownExceptValue("CLASSTYPE", "All");
@@ -83,6 +88,7 @@ public class UpdateFeesFragment extends CommonFragment {
         classAdapter.notifyDataSetChanged();
 
         listDivision = getMyActivity().getDbInvoker().getDropDownByType("DEVISION");
+
         ArrayAdapter<DropdownMasterModel> divisionAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listDivision);
         divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnDivision.setAdapter(divisionAdapter);
@@ -195,9 +201,7 @@ public class UpdateFeesFragment extends CommonFragment {
                 @Override
                 public void onResponse(StudentFeesModel object) {
                     apiFlag = false;
-                    for (FeesInstallmentsModel feesInstallmentsModel : object.getFeesInstallmentsModels()) {
-                        listFees.add(feesInstallmentsModel);
-                    }
+
                     edtTotalFees.setText("" + object.getTotalFees());
                     edtNoOfFees.setText("" + object.getNoOfInstallments());
                     initAdapter();
@@ -223,6 +227,28 @@ public class UpdateFeesFragment extends CommonFragment {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                getMyActivity().showFragment(new AddFeesDetailFragment(), null);
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_save_info, menu);
+        menu.findItem(R.id.action_gallery).setVisible(false);
+        menu.findItem(R.id.action_save).setIcon(R.drawable.ic_plus);
+        if (getMyActivity().getUserModel().getUserType().equals(Constants.USER_TYPE_STUDENT)) {
+            menu.findItem(R.id.action_save).setVisible(false);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     public HomeActivity getMyActivity() {

@@ -104,8 +104,6 @@ public class SignUpFragment extends CommonFragment {
     private EditText edtUsername;
     @ViewById(R.id.edt_contact_number)
     private EditText edtContactNumber;
-    @ViewById(R.id.edt_total_fees)
-    private EditText edtTotalFees;
     @ViewById(R.id.edt_email)
     private EditText edtEmail;
     @ViewById(R.id.edt_qualification)
@@ -122,18 +120,12 @@ public class SignUpFragment extends CommonFragment {
     TextView txtClassName;
     @ViewById(R.id.txt_division)
     TextView txtDivision;
-    @ViewById(R.id.txt_add_fee_installment)
-    TextView txtAddFees;
     @ViewById(R.id.img_profile)
     ImageView imgProfile;
     @ViewById(R.id.date_picker_dob)
     Button btnDob;
     @ViewById(R.id.progress_bar)
     ProgressBar progressBar;
-    @ViewById(R.id.layout_fees)
-    LinearLayout layout1;
-    @ViewById(R.id.view_fees)
-    View viewFees;
     File fileProfile;
     boolean isEdit = false;
     private View view;
@@ -171,10 +163,6 @@ public class SignUpFragment extends CommonFragment {
         spnUserType.setAdapter(userTypeadapter);
         userTypeadapter.notifyDataSetChanged();
 
-        txtAddFees.setVisibility(View.GONE);
-        viewFees.setVisibility(View.GONE);
-        layout1.setVisibility(View.GONE);
-        edtTotalFees.setVisibility(View.GONE);
         txtClassName.setVisibility(View.GONE);
         txtDivision.setVisibility(View.GONE);
         spnClass.setVisibility(View.GONE);
@@ -223,10 +211,6 @@ public class SignUpFragment extends CommonFragment {
                         spnClass.setVisibility(View.GONE);
                         spnDivision.setVisibility(View.GONE);
 
-                        txtAddFees.setVisibility(View.GONE);
-                        viewFees.setVisibility(View.GONE);
-                        layout1.setVisibility(View.GONE);
-                        edtTotalFees.setVisibility(View.GONE);
                         edtQualification.setVisibility(View.GONE);
                         edtSpeciality.setVisibility(View.GONE);
                         break;
@@ -238,10 +222,6 @@ public class SignUpFragment extends CommonFragment {
                         edtQualification.setVisibility(View.VISIBLE);
                         edtSpeciality.setVisibility(View.VISIBLE);
 
-                        txtAddFees.setVisibility(View.GONE);
-                        viewFees.setVisibility(View.GONE);
-                        layout1.setVisibility(View.GONE);
-                        edtTotalFees.setVisibility(View.GONE);
                         break;
                     case "DRIVER":
                         txtClassName.setVisibility(View.GONE);
@@ -250,10 +230,6 @@ public class SignUpFragment extends CommonFragment {
                         spnDivision.setVisibility(View.GONE);
                         edtQualification.setVisibility(View.GONE);
                         edtSpeciality.setVisibility(View.GONE);
-                        txtAddFees.setVisibility(View.GONE);
-                        viewFees.setVisibility(View.GONE);
-                        layout1.setVisibility(View.GONE);
-                        edtTotalFees.setVisibility(View.GONE);
                         break;
                     case "STUDENT":
                         txtClassName.setVisibility(View.VISIBLE);
@@ -262,10 +238,6 @@ public class SignUpFragment extends CommonFragment {
                         spnDivision.setVisibility(View.VISIBLE);
                         edtQualification.setVisibility(View.GONE);
                         edtSpeciality.setVisibility(View.GONE);
-                        txtAddFees.setVisibility(View.VISIBLE);
-                        viewFees.setVisibility(View.VISIBLE);
-                        layout1.setVisibility(View.VISIBLE);
-                        edtTotalFees.setVisibility(View.VISIBLE);
                         break;
                 }
 
@@ -274,14 +246,6 @@ public class SignUpFragment extends CommonFragment {
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
-            }
-        });
-
-
-        txtAddFees.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showFeesDialog();
             }
         });
 
@@ -350,7 +314,6 @@ public class SignUpFragment extends CommonFragment {
         edtUsername.setText(userModel.getUsername());
         edtSpeciality.setText(userModel.getUserInfoModel().getSpeciality());
         edtQualification.setText(userModel.getUserInfoModel().getQualification());
-        edtTotalFees.setText(userModel.getStudentFeesModel().getTotalFees() + "");
         long dob = CommonUtils.toLong(userModel.getUserInfoModel().getDateOfBirth());
         btnDob.setText(CommonUtils.formatDateForDisplay(new Date(dob), Constants.ONLY_DATE_FORMAT));
         if (userModel.getUserInfoModel().getGender().equals("Boy")) {
@@ -359,10 +322,6 @@ public class SignUpFragment extends CommonFragment {
             rdGirl.setChecked(true);
         }
         progressBar.setVisibility(View.VISIBLE);
-        txtAddFees.setVisibility(View.GONE);
-        viewFees.setVisibility(View.GONE);
-        layout1.setVisibility(View.GONE);
-        edtTotalFees.setVisibility(View.GONE);
 
         Glide.with(this)
                 .load(userModel.getProfilePicUrl())
@@ -545,10 +504,6 @@ public class SignUpFragment extends CommonFragment {
             getMyActivity().showToast("Please Enter User Name");
             return false;
         }
-        if (userModel.getUserType().equals(Constants.USER_TYPE_STUDENT) && edtTotalFees.getText().toString().isEmpty()) {
-            getMyActivity().showToast("Please Enter Total Fees");
-            return false;
-        }
         if (userModel.getUserType().equals(Constants.USER_TYPE_TEACHER) && edtQualification.getText().toString().isEmpty()) {
             getMyActivity().showToast("Please Enter Qualification");
             return false;
@@ -656,7 +611,6 @@ public class SignUpFragment extends CommonFragment {
             method = Request.Method.PUT;
             url = String.format(IUrls.UPDATE_USER, userModel.getPkeyId().toString());
         } else {
-            hashMap.put(IJson.studentFeesModel, userModel.getStudentFeesModel());
             method = Request.Method.POST;
             url = IUrls.SIGN_UP;
         }
@@ -682,11 +636,11 @@ public class SignUpFragment extends CommonFragment {
 
             @Override
             public void onResponse(UserModel object) {
-                if (isEdit) {
+                //if (isEdit) {
                     getMyActivity().showFragment(getMyActivity().dashboardFragment, null);
-                } else {
-                    showOtpDialog(object);
-                }
+                //} else {
+                //    showOtpDialog(object);
+                //}
             }
 
             @Override
@@ -698,7 +652,7 @@ public class SignUpFragment extends CommonFragment {
         }, UserModel.class);
     }
 
-    private void showFeesDialog() {
+    /*private void showFeesDialog() {
         FeesInstallmentsModel feesInstallmentsModel = new FeesInstallmentsModel();
         if (userModel.getStudentFeesModel().getFeesInstallmentsModels().size() > 0) {
 
@@ -722,7 +676,7 @@ public class SignUpFragment extends CommonFragment {
             }
         });
         dialog.show(getMyActivity().getFragmentManager(), "FeesDialog");
-    }
+    }*/
 
     private void showOtpDialog(UserModel userModel) {
         OtpDialogFrag dialog = new OtpDialogFrag(new OtpListner() {
@@ -737,7 +691,7 @@ public class SignUpFragment extends CommonFragment {
         dialog.show(getMyActivity().getFragmentManager(), "FeesDialog");
     }
 
-    private void bindFeesView() {
+    /*private void bindFeesView() {
         layout1.removeAllViews();
         for (FeesInstallmentsModel feesInstallmentsModel : userModel.getStudentFeesModel().getFeesInstallmentsModels()) {
 
@@ -766,7 +720,7 @@ public class SignUpFragment extends CommonFragment {
             txtPayStatus.setLayoutParams(textParam);
             txtInstallmentType.setText(feesInstallmentsModel.getInstallmentNo());
             txtInstallmentAmount.setText(getStringById(R.string.Rs) + " " + feesInstallmentsModel.getInstallmentAmount());
-            txtPayStatus.setText(feesInstallmentsModel.isPaid() ? "Paid" : "Unpaid");
+            txtPayStatus.setText(feesInstallmentsModel.getIsPaid().endsWith("true") ? "Paid" : "Unpaid");
             linearLayout.addView(txtInstallmentType);
             linearLayout.addView(txtInstallmentAmount);
             linearLayout.addView(txtPayStatus);
@@ -774,7 +728,7 @@ public class SignUpFragment extends CommonFragment {
 
         }
     }
-
+*/
 
     private void uploadImages() {
         if (fileProfile != null) {

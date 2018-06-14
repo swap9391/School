@@ -1,5 +1,6 @@
 package com.exa.mydemoapp.adapter;
 
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
+import com.exa.mydemoapp.fragment.ViewFullImageFullViewFragment;
 import com.exa.mydemoapp.model.DailyHomeworkModel;
 import com.exa.mydemoapp.model.HomeWorkImageModel;
 
@@ -27,7 +29,6 @@ import java.util.List;
  */
 
 public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyViewHolder> {
-
     private List<DailyHomeworkModel> listHomeWork;
     private HomeActivity context;
 
@@ -36,9 +37,7 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
         this.context = context;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-
-    {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView txtStudentName;
         private TextView txtSubject;
         private TextView txtDiscription;
@@ -65,7 +64,6 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
         }
     }
 
-
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -78,13 +76,13 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         DailyHomeworkModel selectedItem = listHomeWork.get(position);
 
-        //  holder.txtStudentName.setText(selectedItem.getSubjectName());
         holder.txtSubject.setText(selectedItem.getSubjectName());
         holder.txtDiscription.setText(selectedItem.getDescription());
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(selectedItem.getHomeworkDate());
         Date date = calendar.getTime();
-        holder.txtTimeStamp.setText(CommonUtils.formatDateForDisplay(date, Constants.DATE_FORMAT));
+        holder.txtTimeStamp.setText(CommonUtils.formatDateForDisplay(date, Constants.ONLY_DATE_FORMAT));
+
        /* holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,14 +91,16 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
                 context.showFragment(new SignUpFragment(), bundle);
             }
         });*/
-        if (context.getUserModel().getUserType().equals(Constants.USER_TYPE_ADMIN)) {
+        /*if (context.getUserModel().getUserType().equals(Constants.USER_TYPE_ADMIN)) {
             holder.imgEdit.setVisibility(View.VISIBLE);
         } else {
             holder.imgEdit.setVisibility(View.GONE);
-        }
+        }*/
 
         if (selectedItem.getAlbumImagesModel() != null && selectedItem.getAlbumImagesModel().size() > 0) {
             bindView(selectedItem.getAlbumImagesModel(), holder.linearLayout);
+        } else {
+            holder.linearLayout.setVisibility(View.GONE);
         }
 
     }
@@ -132,7 +132,26 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
             }*/
                 cardView.addView(imageView);
                 layout1.addView(cardView);
+                imageView.setOnClickListener(new ImageClick(image.getImageUrl()));
+
             }
+        }
+
+
+    }
+
+    private class ImageClick implements View.OnClickListener {
+        final String path;
+
+        public ImageClick(String path) {
+            this.path = path;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.IMAGE_PATH, path);
+            context.showFragment(new ViewFullImageFullViewFragment(), bundle);
         }
     }
 

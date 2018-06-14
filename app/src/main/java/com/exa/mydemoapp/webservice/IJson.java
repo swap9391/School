@@ -84,4 +84,7 @@ public interface IJson {
     String homeworkDate="homeworkDate";
     String homeworkImage="images";
 
+    //fees
+    String totalFees="totalFees";
+    String noOfInstallments="noOfInstallments";
 }

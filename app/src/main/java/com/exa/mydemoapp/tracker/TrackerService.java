@@ -355,7 +355,7 @@ public class TrackerService extends Service implements LocationListener {
                 Log.d("Location", location.getLatitude() + "," + location.getLongitude());
                 save();
             }
-            if (timeDiffrence(Calendar.getInstance().getTime(), lastTime) >= 1) {
+            if (timeDiffrence(Calendar.getInstance().getTime(), lastTime) >= 15) {
                 Log.d("Location", location.getLatitude() + "," + location.getLongitude());
                 lastTime = Calendar.getInstance().getTime();
                 save();
@@ -404,7 +404,7 @@ public class TrackerService extends Service implements LocationListener {
 
     private int timeDiffrence(Date date1, Date date2) {
         int mins = 0, hours = 0;
-
+        int sec=0;
         try {
 
             if (date1 != null) {
@@ -416,16 +416,16 @@ public class TrackerService extends Service implements LocationListener {
                 Log.v("Data2", "" + date2.getTime());
                 hours = (int) (mills / (1000 * 60 * 60));
                 mins = (int) (mills / (1000 * 60)) % 60;
-                int sec = (int) (mills / 1000) % 60;
+                 sec = (int) (mills / 1000) % 60;
 
                 String diff = hours + ":" + mins; // updated value every1 second
             } else {
-                return mins;
+                return sec;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return mins;
+        return sec;
     }
 
 

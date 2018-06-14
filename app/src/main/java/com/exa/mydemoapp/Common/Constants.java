@@ -69,5 +69,6 @@ public interface Constants {
     public static String ATTENDANCE_UPDATE = "update";
     public static String GET_TRIP_TYPE = "gettripType";
     public static String GET_ROUTE_TYPE = "getroutType";
+    public static String IMAGE_PATH = "path";
 
 }

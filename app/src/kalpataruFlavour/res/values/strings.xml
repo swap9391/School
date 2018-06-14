@@ -288,6 +288,8 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="valid_album_title">Please enter album title</string>
     <string name="valid_description">Please enter description</string>
     <string name="valid_subject">Please enter subject name</string>
+    <string name="valid_total_amount">Please enter total amount</string>
+
     <string name="dialog_button_save">Save</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="title_user_list">User List</string>
@@ -325,5 +327,5 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="valid_event_name">Please enter event name</string>
     <string name="valid_event_date">Please select event date</string>
     <string name="valid_event_type">Please select event type</string>
-
+<string name="title_add_fees">Add Fees</string>
 </resources>
