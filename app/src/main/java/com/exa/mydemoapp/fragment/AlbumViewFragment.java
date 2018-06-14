@@ -168,19 +168,19 @@ public class AlbumViewFragment extends CommonFragment {
 
         UserModel userModel = getMyActivity().getUserModel();
         String imageType = getStringById(R.string.img_type_gallery);
-        String className = userModel.getUserInfoModel().getClassName();
-        String divisionName = userModel.getUserInfoModel().getDivisionName();
-        String studentId = userModel.getPkeyId();
-
-        String url;
-        if (userModel.getUserType().equals(getStringById(R.string.user_type_student))) {
-            url = String.format(IUrls.URL_IMAGE_LIST, imageType, className, divisionName, studentId);
+        String className = "All", divisionName = "All", studentId = "All";
+        if (userModel != null) {
+            className = userModel.getUserInfoModel().getClassName();
+            divisionName = userModel.getUserInfoModel().getDivisionName();
+            studentId = userModel.getPkeyId();
         }
-        else  {
+        String url;
+        if (userModel != null && userModel.getUserType().equals(getStringById(R.string.user_type_student))) {
+            url = String.format(IUrls.URL_IMAGE_LIST, imageType, className, divisionName, studentId);
+        } else {
             url = String.format(IUrls.URL_IMAGE_LIST, imageType, "All", "All", "All");
         }
 
-        //http://localhost:8080/kalpataru/api/album/images?albumType=Gallery&className=All&divisionName=All&studentId=All
         CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, hashMap, new VolleyResponseListener<AlbumMasterModel>() {
             @Override
             public void onResponse(AlbumMasterModel[] object) {

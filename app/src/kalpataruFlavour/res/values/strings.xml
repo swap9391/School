@@ -6,7 +6,6 @@
     <string name="yesterday">Yesterday</string>
 
 
-
     <string-array name="event_type">
         <item>Holiday</item>
         <item>Exam</item>
@@ -197,6 +196,14 @@
     <string name="img_type_gallery">GL</string>
     <string name="img_type_staff">SI</string>
     <string name="img_type_facilities">SF</string>
+
+    <string name="title_type_news">News Feed</string>
+    <string name="title_type_blog">Blog</string>
+    <string name="title_type_archive">Archive</string>
+    <string name="title_type_gallery">Gallery</string>
+    <string name="title_type_staff">Staff Info</string>
+    <string name="title_type_facilities">School Facilities</string>
+
 
     <string name="dashboard_about_school">About School</string>
     <string name="dashboard_home">Home</string>

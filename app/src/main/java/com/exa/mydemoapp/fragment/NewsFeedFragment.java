@@ -52,6 +52,7 @@ public class NewsFeedFragment extends CommonFragment {
     ProgressDialog progressDialog;
     String feed;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,9 +72,8 @@ public class NewsFeedFragment extends CommonFragment {
         } else {
             getMyActivity().showToast(getString(R.string.no_internet));
         }
-        getMyActivity().toolbar.setTitle(feed);
-
-
+        String title = bundle.getString(Constants.FEED_TYPE_NAME);
+        getMyActivity().toolbar.setTitle(title);
         return view;
     }
 
@@ -87,15 +87,17 @@ public class NewsFeedFragment extends CommonFragment {
 
         UserModel userModel = getMyActivity().getUserModel();
         String imageType = feed;
-        String className = userModel.getUserInfoModel().getClassName();
-        String divisionName = userModel.getUserInfoModel().getDivisionName();
-        String studentId = userModel.getPkeyId();
+        String className = "All", divisionName = "All", studentId = "All";
+        if (userModel != null) {
+            className = userModel.getUserInfoModel().getClassName();
+            divisionName = userModel.getUserInfoModel().getDivisionName();
+            studentId = userModel.getPkeyId();
+        }
 
         String url;
-        if (userModel.getUserType().equals(getStringById(R.string.user_type_student))) {
+        if (userModel != null && userModel.getUserType().equals(getStringById(R.string.user_type_student))) {
             url = String.format(IUrls.URL_IMAGE_LIST, imageType, className, divisionName, studentId);
-        }
-        else  {
+        } else {
             url = String.format(IUrls.URL_IMAGE_LIST_NEWS_COMMON, imageType);
         }
 

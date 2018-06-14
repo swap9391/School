@@ -48,7 +48,7 @@ public interface Constants {
     public static int REWARD_ACADEMICS = 20;
     public static int REWARD_OTHER = 10;
     public static String FEED = "FEED";
-    public static String FEED_TYPE_NEWS = "News Feed";
+    public static String FEED_TYPE_NAME = "Feed Type";
     public static String LIST_TYPE = "mylist";
     public static String INTENT_TYPE_IMAGES = "images";
     public static String INTENT_TYPE_POSITION = "position";

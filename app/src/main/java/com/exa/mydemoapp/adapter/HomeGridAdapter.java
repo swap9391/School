@@ -108,6 +108,7 @@ public class HomeGridAdapter extends BaseAdapter {
                     case "School Facilities":
                         context.setNewsFeedType(context.getStringById(R.string.img_type_facilities));
                         bundle.putString(Constants.FEED, context.getNewsFeedType());
+                        bundle.putString(Constants.FEED_TYPE_NAME, context.getStringById(R.string.title_type_staff));
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Calendar":
@@ -119,16 +120,19 @@ public class HomeGridAdapter extends BaseAdapter {
                     case "Achievements":
                         context.setNewsFeedType(context.getStringById(R.string.img_type_archive));
                         bundle.putString(Constants.FEED, context.getNewsFeedType());
+                        bundle.putString(Constants.FEED_TYPE_NAME, context.getStringById(R.string.title_type_archive));
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Blog":
                         context.setNewsFeedType(context.getStringById(R.string.img_type_blog));
                         bundle.putString(Constants.FEED, context.getNewsFeedType());
+                        bundle.putString(Constants.FEED_TYPE_NAME, context.getStringById(R.string.title_type_blog));
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "News":
                         context.setNewsFeedType(context.getStringById(R.string.img_type_news));
                         bundle.putString(Constants.FEED, context.getNewsFeedType());
+                        bundle.putString(Constants.FEED_TYPE_NAME, context.getStringById(R.string.title_type_news));
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Parent Chatting":

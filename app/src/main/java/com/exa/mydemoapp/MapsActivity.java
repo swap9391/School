@@ -81,12 +81,12 @@ import java.util.Set;
 
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
-public class MapsActivity extends CommonActivity implements OnMapReadyCallback, ServiceCallbacks {
+public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
     SupportMapFragment mapFragment;
     private GoogleMap mMap;
-    private List<LatLng> polyLineList;
+    private List<LatLng> polyLineList = new ArrayList<>();
     private Marker marker;
     private float v;
     private double lat, lng;
@@ -96,14 +96,12 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
     private LatLng sydney;
     private String destination;
     private PolylineOptions polylineOptions, blackPolylineOptions;
-    private Polyline blackPolyline, greyPolyLine;
     private boolean driveStarted = false;
-    private String vanType;
     @ViewById(R.id.toolbar)
     private Toolbar toolbar;
     @ViewById(R.id.btn_search)
     private Button btnSearch;
-    private List<BusLocationsModel> demoList;
+    //private List<BusLocationsModel> demoList;
     private int listCount = 0;
     LocationUpdateService myservice;
     private boolean bound = false;
@@ -116,7 +114,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
     private List<DropdownMasterModel> listRouteType;
     DbInvoker dbInvoker;
     View view;
-
+    boolean flagEmptyList=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,11 +152,11 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                         if (which == 0) {
                             listOfLocation();
                         } else if (which == 1) {
-                            CommonUtils.insertSharedPref(MapsActivity.this, Constants.GET_ROUTE_TYPE, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue());
+                           /* CommonUtils.insertSharedPref(MapsActivity.this, Constants.GET_ROUTE_TYPE, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue());
                             CommonUtils.insertSharedPref(MapsActivity.this, Constants.GET_TRIP_TYPE, listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
                             Intent intent = new Intent(MapsActivity.this, LocationUpdateService.class);
                             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-                            startService(intent);
+                            startService(intent);*/
                         }
                     }
                 });
@@ -196,7 +194,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         // mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setTrafficEnabled(false);
         mMap.setIndoorEnabled(false);
         mMap.setBuildingsEnabled(false);
@@ -212,7 +210,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                 .tilt(10)
                 .build()));
 
-        demoList = new ArrayList<>();
+        //  demoList = new ArrayList<>();
 
 
     }
@@ -429,7 +427,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         String requestUrl = null;
         isMapMoving = true;
         try {
-            String sourceLatitude;
+           /* String sourceLatitude;
             String sourceLongitude;
             String destLatitude;
             String destLongitude;
@@ -438,12 +436,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
             sourceLongitude = demoList.get(listCount).getLongitude();
             destLatitude = demoList.get(listCount + 1).getLatitude();
             destLongitude = demoList.get(listCount + 1).getLongitude();
-           /* } else {
-                sourceLatitude = demoList.get(listCount - 1).getLatitude();
-                sourceLongitude = demoList.get(listCount - 1).getLongitude();
-                destLatitude = demoList.get(listCount).getLatitude();
-                destLongitude = demoList.get(listCount).getLongitude();
-            }*/
+
 
             requestUrl = "https://maps.googleapis.com/maps/api/directions/json?" +
                     "mode=driving&"
@@ -452,21 +445,16 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                     + "destination=" + destLatitude + "," + destLongitude + "&"
                     + "key=" + BuildConfig.google_directions_key + "+&sensor=true";
             Log.d(TAG, requestUrl);
+            */
 
-           /* if (Connectivity.isConnected(MapsActivity.this)) {
-                //   getVanType();
-                loadPreviousStatuses();
-            } else {
-                showToast("Please Connect to internet !!");
-            }*/
-
+/*
             HashMap<String, String> params = new HashMap<String, String>();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestUrl, new JSONObject(params),
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d(TAG, response + "");
-                            try {
+                            Log.d(TAG, response + "");*/
+                           /* try {
                                 JSONArray jsonArray = response.getJSONArray("routes");
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject route = jsonArray.getJSONObject(i);
@@ -474,129 +462,114 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                                     String polyline = poly.getString("points");
                                     polyLineList = decodePoly(polyline);
                                     Log.d(TAG, polyLineList + "");
-                                }
-                                //Adjusting bounds
-                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                                for (LatLng latLng : polyLineList) {
-                                    builder.include(latLng);
-                                }
-                                LatLngBounds bounds = builder.build();
-                                CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 2);
-                                //mMap.animateCamera(mCameraUpdate);
+                                }*/
 
-                                polylineOptions = new PolylineOptions();
-                                polylineOptions.color(Color.GRAY);
-                                polylineOptions.width(5);
-                                polylineOptions.startCap(new SquareCap());
-                                polylineOptions.endCap(new SquareCap());
-                                polylineOptions.jointType(ROUND);
-                                polylineOptions.addAll(polyLineList);
-                                // greyPolyLine = mMap.addPolyline(polylineOptions);
+               /* Double currentLatitude = Double.parseDouble(sourceLatitude);
+                Double currentLongitude = Double.parseDouble(sourceLongitude);
+                polyLineList.add(new LatLng(currentLatitude, currentLongitude));*/
+            try {
 
-                                blackPolylineOptions = new PolylineOptions();
-                                blackPolylineOptions.width(5);
-                                blackPolylineOptions.color(Color.BLACK);
-                                blackPolylineOptions.startCap(new SquareCap());
-                                blackPolylineOptions.endCap(new SquareCap());
-                                blackPolylineOptions.jointType(ROUND);
-                                // blackPolyline = mMap.addPolyline(blackPolylineOptions);
+                //Adjusting bounds
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for (LatLng latLng : polyLineList) {
+                    builder.include(latLng);
+                }
+                LatLngBounds bounds = builder.build();
+                CameraUpdate mCameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 2);
+                //mMap.animateCamera(mCameraUpdate);
 
-                                //destination marker
-                               /* mMap.addMarker(new MarkerOptions()
-                                        .position(polyLineList.get(polyLineList.size() - 1)));*/
-                                //polyline draw with animation
-                               /* ValueAnimator polylineAnimator = ValueAnimator.ofInt(0, 100);
-                                polylineAnimator.setDuration(2000);
-                                polylineAnimator.setInterpolator(new LinearInterpolator());
-                                polylineAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                    @Override
-                                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                        List<LatLng> points = greyPolyLine.getPoints();
-                                        int percentValue = (int) valueAnimator.getAnimatedValue();
-                                        int size = points.size();
-                                        int newPoints = (int) (size * (percentValue / 100.0f));
-                                        List<LatLng> p = points.subList(0, newPoints);
-                                        blackPolyline.setPoints(p);
-                                    }
-                                });
-                                polylineAnimator.start();*/
+                polylineOptions = new PolylineOptions();
+                polylineOptions.color(Color.GRAY);
+                polylineOptions.width(5);
+                polylineOptions.startCap(new SquareCap());
+                polylineOptions.endCap(new SquareCap());
+                polylineOptions.jointType(ROUND);
+                polylineOptions.addAll(polyLineList);
+                // greyPolyLine = mMap.addPolyline(polylineOptions);
 
-                                int height = 140;
-                                int width = 70;
-                                BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.icon_bus);
-                                Bitmap b = bitmapdraw.getBitmap();
-                                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                blackPolylineOptions = new PolylineOptions();
+                blackPolylineOptions.width(5);
+                blackPolylineOptions.color(Color.BLACK);
+                blackPolylineOptions.startCap(new SquareCap());
+                blackPolylineOptions.endCap(new SquareCap());
+                blackPolylineOptions.jointType(ROUND);
 
-                                if (marker == null) {
-                                    marker = mMap.addMarker(new MarkerOptions().position(sydney)
-                                            .flat(true)
-                                            .icon(BitmapDescriptorFactory.fromBitmap((smallMarker))));
-                                }
-                                handler = new Handler();
-                                index = -1;
-                                next = 1;
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
+                int height = 140;
+                int width = 70;
+                BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.icon_bus);
+                Bitmap b = bitmapdraw.getBitmap();
+                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-                                        if (index < polyLineList.size() - 1) {
-                                            index++;
-                                            next = index + 1;
-                                        }
-                                        if (index < polyLineList.size() - 1) {
-                                            startPosition = polyLineList.get(index);
-                                            endPosition = polyLineList.get(next);
-                                        } else {
-                                            handler.removeCallbacks(this::run);
+                if (marker == null) {
+                    marker = mMap.addMarker(new MarkerOptions().position(sydney)
+                            .flat(true)
+                            .icon(BitmapDescriptorFactory.fromBitmap((smallMarker))));
+                }
+                handler = new Handler();
+                index = -1;
+                next = 1;
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-                                            if (demoList.size() - 2 > listCount) {
-                                                listCount++;
-                                                if (demoList.get(listCount) != null) {
-                                                    DemoMap();
-                                                }
-                                            } else {
-                                                setFixMarker();
-                                                isMapMoving = false;
-                                            }
-                                            return;
-                                        }
-
-                                        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-                                        valueAnimator.setDuration(3000);
-                                        valueAnimator.setInterpolator(new LinearInterpolator());
-                                        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                            @Override
-                                            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-
-                                                v = valueAnimator.getAnimatedFraction();
-                                                lng = v * endPosition.longitude + (1 - v)
-                                                        * startPosition.longitude;
-                                                lat = v * endPosition.latitude + (1 - v)
-                                                        * startPosition.latitude;
-                                                LatLng newPos = new LatLng(lat, lng);
-                                                marker.setPosition(newPos);
-                                                marker.setAnchor(0.5f, 0.5f);
-                                                marker.setRotation(getBearing(startPosition, newPos));
-                                                marker.setVisible(true);
-                                                mMap.moveCamera(CameraUpdateFactory
-                                                        .newCameraPosition
-                                                                (new CameraPosition.Builder()
-                                                                        .target(newPos)
-                                                                        .zoom(16.5f)
-                                                                        .build()));
-                                            }
-                                        });
-                                        valueAnimator.start();
-                                        handler.postDelayed(this, 3000);
-                                    }
-                                }, 1000);
-
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
+                        if (index < polyLineList.size() - 1) {
+                            index++;
+                            next = index + 1;
                         }
+                        if (index < polyLineList.size() - 1) {
+                            startPosition = polyLineList.get(index);
+                            endPosition = polyLineList.get(next);
+                        } else {
+                            handler.removeCallbacks(this::run);
+
+                           /* if (polyLineList.size() - 1 > listCount) {
+                                listCount++;
+                                if (polyLineList.get(listCount) != null) {
+                                    DemoMap();
+                                }
+                            } else {*/
+                            setFixMarker();
+                            isMapMoving = false;
+                            //}
+                            return;
+                        }
+
+                        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
+                        valueAnimator.setDuration(3000);
+                        valueAnimator.setInterpolator(new LinearInterpolator());
+                        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+
+                                v = valueAnimator.getAnimatedFraction();
+                                lng = v * endPosition.longitude + (1 - v)
+                                        * startPosition.longitude;
+                                lat = v * endPosition.latitude + (1 - v)
+                                        * startPosition.latitude;
+                                LatLng newPos = new LatLng(lat, lng);
+                                marker.setPosition(newPos);
+                                marker.setAnchor(0.5f, 0.5f);
+                                marker.setRotation(getBearing(startPosition, newPos));
+                                marker.setVisible(true);
+                                mMap.moveCamera(CameraUpdateFactory
+                                        .newCameraPosition
+                                                (new CameraPosition.Builder()
+                                                        .target(newPos)
+                                                        .zoom(16.5f)
+                                                        .build()));
+                            }
+                        });
+                        valueAnimator.start();
+                        handler.postDelayed(this, 3000);
+                    }
+                }, 1000);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+             /*           }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
@@ -604,33 +577,19 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
                 }
             });
             RequestQueue requestQueue = Volley.newRequestQueue(this);
-            requestQueue.add(jsonObjectRequest);
+            requestQueue.add(jsonObjectRequest);*/
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    private void demoLatLong() {
-        demoList = new ArrayList<>();
-       /* demoList.add(new LatLng(18.530745, 73.847019));
-        demoList.add(new LatLng(18.524380, 73.853885));
-        demoList.add(new LatLng(18.520710, 73.855558));
-        demoList.add(new LatLng(18.515342, 73.856266));
-        demoList.add(new LatLng(18.511313, 73.858026));
-        demoList.add(new LatLng(18.500918, 73.858523));
-        if (demoList.size() > 1) {
-            DemoMap(listCount);
-        }*/
-    }
-
-
-    private void updateUI() {
+    private void updateLatestLocation() {
         Log.d(TAG, "UI update initiated .............");
         HashMap<String, Object> hashMap = new HashMap<>();
         long date = System.currentTimeMillis() / 1000;
         String url = String.format(IUrls.URL_GET_BUS_LATEST_LOCATION, date, listRouteType.get(spnRoute.getSelectedItemPosition()).getServerValue(), listTripType.get(spnTripType.getSelectedItemPosition()).getServerValue());
-        CallWebService.getWebserviceObject(MapsActivity.this, true, true, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
+        CallWebService.getWebserviceObject(MapsActivity.this, false, false, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
 
@@ -638,8 +597,12 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
 
             @Override
             public void onResponse(BusLocationsModel object) {
-                demoList.add(object);
-                if (demoList.size() > 1) {
+                //demoList.add(object);
+
+                Double currentLatitude = Double.parseDouble(object.getLatitude());
+                Double currentLongitude = Double.parseDouble(object.getLongitude());
+                polyLineList.add(new LatLng(currentLatitude, currentLongitude));
+                if (polyLineList.size() > 1) {
                     if (!isMapMoving) {
                         DemoMap();
                     }
@@ -667,8 +630,32 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         CallWebService.getWebservice(MapsActivity.this, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
-                demoList.addAll(Arrays.asList(object));
-                if (demoList.size() > 1) {
+               /* for (BusLocationsModel model : object) {
+                    Double currentLatitude = Double.parseDouble(model.getLatitude());
+                    Double currentLongitude = Double.parseDouble(model.getLongitude());
+                    polyLineList.add(new LatLng(currentLatitude, currentLongitude));
+                }
+*/
+                polyLineList.add(new LatLng(18.587772, 73.738075));
+                polyLineList.add(new LatLng(18.588140, 73.738390));
+                polyLineList.add(new LatLng(18.588565, 73.739022));
+                polyLineList.add(new LatLng(18.589171, 73.739457));
+                polyLineList.add(new LatLng(18.589289, 73.739189));
+                polyLineList.add(new LatLng(18.589845, 73.738371));
+                polyLineList.add(new LatLng(18.591013, 73.738792));
+                polyLineList.add(new LatLng(18.591234, 18.591234));
+                polyLineList.add(new LatLng(18.591158, 73.739893));
+                polyLineList.add(new LatLng(18.591012, 73.741908));
+                polyLineList.add(new LatLng(18.591203, 73.743046));
+                polyLineList.add(new LatLng(18.591269, 73.743773));
+                polyLineList.add(new LatLng(18.591199, 73.744569));
+                polyLineList.add(new LatLng(18.590963, 73.746483));
+                polyLineList.add(new LatLng(18.592015, 73.756614));
+                polyLineList.add(new LatLng(18.590204, 73.769079));
+                polyLineList.add(new LatLng(18.590146, 73.772955));
+                polyLineList.add(new LatLng(18.588682, 73.778224));
+                polyLineList.add(new LatLng(18.587209, 73.781719));
+                if (polyLineList.size() > 1) {
                     if (!isMapMoving) {
                         DemoMap();
                     }
@@ -703,7 +690,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         startService(intent);*/
     }
 
-    public ServiceConnection serviceConnection = new ServiceConnection() {
+   /* public ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -718,17 +705,6 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback, 
         public void onServiceDisconnected(ComponentName arg0) {
             bound = false;
         }
-    };
+    };*/
 
-    @Override
-    public void doSomething(BusLocationsModel busLocationsModel) {
-        Log.e("Location Updation", "Updated");
-        demoList.add(busLocationsModel);
-
-        if (demoList.size() > 1) {
-            if (!isMapMoving) {
-                DemoMap();
-            }
-        }
-    }
 }
