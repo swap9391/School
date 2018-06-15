@@ -28,8 +28,7 @@
             <RelativeLayout
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_gravity="center_horizontal"
-                >
+                android:layout_gravity="center_horizontal">
 
                 <ImageView
                     android:id="@+id/img_profile"
@@ -264,22 +263,24 @@
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="7dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Select Blood Group" />
 
-                <EditText
-                    android:id="@+id/edt_student_blood_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Blood Group"
-                    android:imeOptions="actionNext"
-                    android:maxLength="5"
-                    android:maxLines="1"
-                    android:minLines="1"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
+
+            <Spinner
+                android:id="@+id/spinner_blood_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="20dp"></Spinner>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -332,7 +333,6 @@
                     android:minLines="1"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
-
 
 
         </LinearLayout>

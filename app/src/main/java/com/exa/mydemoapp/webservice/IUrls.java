@@ -22,6 +22,7 @@ public interface IUrls {
     String URL_GET_REWARDS = BASE_URL + "student/%1$s/rewards";
     String URL_ADD_EVENTS = BASE_URL + "annual-calender/event";
     String URL_GET_EVENTS = BASE_URL + "annual-calender/event/%1$s/%2$s";
+    String URL_GET_EVENTS_BY_STUDENT = BASE_URL + "annual-calender/event/student/%1$s";
     String URL_ADD_ATTENDANCE = BASE_URL + "attendance";
     String URL_GET_ATTENDANCE_LIST = BASE_URL + "attendance/%1$s/%2$s/%3$s";
     String URL_FIREBASE_REG = BASE_URL + "inserttoken";

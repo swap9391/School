@@ -146,7 +146,7 @@ public class AttendanceCalendarFragment extends Fragment {
 
                 for (DateModel bean : listDate) {
                     if (date.compareTo(bean.getDate()) == 0) {
-                        if (bean.isPresent()) {
+                        if (bean.isPresent().equals("true")) {
                             getMyActivity().showToast("Present");
                         } else {
                             getMyActivity().showToast("Absent");
@@ -227,7 +227,8 @@ public class AttendanceCalendarFragment extends Fragment {
 
     private void getCalenderEvents() {
 
-        String url = String.format(IUrls.URL_GET_EVENTS);
+
+        String url = String.format(IUrls.URL_GET_EVENTS_BY_STUDENT, getMyActivity().getUserModel().getPkeyId());
 
 
         CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, null, new VolleyResponseListener<StudentCalendarModel>() {
@@ -277,7 +278,7 @@ public class AttendanceCalendarFragment extends Fragment {
         ColorDrawable red = new ColorDrawable(getResources().getColor(R.color.caldroid_light_red));
 
         for (DateModel dateModel : listDate) {
-            if (dateModel.isPresent()) {
+            if (dateModel.isPresent().equals("true")) {
                 caldroidFragment.setBackgroundDrawableForDate(green, dateModel.getDate());
             } else {
                 caldroidFragment.setBackgroundDrawableForDate(red, dateModel.getDate());

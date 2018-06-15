@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 public class StudentCalendarModel extends BasicBean implements Serializable {
     private long attendanceDate;
-    private boolean isPresent;
+    private String isPresent;
 
     public long getAttendanceDate() {
         return attendanceDate;
@@ -20,11 +20,11 @@ public class StudentCalendarModel extends BasicBean implements Serializable {
         this.attendanceDate = attendanceDate;
     }
 
-    public boolean isPresent() {
+    public String isPresent() {
         return isPresent;
     }
 
-    public void setPresent(boolean present) {
+    public void setPresent(String present) {
         isPresent = present;
     }
 }

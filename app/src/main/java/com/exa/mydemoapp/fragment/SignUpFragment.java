@@ -82,10 +82,13 @@ public class SignUpFragment extends CommonFragment {
     private List<DropdownMasterModel> listClass;
     private List<DropdownMasterModel> listDivision;
     private List<DropdownMasterModel> listUserType;
+    private List<DropdownMasterModel> listBloodGrp;
     @ViewById(R.id.toolbar)
     public Toolbar toolbar;
     @ViewById(R.id.spinner_school_name)
     private Spinner spnSchoolName;
+    @ViewById(R.id.spinner_blood_group)
+    private Spinner spnBloodGroup;
     @ViewById(R.id.spinner_class_name)
     private Spinner spnClass;
     @ViewById(R.id.spinner_division)
@@ -98,8 +101,6 @@ public class SignUpFragment extends CommonFragment {
     private EditText edtLastName;
     @ViewById(R.id.edt_student_address)
     private EditText edtAddress;
-    @ViewById(R.id.edt_student_blood_group)
-    private EditText edtBloodGrp;
     @ViewById(R.id.edt_student_username)
     private EditText edtUsername;
     @ViewById(R.id.edt_contact_number)
@@ -162,6 +163,12 @@ public class SignUpFragment extends CommonFragment {
         userTypeadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnUserType.setAdapter(userTypeadapter);
         userTypeadapter.notifyDataSetChanged();
+
+        listBloodGrp = getMyActivity().getDbInvoker().getDropDownByType("BLOODGROUP");
+        ArrayAdapter<DropdownMasterModel> bloodGrpAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listBloodGrp);
+        bloodGrpAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnBloodGroup.setAdapter(bloodGrpAdapter);
+        bloodGrpAdapter.notifyDataSetChanged();
 
         txtClassName.setVisibility(View.GONE);
         txtDivision.setVisibility(View.GONE);
@@ -273,10 +280,17 @@ public class SignUpFragment extends CommonFragment {
         int classPostion = 0;
         int divisionPosition = 0;
         int userTypePosition = 0;
+        int bloodGrpPosition = 0;
 
         for (int i = 0; i < listSchool.size(); i++) {
             if (listSchool.get(i).equals(userModel.getUserInfoModel().getSchoolName())) {
                 schoolPostion = i;
+                break;
+            }
+        }
+        for (int i = 0; i < listBloodGrp.size(); i++) {
+            if (listBloodGrp.get(i).equals(userModel.getUserInfoModel().getBloodGroup())) {
+                bloodGrpPosition = i;
                 break;
             }
         }
@@ -304,13 +318,13 @@ public class SignUpFragment extends CommonFragment {
         spnSchoolName.setSelection(schoolPostion);
         spnDivision.setSelection(divisionPosition);
         spnUserType.setSelection(userTypePosition);
+        spnBloodGroup.setSelection(bloodGrpPosition);
         edtFirstName.setText(userModel.getFirstName());
         edtMiddleName.setText(userModel.getMiddleName());
         edtLastName.setText(userModel.getLastName());
         edtEmail.setText(userModel.getEmail());
         edtContactNumber.setText(userModel.getContactNumber());
         edtAddress.setText(userModel.getUserInfoModel().getAddress());
-        edtBloodGrp.setText(userModel.getUserInfoModel().getBloodGroup());
         edtUsername.setText(userModel.getUsername());
         edtSpeciality.setText(userModel.getUserInfoModel().getSpeciality());
         edtQualification.setText(userModel.getUserInfoModel().getQualification());
@@ -353,11 +367,11 @@ public class SignUpFragment extends CommonFragment {
         userModel.setMiddleName(edtMiddleName.getText().toString().trim());
         userModel.setLastName(edtLastName.getText().toString().trim());
         userModel.getUserInfoModel().setAddress(edtAddress.getText().toString().trim());
-        userModel.getUserInfoModel().setBloodGroup(edtBloodGrp.getText().toString().trim());
         userModel.setUsername(edtUsername.getText().toString().trim());
         userModel.setContactNumber(edtContactNumber.getText().toString().trim());
         userModel.setEmail(edtEmail.getText().toString().trim());
         userModel.getUserInfoModel().setSchoolName(listSchool.get(spnSchoolName.getSelectedItemPosition()));
+        userModel.getUserInfoModel().setBloodGroup(listBloodGrp.get(spnBloodGroup.getSelectedItemPosition()).getServerValue());
         if (userModel.getUserType().equals(Constants.USER_TYPE_STUDENT) || userModel.getUserType().equals(Constants.USER_TYPE_TEACHER)) {
             userModel.getUserInfoModel().setClassName(listClass.get(spnClass.getSelectedItemPosition()).getServerValue());
             userModel.getUserInfoModel().setDivisionName(listDivision.get(spnDivision.getSelectedItemPosition()).getServerValue());

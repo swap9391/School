@@ -634,13 +634,12 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         CallWebService.getWebservice(MapsActivity.this, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
-               /* for (BusLocationsModel model : object) {
+                for (BusLocationsModel model : object) {
                     Double currentLatitude = Double.parseDouble(model.getLatitude());
                     Double currentLongitude = Double.parseDouble(model.getLongitude());
                     polyLineList.add(new LatLng(currentLatitude, currentLongitude));
                 }
-*/
-                polyLineList.add(new LatLng(18.587772, 73.738075));
+          /*      polyLineList.add(new LatLng(18.587772, 73.738075));
                 polyLineList.add(new LatLng(18.588140, 73.738390));
                 polyLineList.add(new LatLng(18.588565, 73.739022));
                 polyLineList.add(new LatLng(18.589171, 73.739457));
@@ -658,7 +657,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                 polyLineList.add(new LatLng(18.590204, 73.769079));
                 polyLineList.add(new LatLng(18.590146, 73.772955));
                 polyLineList.add(new LatLng(18.588682, 73.778224));
-                polyLineList.add(new LatLng(18.587209, 73.781719));
+                polyLineList.add(new LatLng(18.587209, 73.781719));*/
                 if (polyLineList.size() > 1) {
                     if (!isMapMoving) {
                         DemoMap();
