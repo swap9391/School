@@ -227,9 +227,7 @@ public class AttendanceCalendarFragment extends Fragment {
 
     private void getCalenderEvents() {
 
-
-        String url = String.format(IUrls.URL_GET_EVENTS_BY_STUDENT, getMyActivity().getUserModel().getPkeyId());
-
+        String url = String.format(IUrls.URL_GET_ATTENDANCE_BY_STUDENT, getMyActivity().getUserModel().getPkeyId());
 
         CallWebService.getWebservice(getMyActivity(), Request.Method.GET, url, null, new VolleyResponseListener<StudentCalendarModel>() {
             @Override
