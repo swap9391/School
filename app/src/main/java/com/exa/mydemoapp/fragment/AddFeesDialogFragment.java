@@ -429,7 +429,7 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
         if (feesInstallmentsModel2.getInstallmentDate() <= 0) {
             feesInstallmentsModel2.setInstallmentDate(Calendar.getInstance().getTimeInMillis());
         }
-        if (chkPaid1.isChecked()) {
+        if (chkPaid2.isChecked()) {
             feesInstallmentsModel2.setPaymentStatus("PAID");
         } else {
             feesInstallmentsModel2.setPaymentStatus("UNPAID");
