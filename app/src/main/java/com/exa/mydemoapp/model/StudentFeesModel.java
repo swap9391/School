@@ -1,6 +1,7 @@
 package com.exa.mydemoapp.model;
 
 import com.exa.mydemoapp.database.BasicBean;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ public class StudentFeesModel extends BasicBean implements Serializable {
     private double totalFees;
     private double pendingFees;
     private String noOfInstallments;
+    @SerializedName("installments")
+    private List<FeesInstallmentsModel> listInstallments = new ArrayList<>();
 
     public String getStudentId() {
         return studentId;
@@ -55,5 +58,13 @@ public class StudentFeesModel extends BasicBean implements Serializable {
 
     public void setNoOfInstallments(String noOfInstallments) {
         this.noOfInstallments = noOfInstallments;
+    }
+
+    public List<FeesInstallmentsModel> getListInstallments() {
+        return listInstallments;
+    }
+
+    public void setListInstallments(List<FeesInstallmentsModel> listInstallments) {
+        this.listInstallments = listInstallments;
     }
 }

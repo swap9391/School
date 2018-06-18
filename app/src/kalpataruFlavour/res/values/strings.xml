@@ -76,7 +76,7 @@
         <item>@string/dashboard_annual</item>
         <item>@string/dashboard_reward</item>
         <item>@string/dashboard_bus_loc</item>
-        <!--<item>@string/dashboard_fees</item>-->
+        <item>@string/dashboard_fees</item>
         <item>@string/dashboard_contact_us</item>
     </string-array>
 
@@ -100,7 +100,7 @@
         <item>@drawable/ic_add_event</item>
         <item>@drawable/ic_rewards</item>
         <item>@drawable/icon_bus_location</item>
-     <!--   <item>@drawable/ic_fees</item>-->
+        <item>@drawable/ic_fees</item>
         <item>@drawable/ic_contact_us</item>
     </integer-array>
 
@@ -118,7 +118,7 @@
         <item>@string/dashboard_community</item>
         <item>@string/dashboard_staff</item>
         <item>@string/dashboard_bus_loc</item>
-     <!--   <item>@string/dashboard_fees</item>-->
+        <item>@string/dashboard_fees</item>
         <item>@string/dashboard_contact_us</item>
     </string-array>
 
@@ -133,7 +133,7 @@
         <item>@drawable/ic_community</item>
         <item>@drawable/ic_teacher</item>
         <item>@drawable/icon_bus_location</item>
-      <!--  <item>@drawable/ic_fees</item>-->
+        <item>@drawable/ic_fees</item>
         <item>@drawable/ic_contact_us</item>
     </integer-array>
 

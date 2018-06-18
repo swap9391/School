@@ -72,6 +72,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -634,11 +635,17 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
         CallWebService.getWebservice(MapsActivity.this, Request.Method.GET, url, hashMap, new VolleyResponseListener<BusLocationsModel>() {
             @Override
             public void onResponse(BusLocationsModel[] object) {
-                for (BusLocationsModel model : object) {
+
+                List<BusLocationsModel> locationsModelList = new ArrayList<>();
+                locationsModelList = Arrays.asList(object);
+                Collections.sort(locationsModelList);
+
+                for (BusLocationsModel model : locationsModelList) {
                     Double currentLatitude = Double.parseDouble(model.getLatitude());
                     Double currentLongitude = Double.parseDouble(model.getLongitude());
                     polyLineList.add(new LatLng(currentLatitude, currentLongitude));
                 }
+
           /*      polyLineList.add(new LatLng(18.587772, 73.738075));
                 polyLineList.add(new LatLng(18.588140, 73.738390));
                 polyLineList.add(new LatLng(18.588565, 73.739022));

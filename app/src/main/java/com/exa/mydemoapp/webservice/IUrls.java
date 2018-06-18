@@ -36,4 +36,5 @@ public interface IUrls {
     String URL_GET_FEES = BASE_URL + "fees/%1$s";
     String URL_ADD_HOMEWORK = BASE_URL + "homework";
     String URL_GET_HOMEWORK = BASE_URL + "homework/%1$s";
+    String URL_ADD_FEES=BASE_URL+"student/%1$s/fees";
 }

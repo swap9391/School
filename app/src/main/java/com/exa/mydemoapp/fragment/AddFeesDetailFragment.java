@@ -1,33 +1,27 @@
 package com.exa.mydemoapp.fragment;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.annotation.ViewById;
-import com.exa.mydemoapp.model.DailyHomeworkModel;
 import com.exa.mydemoapp.model.DropdownMasterModel;
+import com.exa.mydemoapp.model.FeesInstallmentsModel;
 import com.exa.mydemoapp.model.StudentFeesModel;
 import com.exa.mydemoapp.model.StudentModel;
 import com.exa.mydemoapp.webservice.CallWebService;
-import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 
@@ -61,15 +55,14 @@ public class AddFeesDetailFragment extends CommonFragment {
     @ViewById(R.id.spinner_fees_type)
     private Spinner spnFeesType;
     private List<DropdownMasterModel> listFees;
-
-
     StudentFeesModel studentFeesModel;
-
     private List<DropdownMasterModel> listClass;
     private List<DropdownMasterModel> listDivision;
     private List<StudentModel> listStudent;
     boolean apiFlag = false;
-
+    @ViewById(R.id.btn_next)
+    private Button btnNext;
+    List<FeesInstallmentsModel> feesInstallmentsModels;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,8 +77,9 @@ public class AddFeesDetailFragment extends CommonFragment {
         getMyActivity().toolbar.setTitle(getStringById(R.string.title_add_fees));
         getMyActivity().init();
         initViewBinding(view);
-
+        feesInstallmentsModels = new ArrayList<>();
         studentFeesModel = new StudentFeesModel();
+        btnNext.setOnClickListener(new OnNextClick(feesInstallmentsModels));
         if (getMyActivity().getUserModel().getUserType().equals(Constants.USER_TYPE_ADMIN)) {
             txtClassName.setVisibility(View.VISIBLE);
             spnClass.setVisibility(View.VISIBLE);
@@ -174,57 +168,12 @@ public class AddFeesDetailFragment extends CommonFragment {
             getMyActivity().showToast(getStringById(R.string.valid_student_name));
             return false;
         }
-        if (studentFeesModel.getTotalFees() > 0.0) {
+        if (studentFeesModel.getTotalFees() <= 0.0) {
             getMyActivity().showToast(getStringById(R.string.valid_total_amount));
             return false;
         }
         return true;
     }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO Add your menu entries here
-        inflater.inflate(R.menu.menu_save_info, menu);
-        menu.findItem(R.id.action_gallery).setVisible(false);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_save:
-                try {
-                    AlertDialog.Builder builder = getMyActivity().showAlertDialog(getMyActivity(), getString(R.string.app_name), getString(R.string.save_msg));
-                    builder.setPositiveButton(getString(R.string.dialog_button_save), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            bindModel();
-                            if (check()) {
-                                save();
-                            }
-                        }
-                    }).setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-
-                        }
-                    }).show();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-
-                break;
-            case R.id.action_gallery:
-                getMyActivity().showFragment(new NewsFeedFragment(), null);
-                break;
-
-        }
-        return true;
-    }
-
 
     public void getStudent(String classId, String divisionId) {
         if (!apiFlag) {
@@ -272,34 +221,23 @@ public class AddFeesDetailFragment extends CommonFragment {
         }
     }
 
-    private void save() {
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put(IJson.studentId, studentFeesModel.getStudentId());
-        hashMap.put(IJson.totalFees, studentFeesModel.getTotalFees());
-        hashMap.put(IJson.noOfInstallments, studentFeesModel.getNoOfInstallments());
-        CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, IUrls.URL_ADD_HOMEWORK, hashMap, new VolleyResponseListener<DailyHomeworkModel>() {
-            @Override
-            public void onResponse(DailyHomeworkModel[] object) {
-            }
+    private class OnNextClick implements View.OnClickListener {
+        List<FeesInstallmentsModel> feesInstallmentsModels;
 
-            @Override
-            public void onResponse(DailyHomeworkModel studentData) {
-                getMyActivity().showFragment(new DashboardFragment(), null);
-            }
+        public OnNextClick(List<FeesInstallmentsModel> feesInstallmentsModels) {
+            this.feesInstallmentsModels = feesInstallmentsModels;
+        }
 
-            @Override
-            public void onResponse() {
-                getMyActivity().showFragment(new DashboardFragment(), null);
+        @Override
+        public void onClick(View v) {
+            bindModel();
+            if (check()) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("FEESMODEL", studentFeesModel);
+                getMyActivity().showFragment(new AddFeesDialogFragment(), bundle);
             }
-
-            @Override
-            public void onError(String message) {
-                Toast.makeText(getMyActivity(), message, Toast.LENGTH_SHORT).show();
-            }
-        }, DailyHomeworkModel.class);
-
+        }
     }
-
 
     private HomeActivity getMyActivity() {
         return (HomeActivity) getActivity();

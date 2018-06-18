@@ -132,7 +132,7 @@ public class NewsFeedsAdapter extends RecyclerView.Adapter<NewsFeedsAdapter.MyVi
             holder.mContainer.setVisibility(View.GONE);
         }
 
-        slidingImageAdapter = new SlidingImageAdapter(context, listAlbumChild.get(0).getAlbumImagesModel(), feed);
+        slidingImageAdapter = new SlidingImageAdapter(context, listAlbumChild.get(position).getAlbumImagesModel(), feed);
         holder.mPager.setAdapter(slidingImageAdapter);
 
         holder.indicator.setViewPager(holder.mPager);

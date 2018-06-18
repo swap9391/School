@@ -108,7 +108,7 @@ public class HomeGridAdapter extends BaseAdapter {
                     case "School Facilities":
                         context.setNewsFeedType(context.getStringById(R.string.img_type_facilities));
                         bundle.putString(Constants.FEED, context.getNewsFeedType());
-                        bundle.putString(Constants.FEED_TYPE_NAME, context.getStringById(R.string.title_type_staff));
+                        bundle.putString(Constants.FEED_TYPE_NAME, context.getStringById(R.string.title_type_facilities));
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
                     case "Calendar":

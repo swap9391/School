@@ -86,29 +86,17 @@ public class FeesAdapter extends RecyclerView.Adapter<FeesAdapter.MyViewHolder> 
         holder.txtInstallmentDate.setText(CommonUtils.formatDateForDisplay(new Date(selectedItem.getInstallmentDate()), Constants.ONLY_DATE_FORMAT));
         holder.txtInstallmentAmount.setText(context.getString(R.string.Rs) + " " + selectedItem.getInstallmentAmount());
         holder.txtPaymentMode.setText(selectedItem.getPaymentMode());
-        holder.txtPaymentStatus.setText(selectedItem.getIsPaid().equals("true") ? "Paid" : "Unpaid");
-        if (!selectedItem.getIsPaid().equals("true")) {
+        holder.txtPaymentStatus.setText(selectedItem.getPaymentStatus().equals("PAID") ? "Paid" : "Unpaid");
+        if (!selectedItem.getPaymentStatus().equals("true")) {
             holder.btnPay.setVisibility(View.VISIBLE);
             holder.btnPay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showFeesDialog(selectedItem);
                 }
             });
         } else {
             holder.btnPay.setVisibility(View.GONE);
         }
-    }
-
-
-    private void showFeesDialog(FeesInstallmentsModel feesInstallmentsModel) {
-        AddFeesDialogFragment dialog = new AddFeesDialogFragment(context, feesInstallmentsModel, null, true, new DialogResultListner() {
-            @Override
-            public void getResult(FeesInstallmentsModel feesInstallmentsModel) {
-
-            }
-        });
-        dialog.show(context.getFragmentManager(), "FeesDialog");
     }
 
 

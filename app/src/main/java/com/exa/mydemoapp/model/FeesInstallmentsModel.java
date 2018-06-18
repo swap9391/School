@@ -15,7 +15,7 @@ public class FeesInstallmentsModel extends BasicBean implements Serializable {
     private double installmentAmount;
     private long installmentDate;
     private String paymentMode;
-    private String isPaid;
+    private String paymentStatus;
     private String chequeBankName;
     private String chequeNo;
     private String chequeImage;
@@ -63,12 +63,12 @@ public class FeesInstallmentsModel extends BasicBean implements Serializable {
         this.paymentMode = paymentMode;
     }
 
-    public String getIsPaid() {
-        return isPaid;
+    public String getPaymentStatus() {
+        return paymentStatus;
     }
 
-    public void setIsPaid(String isPaid) {
-        this.isPaid = isPaid;
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public String getChequeBankName() {

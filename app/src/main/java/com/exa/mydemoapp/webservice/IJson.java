@@ -87,4 +87,5 @@ public interface IJson {
     //fees
     String totalFees="totalFees";
     String noOfInstallments="noOfInstallments";
+    String installments="installments";
 }
