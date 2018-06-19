@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <TextView
+        android:id="@+id/txtBalance2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/caldroid_light_red" />
+
+    <TextView
+        android:id="@+id/lblInstallmentType2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:text="Second Installment"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/lblPaymentMode2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:text="Select Payment Mode" />
+
+    <Spinner
+        android:id="@+id/spinner_payment_mode2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"></Spinner>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/edt_cheque_bank2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter bank name"
+            android:inputType="text"
+            android:maxLength="20"
+            android:maxLines="1"
+            android:minLines="1"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/edt_cheque_number2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter cheque number"
+            android:inputType="text"
+            android:maxLength="20"
+            android:maxLines="1"
+            android:minLines="1"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/edt_installment_amount2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter installment amount"
+            android:inputType="number"
+            android:maxLength="8"
+            android:maxLines="1"
+            android:minLines="1"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/date_picker_installment2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:drawableRight="@drawable/ic_calender"
+        android:text="Select Next Payment Date"
+
+        />
+
+    <CheckBox
+        android:id="@+id/chk_paid2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:checked="false"
+        android:text="Paid" />
+
+
+    <TextView
+        android:id="@+id/lblChequeImg2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal"
+        android:text="Capture Cheque Photo" />
+
+    <ImageView
+        android:id="@+id/img_cheque2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="7dp"
+        android:src="@drawable/defualt_album_icon" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/caldroid_gray"
+        ></View>
+
+
+</LinearLayout>
