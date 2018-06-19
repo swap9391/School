@@ -178,7 +178,6 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
             studentFeesModel = (StudentFeesModel) bundle.getSerializable("FEESMODEL");
         }
 
-
         listPaymentMode = getMyActivity().getDbInvoker().getDropDownByType("PAYMENTMODE");
         ArrayAdapter<DropdownMasterModel> paymentModeAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listPaymentMode);
         paymentModeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -268,6 +267,14 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
         imgCheque3.setOnClickListener(this);
         datePickerInvest3.setOnClickListener(this);
 
+
+        if (studentFeesModel.getNoOfInstallments().equals("1")) {
+            hideInstallment2();
+            hideInstallment3();
+        } else if (studentFeesModel.getNoOfInstallments().equals("2")) {
+            hideInstallment3();
+        }
+
         return view;
     }
 
@@ -301,8 +308,11 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "LEFT");
         values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
-        imageUri = getMyActivity().getContentResolver().insert(
+        uri = getMyActivity().getContentResolver().insert(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        imageUri1 = uri;
+        imageUri2 = uri;
+        imageUri3 = uri;
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(intent, req);
@@ -412,6 +422,7 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
         feesInstallmentsModel1.setInstallmentAmount(CommonUtils.asDouble(edtInstallmentAmount1.getText().toString()));
         feesInstallmentsModel1.setChequeNo(edtChequeNumber1.getText().toString());
         feesInstallmentsModel1.setChequeBankName(edtBankName1.getText().toString());
+        feesInstallmentsModel1.setInstallmentNo("1");
         if (feesInstallmentsModel1.getInstallmentDate() <= 0) {
             feesInstallmentsModel1.setInstallmentDate(Calendar.getInstance().getTimeInMillis());
         }
@@ -422,32 +433,36 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
         }
 
         //Installment 2
-        feesInstallmentsModel2.setPaymentMode(spnPaymentMode2.getSelectedItem().toString());
-        feesInstallmentsModel2.setInstallmentAmount(CommonUtils.asDouble(edtInstallmentAmount2.getText().toString()));
-        feesInstallmentsModel2.setChequeNo(edtChequeNumber2.getText().toString());
-        feesInstallmentsModel2.setChequeBankName(edtBankName2.getText().toString());
-        if (feesInstallmentsModel2.getInstallmentDate() <= 0) {
-            feesInstallmentsModel2.setInstallmentDate(Calendar.getInstance().getTimeInMillis());
+        if (studentFeesModel.getNoOfInstallments().equals("2") || studentFeesModel.getNoOfInstallments().equals("3")) {
+            feesInstallmentsModel2.setPaymentMode(spnPaymentMode2.getSelectedItem().toString());
+            feesInstallmentsModel2.setInstallmentAmount(CommonUtils.asDouble(edtInstallmentAmount2.getText().toString()));
+            feesInstallmentsModel2.setChequeNo(edtChequeNumber2.getText().toString());
+            feesInstallmentsModel2.setChequeBankName(edtBankName2.getText().toString());
+            feesInstallmentsModel2.setInstallmentNo("2");
+            if (feesInstallmentsModel2.getInstallmentDate() <= 0) {
+                feesInstallmentsModel2.setInstallmentDate(Calendar.getInstance().getTimeInMillis());
+            }
+            if (chkPaid2.isChecked()) {
+                feesInstallmentsModel2.setPaymentStatus("PAID");
+            } else {
+                feesInstallmentsModel2.setPaymentStatus("UNPAID");
+            }
         }
-        if (chkPaid2.isChecked()) {
-            feesInstallmentsModel2.setPaymentStatus("PAID");
-        } else {
-            feesInstallmentsModel2.setPaymentStatus("UNPAID");
-        }
-
-
-        //Installment 3
-        feesInstallmentsModel3.setPaymentMode(spnPaymentMode3.getSelectedItem().toString());
-        feesInstallmentsModel3.setInstallmentAmount(CommonUtils.asDouble(edtInstallmentAmount3.getText().toString()));
-        feesInstallmentsModel3.setChequeNo(edtChequeNumber3.getText().toString());
-        feesInstallmentsModel3.setChequeBankName(edtBankName3.getText().toString());
-        if (feesInstallmentsModel3.getInstallmentDate() <= 0) {
-            feesInstallmentsModel3.setInstallmentDate(Calendar.getInstance().getTimeInMillis());
-        }
-        if (chkPaid3.isChecked()) {
-            feesInstallmentsModel3.setPaymentStatus("PAID");
-        } else {
-            feesInstallmentsModel3.setPaymentStatus("UNPAID");
+        if (studentFeesModel.getNoOfInstallments().equals("3")) {
+            //Installment 3
+            feesInstallmentsModel3.setPaymentMode(spnPaymentMode3.getSelectedItem().toString());
+            feesInstallmentsModel3.setInstallmentAmount(CommonUtils.asDouble(edtInstallmentAmount3.getText().toString()));
+            feesInstallmentsModel3.setChequeNo(edtChequeNumber3.getText().toString());
+            feesInstallmentsModel3.setChequeBankName(edtBankName3.getText().toString());
+            feesInstallmentsModel3.setInstallmentNo("3");
+            if (feesInstallmentsModel3.getInstallmentDate() <= 0) {
+                feesInstallmentsModel3.setInstallmentDate(Calendar.getInstance().getTimeInMillis());
+            }
+            if (chkPaid3.isChecked()) {
+                feesInstallmentsModel3.setPaymentStatus("PAID");
+            } else {
+                feesInstallmentsModel3.setPaymentStatus("UNPAID");
+            }
         }
     }
 
@@ -482,65 +497,67 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
         }
 
         //installment 2
-
-        if (feesInstallmentsModel2.getInstallmentNo() == null && feesInstallmentsModel2.getInstallmentNo().isEmpty()) {
-            getMyActivity().showToast("Please select installment type of installment 2");
-            return false;
+        if (studentFeesModel.getNoOfInstallments().equals("2") || studentFeesModel.getNoOfInstallments().equals("3")) {
+            if (feesInstallmentsModel2.getInstallmentNo() == null && feesInstallmentsModel2.getInstallmentNo().isEmpty()) {
+                getMyActivity().showToast("Please select installment type of installment 2");
+                return false;
+            }
+            if (feesInstallmentsModel2.getPaymentMode() == null && feesInstallmentsModel2.getPaymentMode().isEmpty()) {
+                getMyActivity().showToast("Please select payment mode of installment 2");
+                return false;
+            }
+            if (feesInstallmentsModel2.getInstallmentAmount() <= 0) {
+                getMyActivity().showToast("Please enter installment amount of installment 2");
+                return false;
+            }
+            if (feesInstallmentsModel2.getInstallmentNo() != null
+                    && feesInstallmentsModel2.getInstallmentNo().equals("Cheque")
+                    && feesInstallmentsModel2.getChequeBankName() == null
+                    && feesInstallmentsModel2.getChequeBankName().isEmpty()
+                    ) {
+                getMyActivity().showToast("Please enter bank name of installment 2");
+                return false;
+            }
+            if (feesInstallmentsModel2.getInstallmentNo() != null
+                    && feesInstallmentsModel2.getInstallmentNo().equals("Cheque")
+                    && feesInstallmentsModel2.getChequeNo() == null
+                    && feesInstallmentsModel2.getChequeNo().isEmpty()
+                    ) {
+                getMyActivity().showToast("Please enter cheque number of installment 2");
+                return false;
+            }
         }
-        if (feesInstallmentsModel2.getPaymentMode() == null && feesInstallmentsModel2.getPaymentMode().isEmpty()) {
-            getMyActivity().showToast("Please select payment mode of installment 2");
-            return false;
-        }
-        if (feesInstallmentsModel2.getInstallmentAmount() <= 0) {
-            getMyActivity().showToast("Please enter installment amount of installment 2");
-            return false;
-        }
-        if (feesInstallmentsModel2.getInstallmentNo() != null
-                && feesInstallmentsModel2.getInstallmentNo().equals("Cheque")
-                && feesInstallmentsModel2.getChequeBankName() == null
-                && feesInstallmentsModel2.getChequeBankName().isEmpty()
-                ) {
-            getMyActivity().showToast("Please enter bank name of installment 2");
-            return false;
-        }
-        if (feesInstallmentsModel2.getInstallmentNo() != null
-                && feesInstallmentsModel2.getInstallmentNo().equals("Cheque")
-                && feesInstallmentsModel2.getChequeNo() == null
-                && feesInstallmentsModel2.getChequeNo().isEmpty()
-                ) {
-            getMyActivity().showToast("Please enter cheque number of installment 2");
-            return false;
-        }
-
         //installment 3
 
-        if (feesInstallmentsModel3.getInstallmentNo() == null && feesInstallmentsModel3.getInstallmentNo().isEmpty()) {
-            getMyActivity().showToast("Please select installment type of installment 3");
-            return false;
-        }
-        if (feesInstallmentsModel3.getPaymentMode() == null && feesInstallmentsModel3.getPaymentMode().isEmpty()) {
-            getMyActivity().showToast("Please select payment mode of installment 3");
-            return false;
-        }
-        if (feesInstallmentsModel3.getInstallmentAmount() <= 0) {
-            getMyActivity().showToast("Please enter installment amount of installment 3");
-            return false;
-        }
-        if (feesInstallmentsModel3.getInstallmentNo() != null
-                && feesInstallmentsModel3.getInstallmentNo().equals("Cheque")
-                && feesInstallmentsModel3.getChequeBankName() == null
-                && feesInstallmentsModel3.getChequeBankName().isEmpty()
-                ) {
-            getMyActivity().showToast("Please enter bank name of installment 3");
-            return false;
-        }
-        if (feesInstallmentsModel3.getInstallmentNo() != null
-                && feesInstallmentsModel3.getInstallmentNo().equals("Cheque")
-                && feesInstallmentsModel3.getChequeNo() == null
-                && feesInstallmentsModel3.getChequeNo().isEmpty()
-                ) {
-            getMyActivity().showToast("Please enter cheque number of installment 3");
-            return false;
+        if (studentFeesModel.getNoOfInstallments().equals("3")) {
+            if (feesInstallmentsModel3.getInstallmentNo() == null && feesInstallmentsModel3.getInstallmentNo().isEmpty()) {
+                getMyActivity().showToast("Please select installment type of installment 3");
+                return false;
+            }
+            if (feesInstallmentsModel3.getPaymentMode() == null && feesInstallmentsModel3.getPaymentMode().isEmpty()) {
+                getMyActivity().showToast("Please select payment mode of installment 3");
+                return false;
+            }
+            if (feesInstallmentsModel3.getInstallmentAmount() <= 0) {
+                getMyActivity().showToast("Please enter installment amount of installment 3");
+                return false;
+            }
+            if (feesInstallmentsModel3.getInstallmentNo() != null
+                    && feesInstallmentsModel3.getInstallmentNo().equals("Cheque")
+                    && feesInstallmentsModel3.getChequeBankName() == null
+                    && feesInstallmentsModel3.getChequeBankName().isEmpty()
+                    ) {
+                getMyActivity().showToast("Please enter bank name of installment 3");
+                return false;
+            }
+            if (feesInstallmentsModel3.getInstallmentNo() != null
+                    && feesInstallmentsModel3.getInstallmentNo().equals("Cheque")
+                    && feesInstallmentsModel3.getChequeNo() == null
+                    && feesInstallmentsModel3.getChequeNo().isEmpty()
+                    ) {
+                getMyActivity().showToast("Please enter cheque number of installment 3");
+                return false;
+            }
         }
         return true;
     }
@@ -785,9 +802,19 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
     };
 
     private void save() {
-        list.add(feesInstallmentsModel1);
-        list.add(feesInstallmentsModel2);
-        list.add(feesInstallmentsModel3);
+        if (studentFeesModel.getNoOfInstallments().equals("1")) {
+            feesInstallmentsModel2 = new FeesInstallmentsModel();
+            feesInstallmentsModel3 = new FeesInstallmentsModel();
+            list.add(feesInstallmentsModel1);
+        } else if (studentFeesModel.getNoOfInstallments().equals("2")) {
+            list.add(feesInstallmentsModel1);
+            list.add(feesInstallmentsModel2);
+        } else {
+            list.add(feesInstallmentsModel1);
+            list.add(feesInstallmentsModel2);
+            list.add(feesInstallmentsModel3);
+        }
+
         studentFeesModel.getListInstallments().addAll(list);
 
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -863,6 +890,32 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
                 break;
         }
         return true;
+    }
+
+    private void hideInstallment2() {
+        txtInstallmentType2.setVisibility(View.GONE);
+        txtPaymentMode2.setVisibility(View.GONE);
+        txtChequeImage2.setVisibility(View.GONE);
+        spnPaymentMode2.setVisibility(View.GONE);
+        edtInstallmentAmount2.setVisibility(View.GONE);
+        datePickerInvest2.setVisibility(View.GONE);
+        edtBankName2.setVisibility(View.GONE);
+        edtChequeNumber2.setVisibility(View.GONE);
+        imgCheque2.setVisibility(View.GONE);
+        chkPaid2.setVisibility(View.GONE);
+    }
+
+    private void hideInstallment3() {
+        txtInstallmentType3.setVisibility(View.GONE);
+        txtPaymentMode3.setVisibility(View.GONE);
+        txtChequeImage3.setVisibility(View.GONE);
+        spnPaymentMode3.setVisibility(View.GONE);
+        edtInstallmentAmount3.setVisibility(View.GONE);
+        datePickerInvest3.setVisibility(View.GONE);
+        edtBankName3.setVisibility(View.GONE);
+        edtChequeNumber3.setVisibility(View.GONE);
+        imgCheque3.setVisibility(View.GONE);
+        chkPaid3.setVisibility(View.GONE);
     }
 
 

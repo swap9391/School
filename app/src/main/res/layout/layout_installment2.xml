@@ -64,7 +64,6 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="7dp"
         android:gravity="center">
 
         <EditText
@@ -74,6 +73,7 @@
             android:hint="Enter cheque number"
             android:inputType="text"
             android:maxLength="20"
+            android:layout_margin="7dp"
             android:maxLines="1"
             android:minLines="1"
             android:singleLine="true" />
@@ -83,7 +83,6 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="7dp"
         android:gravity="center">
 
         <EditText
@@ -93,6 +92,7 @@
             android:hint="Enter installment amount"
             android:inputType="number"
             android:maxLength="8"
+            android:layout_margin="7dp"
             android:maxLines="1"
             android:minLines="1"
             android:singleLine="true" />

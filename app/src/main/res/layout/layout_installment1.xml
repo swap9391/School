@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
+
     <TextView
         android:id="@+id/txtBalance1"
         android:layout_width="match_parent"
@@ -22,8 +22,7 @@
         android:layout_marginTop="5dp"
         android:text="First Installment"
         android:textSize="20sp"
-        android:textStyle="bold"
-        />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/lblPaymentMode1"
@@ -46,13 +45,13 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="7dp"
         android:gravity="center">
 
         <EditText
             android:id="@+id/edt_cheque_bank1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="7dp"
             android:hint="Enter bank name"
             android:inputType="text"
             android:maxLength="20"
@@ -64,13 +63,13 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="7dp"
         android:gravity="center">
 
         <EditText
             android:id="@+id/edt_cheque_number1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="7dp"
             android:hint="Enter cheque number"
             android:inputType="text"
             android:maxLength="20"
@@ -142,8 +141,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/caldroid_gray"
-        ></View>
+        android:background="@color/caldroid_gray"></View>
 
 
 </LinearLayout>

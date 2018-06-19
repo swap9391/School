@@ -30,6 +30,8 @@ import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.database.Database;
 import com.exa.mydemoapp.database.DbInvoker;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
+import com.exa.mydemoapp.fragment.AddFeesDetailFragment;
+import com.exa.mydemoapp.fragment.AddFeesDialogFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
 import com.exa.mydemoapp.fragment.AttendanceCalendarFragment;
@@ -103,6 +105,8 @@ public class HomeActivity extends CommonActivity {
     public AttendanceCalendarFragment attendanceCalendarFragment;
     public ViewFullImageFullViewFragment viewFullImageFullViewFragment;
     public HomeWorkListFragment homeWorkListFragment;
+    public AddFeesDialogFragment addFeesDialogFragment;
+    public AddFeesDetailFragment addFeesDetailFragment;
     public ChooseAttendance chooseAttendance;
     public List<AlbumMasterModel> listAlbumChild = new ArrayList<AlbumMasterModel>();
     public boolean isGallery = true;
@@ -302,6 +306,12 @@ public class HomeActivity extends CommonActivity {
         } else if (viewFullImageFullViewFragment != null && viewFullImageFullViewFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(new HomeWorkListFragment(), null);
+        } else if (addFeesDetailFragment != null && addFeesDetailFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
+        } else if (addFeesDialogFragment != null && addFeesDialogFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(addFeesDetailFragment, null);
         } else {
             exitDialog();
         }
@@ -347,6 +357,9 @@ public class HomeActivity extends CommonActivity {
         attendanceCalendarFragment = new AttendanceCalendarFragment();
         viewFullImageFullViewFragment = new ViewFullImageFullViewFragment();
         homeWorkListFragment = new HomeWorkListFragment();
+        addFeesDialogFragment = new AddFeesDialogFragment();
+        addFeesDetailFragment = new AddFeesDetailFragment();
+
     }
 
     public List<AlbumMasterModel> getListAlbumChild() {
@@ -395,8 +408,9 @@ public class HomeActivity extends CommonActivity {
             builder.setPositiveButton(getStringById(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                    System.exit(0);
+                    moveTaskToBack(true);
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                    System.exit(1);
                 }
             }).setNegativeButton(getStringById(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
