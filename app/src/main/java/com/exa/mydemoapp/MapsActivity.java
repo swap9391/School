@@ -603,6 +603,7 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
 
                 if (flagEmptyList) {
                     polyLineList = new ArrayList<>();
+                    flagEmptyList = false;
                 }
                 Double currentLatitude = Double.parseDouble(object.getLatitude());
                 Double currentLongitude = Double.parseDouble(object.getLongitude());
@@ -611,7 +612,13 @@ public class MapsActivity extends CommonActivity implements OnMapReadyCallback {
                     if (!isMapMoving) {
                         DemoMap();
                     }
+                } else {
+                    lat = polyLineList.get(0).latitude;
+                    lng = polyLineList.get(0).longitude;
+                    setFixMarker();
                 }
+
+
             }
 
             @Override
