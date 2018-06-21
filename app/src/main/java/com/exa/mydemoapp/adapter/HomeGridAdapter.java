@@ -17,6 +17,7 @@ import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.MapsActivity;
 import com.exa.mydemoapp.R;
 import com.exa.mydemoapp.fragment.AboutSchoolFragment;
+import com.exa.mydemoapp.fragment.AddFeesDetailFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
 import com.exa.mydemoapp.fragment.AttendanceCalendarFragment;
@@ -167,7 +168,7 @@ public class HomeGridAdapter extends BaseAdapter {
                         break;
                     case "Fees Structure":
                         if (userType.equals(Constants.USER_TYPE_ADMIN)) {
-                            context.showFragment(new UpdateFeesFragment(), null);
+                            context.showFragment(new AddFeesDetailFragment(), null);
                         } else {
                             context.showFragment(new FeeStructureFragment(), null);
                         }
