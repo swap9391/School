@@ -64,7 +64,7 @@ public class HomeWorkListFragment extends CommonFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_homework_list, container, false);
-        getMyActivity().toolbar.setTitle(getString(R.string.dashboard_upload));
+        getMyActivity().toolbar.setTitle(getString(R.string.dashboard_homework_list));
         getMyActivity().init();
         initViewBinding(view);
 

@@ -8,9 +8,11 @@ public interface IUrls {
     //String BASE_URL = "http://192.168.0.104:8080/SchoolServices/";
     // String BASE_URL = "http://kalpatarukids.com:8080/klpschoolservices/";
     String S3_BASE_URL = "https://s3.ap-south-1.amazonaws.com/kk2018photos/";
-    String BASE_URL = "http://app.kalpatarukids.com:8080/kalpatarukidsdev/api/secure/";
-    String BASE_URL1 = "http://app.kalpatarukids.com:8080/kalpatarukidsdev/api/";
-    String SIGN_UP = BASE_URL1 + "signup";
+    String BASE_URL = "http://demo.kalpatarukids.com/kalpatarukids/api/secure/";
+    String BASE_URL1 = "http://demo.kalpatarukids.com/kalpatarukids/api/";
+    /*   String BASE_URL = "http://app.kalpatarukids.com:8080/kalpatarukidsdev/api/secure/";
+       String BASE_URL1 = "http://app.kalpatarukids.com:8080/kalpatarukidsdev/api/";
+    */ String SIGN_UP = BASE_URL1 + "signup";
     String UPDATE_USER = BASE_URL + "users/%1$s";
     //   String URL_LOGIN = BASE_URL + "login";
     String URL_LOGIN = BASE_URL1 + "signin";
@@ -33,8 +35,8 @@ public interface IUrls {
     String URL_ADD_BUS_LOCATION = BASE_URL + "bus-location/";
     String URL_GET_BUS_LOCATION_LIST = BASE_URL + "bus-location/list/%1$s/%2$s/%3$s";
     String URL_GET_BUS_LATEST_LOCATION = BASE_URL + "bus-location/%1$s/%2$s/%3$s/latest/";
-    String URL_GET_FEES = BASE_URL + "fees/%1$s";
+    String URL_GET_FEES = BASE_URL + "student/%1$s/fees";
     String URL_ADD_HOMEWORK = BASE_URL + "homework";
     String URL_GET_HOMEWORK = BASE_URL + "homework/%1$s";
-    String URL_ADD_FEES=BASE_URL+"student/%1$s/fees";
+    String URL_ADD_FEES = BASE_URL + "student/%1$s/fees";
 }

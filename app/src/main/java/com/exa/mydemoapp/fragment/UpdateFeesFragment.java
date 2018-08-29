@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -47,7 +48,6 @@ public class UpdateFeesFragment extends CommonFragment {
     public FeesAdapter mAdapter;
     @ViewById(R.id.recyclerView)
     private RecyclerView recyclerView;
-
     private List<DropdownMasterModel> listClass;
     private List<DropdownMasterModel> listDivision;
     private List<StudentModel> listStudent;
@@ -66,7 +66,9 @@ public class UpdateFeesFragment extends CommonFragment {
     private View view;
     private List<FeesInstallmentsModel> listFees;
     boolean apiFlag = false;
-
+    StudentFeesModel studentFeesModel;
+    @ViewById(R.id.lay_admin)
+    LinearLayout layAdmin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,8 +81,15 @@ public class UpdateFeesFragment extends CommonFragment {
         view = inflater.inflate(R.layout.update_fees_structure, container, false);
         initViewBinding(view);
         setHasOptionsMenu(true);
+        getMyActivity().getToolbar().setTitle("Fee Structure");
         listFees = new ArrayList<>();
+        studentFeesModel = new StudentFeesModel();
         cardView.setVisibility(View.GONE);
+        if (getMyActivity().getUserModel().getUserType().equalsIgnoreCase(Constants.USER_TYPE_STUDENT)) {
+            getFeesForStudent();
+        }
+
+
         listClass = getMyActivity().getDbInvoker().getDropDownExceptValue("CLASSTYPE", "All");
         ArrayAdapter<DropdownMasterModel> classAdapter = new ArrayAdapter<>(getMyActivity(), android.R.layout.simple_spinner_item, listClass);
         classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -134,6 +143,11 @@ public class UpdateFeesFragment extends CommonFragment {
         });
 
         return view;
+    }
+
+    private void getFeesForStudent() {
+        layAdmin.setVisibility(View.GONE);
+        getFees(getMyActivity().getUserModel().getPkeyId());
     }
 
     public void getStudent(String classId, String divisionId) {
@@ -190,8 +204,6 @@ public class UpdateFeesFragment extends CommonFragment {
             CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.GET, url, hashMap, new VolleyResponseListener<StudentFeesModel>() {
                 @Override
                 public void onResponse(StudentFeesModel[] object) {
-
-
                 }
 
                 @Override
@@ -201,7 +213,8 @@ public class UpdateFeesFragment extends CommonFragment {
                 @Override
                 public void onResponse(StudentFeesModel object) {
                     apiFlag = false;
-
+                    studentFeesModel = object;
+                    cardView.setVisibility(View.VISIBLE);
                     edtTotalFees.setText("" + object.getTotalFees());
                     edtNoOfFees.setText("" + object.getNoOfInstallments());
                     initAdapter();
@@ -221,7 +234,7 @@ public class UpdateFeesFragment extends CommonFragment {
 
 
     private void initAdapter() {
-        mAdapter = new FeesAdapter(listFees, getMyActivity());
+        mAdapter = new FeesAdapter(studentFeesModel.getListInstallments(), getMyActivity(), studentFeesModel);
         LinearLayoutManager mLayoutManager =
                 new LinearLayoutManager(getMyActivity());
         recyclerView.setLayoutManager(mLayoutManager);

@@ -20,14 +20,11 @@ import com.exa.mydemoapp.fragment.AboutSchoolFragment;
 import com.exa.mydemoapp.fragment.AlbumViewFragment;
 import com.exa.mydemoapp.fragment.AnnualEventFragment;
 import com.exa.mydemoapp.fragment.AttendanceCalendarFragment;
-import com.exa.mydemoapp.fragment.AttendanceFragment;
 import com.exa.mydemoapp.fragment.CalenderViewFragment;
 import com.exa.mydemoapp.fragment.ChooseAttendance;
 import com.exa.mydemoapp.fragment.CommunityFragment;
 import com.exa.mydemoapp.fragment.ContactUsFragment;
 import com.exa.mydemoapp.fragment.EventListFragment;
-import com.exa.mydemoapp.fragment.FeeStructureFragment;
-import com.exa.mydemoapp.fragment.HomeWorkFragment;
 import com.exa.mydemoapp.fragment.HomeWorkListFragment;
 import com.exa.mydemoapp.fragment.NewsFeedFragment;
 import com.exa.mydemoapp.fragment.PagerFragment;
@@ -35,7 +32,6 @@ import com.exa.mydemoapp.fragment.RewardsPointsFragment;
 import com.exa.mydemoapp.fragment.StaffInfoFragment;
 import com.exa.mydemoapp.fragment.UpdateFeesFragment;
 import com.exa.mydemoapp.fragment.UploadPhotoFragment;
-import com.exa.mydemoapp.fragment.UsersListFragment;
 
 /**
  * Created by midt-006 on 13/11/17.
@@ -111,7 +107,7 @@ public class HomeGridAdapter extends BaseAdapter {
                         bundle.putString(Constants.FEED_TYPE_NAME, context.getStringById(R.string.title_type_facilities));
                         context.showFragment(new NewsFeedFragment(), bundle);
                         break;
-                    case "Calendar":
+                    case "Annual Calendar":
                         context.showFragment(new CalenderViewFragment(), null);
                         break;
                     case "Photo Gallery":
@@ -166,11 +162,7 @@ public class HomeGridAdapter extends BaseAdapter {
                         context.showFragment(new PagerFragment(), null);
                         break;
                     case "Fees Structure":
-                        if (userType.equals(Constants.USER_TYPE_ADMIN)) {
                             context.showFragment(new UpdateFeesFragment(), null);
-                        } else {
-                            context.showFragment(new FeeStructureFragment(), null);
-                        }
                         break;
                     case "Bus Location":
                         Intent intent1 = new Intent(context, MapsActivity.class);

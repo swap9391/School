@@ -13,6 +13,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/lay_admin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
 
             <TextView
                 android:layout_width="match_parent"
@@ -67,7 +73,7 @@
                 android:layout_marginRight="10dp"
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp"></Spinner>
-
+            </LinearLayout>
             <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/layCard"
                 android:layout_width="match_parent"

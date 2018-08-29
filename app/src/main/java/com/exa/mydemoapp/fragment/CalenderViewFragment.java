@@ -132,7 +132,7 @@ public class CalenderViewFragment extends Fragment {
             @Override
             public void onSelectDate(Date date, View view) {
 
-                List<String> eventList= new ArrayList<>();
+                List<String> eventList = new ArrayList<>();
 
                 for (DateModel bean : listDate) {
                     if (date.compareTo(bean.getDate()) == 0) {
@@ -326,6 +326,7 @@ public class CalenderViewFragment extends Fragment {
 
             @Override
             public void onError(String message) {
+                getMyActivity().showToast(message);
             }
         }, AnnualCalenderMasterModel[].class);
 

@@ -168,10 +168,7 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
         getMyActivity().toolbar.setTitle(getStringById(R.string.title_add_fees));
         getMyActivity().init();
         initViewBinding(view);
-        list = new ArrayList<>();
-        feesInstallmentsModel1 = new FeesInstallmentsModel();
-        feesInstallmentsModel2 = new FeesInstallmentsModel();
-        feesInstallmentsModel3 = new FeesInstallmentsModel();
+
         studentFeesModel = new StudentFeesModel();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -275,34 +272,122 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
             hideInstallment3();
         }
 
+
+        if (studentFeesModel.getListInstallments().size() == 1) {
+            feesInstallmentsModel1 = studentFeesModel.getListInstallments().get(0);
+            bindEditView1();
+        } else if (studentFeesModel.getListInstallments().size() == 2) {
+            feesInstallmentsModel1 = studentFeesModel.getListInstallments().get(0);
+            feesInstallmentsModel2 = studentFeesModel.getListInstallments().get(1);
+            bindEditView1();
+            bindEditView2();
+        } else if (studentFeesModel.getListInstallments().size() == 3) {
+            feesInstallmentsModel1 = studentFeesModel.getListInstallments().get(0);
+            feesInstallmentsModel2 = studentFeesModel.getListInstallments().get(1);
+            feesInstallmentsModel3 = studentFeesModel.getListInstallments().get(2);
+            bindEditView1();
+            bindEditView2();
+            bindEditView3();
+        } else {
+            feesInstallmentsModel1 = new FeesInstallmentsModel();
+            feesInstallmentsModel2 = new FeesInstallmentsModel();
+            feesInstallmentsModel3 = new FeesInstallmentsModel();
+        }
+
+
         return view;
     }
 
 
+    private void bindEditView1() {
+        int paymentTypePos = 0;
+        for (int i = 0; i < listPaymentMode.size(); i++) {
+            if (listPaymentMode.get(i).getServerValue().equals(feesInstallmentsModel1.getPaymentMode())) {
+                paymentTypePos = i;
+                break;
+            }
+        }
 
-    /*private void bindView(FeesInstallmentsModel feesInstallmentsModel) {
-        txtPaymentMode.setText("Payment Mode :" + feesInstallmentsModel.getPaymentMode());
-        if (feesInstallmentsModel.getInstallmentNo().equals("Cheque")) {
-            edtBankName.setText(feesInstallmentsModel.getChequeBankName());
-            edtChequeNumber.setText(feesInstallmentsModel.getChequeNo());
-            txtChequeImage.setVisibility(View.VISIBLE);
+        spnPaymentMode1.setSelection(paymentTypePos);
+        edtBankName1.setText(feesInstallmentsModel1.getChequeBankName() == null ? "" : feesInstallmentsModel1.getChequeBankName());
+        edtChequeNumber1.setText(feesInstallmentsModel1.getChequeNo() == null ? "" : feesInstallmentsModel1.getChequeNo());
+        if (feesInstallmentsModel1.getChequeImage() != null)
             Glide.with(this)
-                    .load(feesInstallmentsModel.getChequeImage())
+                    .load(feesInstallmentsModel1.getChequeImage())
                     .asBitmap()
                     .placeholder(R.drawable.defualt_album_icon)
                     .error(R.drawable.defualt_album_icon)
                     .override(300, 300)
                     .fitCenter()
-                    .into(imgCheque);
-        }
-        edtInstallmentAmount.setText(feesInstallmentsModel.getInstallmentAmount() + "");
-        if (feesInstallmentsModel.getPaymentStatus().equals("PAID")) {
-            chkPaid.setChecked(true);
+                    .into(imgCheque1);
+        edtInstallmentAmount1.setText(feesInstallmentsModel1.getInstallmentAmount() + "");
+        if (feesInstallmentsModel1.getPaymentStatus().equalsIgnoreCase("PAID")) {
+            chkPaid1.setChecked(true);
         } else {
-            chkPaid.setChecked(false);
+            chkPaid1.setChecked(false);
+        }
+        datePickerInvest1.setText(CommonUtils.formatDateForDisplay(new Date(feesInstallmentsModel1.getInstallmentDate()), Constants.ONLY_DATE_FORMAT));
+    }
+
+    private void bindEditView2() {
+        int paymentTypePos = 0;
+        for (int i = 0; i < listPaymentMode.size(); i++) {
+            if (listPaymentMode.get(i).getServerValue().equals(feesInstallmentsModel2.getPaymentMode())) {
+                paymentTypePos = i;
+                break;
+            }
         }
 
-    }*/
+        spnPaymentMode2.setSelection(paymentTypePos);
+        edtBankName2.setText(feesInstallmentsModel2.getChequeBankName() == null ? "" : feesInstallmentsModel2.getChequeBankName());
+        edtChequeNumber2.setText(feesInstallmentsModel2.getChequeNo() == null ? "" : feesInstallmentsModel2.getChequeNo());
+        if (feesInstallmentsModel2.getChequeImage() != null)
+            Glide.with(this)
+                    .load(feesInstallmentsModel2.getChequeImage())
+                    .asBitmap()
+                    .placeholder(R.drawable.defualt_album_icon)
+                    .error(R.drawable.defualt_album_icon)
+                    .override(300, 300)
+                    .fitCenter()
+                    .into(imgCheque2);
+        edtInstallmentAmount2.setText(feesInstallmentsModel2.getInstallmentAmount() + "");
+        if (feesInstallmentsModel2.getPaymentStatus().equalsIgnoreCase("PAID")) {
+            chkPaid2.setChecked(true);
+        } else {
+            chkPaid2.setChecked(false);
+        }
+        datePickerInvest2.setText(CommonUtils.formatDateForDisplay(new Date(feesInstallmentsModel2.getInstallmentDate()), Constants.ONLY_DATE_FORMAT));
+    }
+
+    private void bindEditView3() {
+        int paymentTypePos = 0;
+        for (int i = 0; i < listPaymentMode.size(); i++) {
+            if (listPaymentMode.get(i).getServerValue().equals(feesInstallmentsModel3.getPaymentMode())) {
+                paymentTypePos = i;
+                break;
+            }
+        }
+
+        spnPaymentMode3.setSelection(paymentTypePos);
+        edtBankName3.setText(feesInstallmentsModel3.getChequeBankName() == null ? "" : feesInstallmentsModel3.getChequeBankName());
+        edtChequeNumber3.setText(feesInstallmentsModel3.getChequeNo() == null ? "" : feesInstallmentsModel3.getChequeNo());
+        if (feesInstallmentsModel3.getChequeImage() != null)
+            Glide.with(this)
+                    .load(feesInstallmentsModel3.getChequeImage())
+                    .asBitmap()
+                    .placeholder(R.drawable.defualt_album_icon)
+                    .error(R.drawable.defualt_album_icon)
+                    .override(300, 300)
+                    .fitCenter()
+                    .into(imgCheque3);
+        edtInstallmentAmount3.setText(feesInstallmentsModel3.getInstallmentAmount() + "");
+        if (feesInstallmentsModel3.getPaymentStatus().equalsIgnoreCase("PAID")) {
+            chkPaid3.setChecked(true);
+        } else {
+            chkPaid3.setChecked(false);
+        }
+        datePickerInvest3.setText(CommonUtils.formatDateForDisplay(new Date(feesInstallmentsModel3.getInstallmentDate()), Constants.ONLY_DATE_FORMAT));
+    }
 
     private void startCamera(int req, Uri uri) {
         ContentValues values = new ContentValues();
@@ -802,11 +887,13 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
     };
 
     private void save() {
+        list = new ArrayList<>();
         if (studentFeesModel.getNoOfInstallments().equals("1")) {
             feesInstallmentsModel2 = new FeesInstallmentsModel();
             feesInstallmentsModel3 = new FeesInstallmentsModel();
             list.add(feesInstallmentsModel1);
         } else if (studentFeesModel.getNoOfInstallments().equals("2")) {
+            feesInstallmentsModel3 = new FeesInstallmentsModel();
             list.add(feesInstallmentsModel1);
             list.add(feesInstallmentsModel2);
         } else {
@@ -815,17 +902,23 @@ public class AddFeesDialogFragment extends CommonFragment implements View.OnClic
             list.add(feesInstallmentsModel3);
         }
 
-        studentFeesModel.getListInstallments().addAll(list);
 
         HashMap<String, Object> hashMap = new HashMap<>();
+        int method;
+        if (studentFeesModel.getPkeyId() != null) {
+            hashMap.put(IJson.id, studentFeesModel.getPkeyId());
+            method = Request.Method.PUT;
+        } else {
+            method = Request.Method.POST;
+        }
         hashMap.put(IJson.studentId, studentFeesModel.getStudentId());
         hashMap.put(IJson.totalFees, studentFeesModel.getTotalFees());
         hashMap.put(IJson.noOfInstallments, studentFeesModel.getNoOfInstallments());
-        hashMap.put(IJson.installments, studentFeesModel.getListInstallments());
+        hashMap.put(IJson.installments, list);
 
         String url = String.format(IUrls.URL_ADD_FEES, studentFeesModel.getStudentId());
 
-        CallWebService.getWebserviceObject(getMyActivity(), true, true, Request.Method.POST, url, hashMap, new VolleyResponseListener<StudentFeesModel>() {
+        CallWebService.getWebserviceObject(getMyActivity(), true, true, method, url, hashMap, new VolleyResponseListener<StudentFeesModel>() {
             @Override
             public void onResponse(StudentFeesModel[] object) {
             }

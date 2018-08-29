@@ -43,6 +43,8 @@ public class ViewFullImageFullViewFragment extends CommonFragment {
         Bundle bundle = getArguments();
         setHasOptionsMenu(true);
 
+        getMyActivity().getToolbar().setTitle("Image");
+
         String path = bundle.getString(Constants.IMAGE_PATH);
         progressBar.setVisibility(View.VISIBLE);
         Glide.with(getMyActivity()).load(path)

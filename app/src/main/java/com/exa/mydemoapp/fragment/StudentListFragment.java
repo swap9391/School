@@ -83,6 +83,7 @@ public class StudentListFragment extends CommonFragment {
         inflater.inflate(R.menu.menu_save_info, menu);
         menu.findItem(R.id.action_gallery).setVisible(false);
         menu.findItem(R.id.action_save).setIcon(R.drawable.ic_plus);
+        //menu.findItem(R.id.action_gallery).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
 
     }

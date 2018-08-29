@@ -16,14 +16,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.android.volley.Request;
-import com.exa.mydemoapp.Common.AppController;
 import com.exa.mydemoapp.Common.CommonActivity;
 import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
@@ -60,7 +58,6 @@ import com.exa.mydemoapp.fragment.ViewFullImageFullViewFragment;
 import com.exa.mydemoapp.model.AlbumMasterModel;
 import com.exa.mydemoapp.model.DropdownMasterModel;
 import com.exa.mydemoapp.model.FirebaseRegistrationModel;
-import com.exa.mydemoapp.model.OtpMasterModel;
 import com.exa.mydemoapp.model.UserModel;
 import com.exa.mydemoapp.tracker.TrackerService;
 import com.exa.mydemoapp.webservice.CallWebService;
@@ -68,7 +65,6 @@ import com.exa.mydemoapp.webservice.IJson;
 import com.exa.mydemoapp.webservice.IUrls;
 import com.exa.mydemoapp.webservice.VolleyResponseListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -294,6 +290,9 @@ public class HomeActivity extends CommonActivity {
         } else if (homeWorkFragment != null && homeWorkFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
+        } else if (staffInfoFragment != null && staffInfoFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
+            showFragment(dashboardFragment, null);
         } else if (chooseAttendance != null && chooseAttendance.getClass() == currentFragment.getClass()) {
             showToolbar();
             showFragment(dashboardFragment, null);
@@ -308,10 +307,13 @@ public class HomeActivity extends CommonActivity {
             showFragment(new HomeWorkListFragment(), null);
         } else if (addFeesDetailFragment != null && addFeesDetailFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
+            showFragment(updateFeesFragment, null);
+        } else if (updateFeesFragment != null && updateFeesFragment.getClass() == currentFragment.getClass()) {
+            showToolbar();
             showFragment(dashboardFragment, null);
         } else if (addFeesDialogFragment != null && addFeesDialogFragment.getClass() == currentFragment.getClass()) {
             showToolbar();
-            showFragment(addFeesDetailFragment, null);
+            showFragment(updateFeesFragment, null);
         } else {
             exitDialog();
         }

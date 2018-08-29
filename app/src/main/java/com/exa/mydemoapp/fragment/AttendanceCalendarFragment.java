@@ -276,7 +276,7 @@ public class AttendanceCalendarFragment extends Fragment {
         ColorDrawable red = new ColorDrawable(getResources().getColor(R.color.caldroid_light_red));
 
         for (DateModel dateModel : listDate) {
-            if (dateModel.isPresent().equals("true")) {
+            if (dateModel.isPresent().equalsIgnoreCase("true")) {
                 caldroidFragment.setBackgroundDrawableForDate(green, dateModel.getDate());
             } else {
                 caldroidFragment.setBackgroundDrawableForDate(red, dateModel.getDate());

@@ -93,7 +93,6 @@
         <item>@drawable/ic_manage_users</item>
         <item>@drawable/ic_upload_photo</item>
         <item>@drawable/ic_attendance</item>
-
         <!--  <item>@drawable/ic_annual_calender</item>
          -->
         <item>@drawable/ic_homework</item>
@@ -107,18 +106,14 @@
 
     <string-array name="nameForSudent">
         <item>@string/dashboard_about_school</item>
-        <!-- <item>@string/dashboard_homework_list</item>-->
         <item>@string/dashboard_facilities</item>
         <item>@string/dashboard_calender</item>
         <item>@string/dashboard_image_gallery</item>
         <item>@string/dashboard_homework_list</item>
-        <!--<item>@string/dashboard_archiv</item>-->
-        <item>@string/dashboard_blog</item>
-        <item>@string/dashboard_news</item>
-        <item>@string/dashboard_community</item>
-        <item>@string/dashboard_staff</item>
-        <item>@string/dashboard_bus_loc</item>
+        <item>@string/dashboard_attendance</item>
         <item>@string/dashboard_fees</item>
+        <item>@string/dashboard_news</item>
+        <item>@string/dashboard_staff</item>
         <item>@string/dashboard_contact_us</item>
     </string-array>
 
@@ -128,12 +123,10 @@
         <item>@drawable/ic_annual_calender</item>
         <item>@drawable/ic_gallery</item>
         <item>@drawable/ic_homework</item>
-        <item>@drawable/ic_blog</item>
-        <item>@drawable/ic_news_feed</item>
-        <item>@drawable/ic_community</item>
-        <item>@drawable/ic_teacher</item>
-        <item>@drawable/icon_bus_location</item>
+        <item>@drawable/ic_attendance</item>
         <item>@drawable/ic_fees</item>
+        <item>@drawable/ic_news_feed</item>
+        <item>@drawable/ic_teacher</item>
         <item>@drawable/ic_contact_us</item>
     </integer-array>
 
@@ -208,7 +201,7 @@
     <string name="dashboard_about_school">About School</string>
     <string name="dashboard_home">Home</string>
     <string name="dashboard_facilities">School Facilities</string>
-    <string name="dashboard_calender">Calendar</string>
+    <string name="dashboard_calender">Annual Calendar</string>
     <string name="dashboard_image_gallery">Photo Gallery</string>
     <string name="dashboard_archiv">Achievements</string>
     <string name="dashboard_blog">Blog</string>
@@ -271,7 +264,7 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="exit_sign_up">Do you want to move to home screen !</string>
     <string name="text_guest_user">Guest User</string>
     <string name="text_device_type">Android</string>
-    <string name="text_hint_password">Ente Password</string>
+    <string name="text_hint_password">Enter Password</string>
     <string name="text_hint_username">Enter User Name</string>
     <string name="valid_user_name">Please enter user name</string>
     <string name="valid_password">Please enter password</string>
@@ -327,5 +320,5 @@ With a strong focus on imparting quality education, Kalpataru Kids has an effect
     <string name="valid_event_name">Please enter event name</string>
     <string name="valid_event_date">Please select event date</string>
     <string name="valid_event_type">Please select event type</string>
-<string name="title_add_fees">Add Fees</string>
+    <string name="title_add_fees">Add Fees</string>
 </resources>

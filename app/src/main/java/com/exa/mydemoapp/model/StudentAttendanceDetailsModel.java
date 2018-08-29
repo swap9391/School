@@ -16,6 +16,15 @@ public class StudentAttendanceDetailsModel extends BasicBean implements Serializ
     @SerializedName("studentOut")
     private String isOut;
     private String studentName;
+    private boolean isChecked = true;
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 
     public String getAttendanceId() {
         return attendanceId;

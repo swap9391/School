@@ -36,8 +36,10 @@ public class DashboardFragment extends CommonFragment {
     public String[] nameForAdmin;
     public TypedArray imagesForAdmin;
 
-    public String[] nameForStudent;
+    public String[] nameForTeacher;
+    public TypedArray imagesForTeacher;
 
+    public String[] nameForStudent;
     public TypedArray imagesForStudent;
 
     public String[] nameForGuest;
@@ -81,6 +83,8 @@ public class DashboardFragment extends CommonFragment {
             String userType = CommonUtils.getSharedPref(Constants.USER_TYPE, getMyActivity());
             if (userType.equals(Constants.USER_TYPE_ADMIN)) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForAdmin, imagesForAdmin));
+            } else if (userType.equals(Constants.USER_TYPE_TEACHER)) {
+                gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForTeacher, imagesForTeacher));
             } else if (userType.equals(Constants.USER_TYPE_STUDENT)) {
                 gridview.setAdapter(new HomeGridAdapter(getMyActivity(), nameForStudent, imagesForStudent));
             } else if (userType.equals(Constants.USER_TYPE_DRIVER)) {

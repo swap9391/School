@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.exa.mydemoapp.Common.CommonUtils;
 import com.exa.mydemoapp.Common.Constants;
 import com.exa.mydemoapp.HomeActivity;
 import com.exa.mydemoapp.R;
@@ -157,8 +158,10 @@ public class AddFeesDetailFragment extends CommonFragment {
 
 
     private void bindModel() {
-        studentFeesModel.setStudentId(listStudent.get(spnStudent.getSelectedItemPosition()).getPkeyId());
-        studentFeesModel.setTotalFees(Double.parseDouble(etTotalAmount.getText().toString().trim()));
+        if (spnStudent.getVisibility()==View.VISIBLE){
+            studentFeesModel.setStudentId(listStudent.get(spnStudent.getSelectedItemPosition()).getPkeyId());
+        }
+        studentFeesModel.setTotalFees(CommonUtils.asDouble(etTotalAmount.getText().toString().trim(),0.0) );
         studentFeesModel.setNoOfInstallments(listFees.get(spnFeesType.getSelectedItemPosition()).getServerValue());
     }
 

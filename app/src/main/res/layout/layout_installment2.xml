@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
+
     <TextView
         android:id="@+id/txtBalance2"
         android:layout_width="match_parent"
@@ -22,8 +22,7 @@
         android:layout_marginTop="5dp"
         android:text="Second Installment"
         android:textSize="20sp"
-        android:textStyle="bold"
-        />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/lblPaymentMode2"
@@ -61,42 +60,29 @@
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <EditText
+        android:id="@+id/edt_cheque_number2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:layout_margin="7dp"
+        android:hint="Enter cheque number"
+        android:inputType="text"
+        android:maxLength="20"
+        android:maxLines="1"
+        android:minLines="1"
+        android:singleLine="true" />
 
-        <EditText
-            android:id="@+id/edt_cheque_number2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter cheque number"
-            android:inputType="text"
-            android:maxLength="20"
-            android:layout_margin="7dp"
-            android:maxLines="1"
-            android:minLines="1"
-            android:singleLine="true" />
-    </android.support.design.widget.TextInputLayout>
-
-
-    <android.support.design.widget.TextInputLayout
+    <EditText
+        android:id="@+id/edt_installment_amount2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
-
-        <EditText
-            android:id="@+id/edt_installment_amount2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter installment amount"
-            android:inputType="number"
-            android:maxLength="8"
-            android:layout_margin="7dp"
-            android:maxLines="1"
-            android:minLines="1"
-            android:singleLine="true" />
-    </android.support.design.widget.TextInputLayout>
+        android:layout_margin="7dp"
+        android:hint="Enter installment amount"
+        android:inputType="number"
+        android:maxLength="8"
+        android:maxLines="1"
+        android:minLines="1"
+        android:singleLine="true" />
 
     <Button
         android:id="@+id/date_picker_installment2"
@@ -143,8 +129,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/caldroid_gray"
-        ></View>
+        android:background="@color/caldroid_gray"></View>
 
 
 </LinearLayout>

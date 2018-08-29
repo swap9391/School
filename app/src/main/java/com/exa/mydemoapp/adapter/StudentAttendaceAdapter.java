@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -43,7 +44,7 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
         private TextView txtAttendanceStatus;
         private TextView txtInOutStatus;
         private LinearLayout linearLayout;
-        private CheckBox chkAttendance;
+        private ImageView chkAttendance;
 
 
         public MyViewHolder(View view) {
@@ -52,7 +53,7 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
             txtAttendanceStatus = (TextView) view.findViewById(R.id.txt_attendance_status);
             txtInOutStatus = (TextView) view.findViewById(R.id.txt_inout_status);
             linearLayout = (LinearLayout) view.findViewById(R.id.relativeLayout);
-            chkAttendance = (CheckBox) view.findViewById(R.id.btn_checkbox);
+            chkAttendance = (ImageView) view.findViewById(R.id.btn_checkbox);
             linearLayout.setOnClickListener(this);
         }
 
@@ -79,10 +80,8 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         StudentAttendanceDetailsModel selectedItem = listUser.get(position);
-        DbInvoker dbInvoker = new DbInvoker(context);
 
         holder.txtName.setText(selectedItem.getStudentName());
-        // StudentAttendanceModel bean = listUser.get(lastCheckedPosition);
 
         if (!flagCheckDisable) {
             holder.chkAttendance.setVisibility(View.GONE);
@@ -92,21 +91,19 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
 
         if (selectedItem.getIsPresent() != null && selectedItem.getIsPresent().equals("true")) {
             holder.txtInOutStatus.setText("IN");
-            holder.chkAttendance.setChecked(true);
+            holder.chkAttendance.setImageResource(R.drawable.ic_check_box);
         }
         if (selectedItem.getIsOut() != null && selectedItem.getIsOut().equals("true")) {
             holder.txtInOutStatus.setText("OUT");
         }
 
 
-        if (selectedItem.getIsPresent() != null && selectedItem.getIsPresent().equals("true")) {
-            holder.chkAttendance.setChecked(true);
+        if (selectedItem.isChecked() && selectedItem.getIsPresent() != null && selectedItem.getIsPresent().equals("true")) {
+            holder.chkAttendance.setImageResource(R.drawable.ic_check_box);
         } else if (selectedItem.getIsPresent() != null && selectedItem.getIsPresent().equals("false")) {
-            holder.chkAttendance.setChecked(false);
-        } else {
-            holder.chkAttendance.setChecked(true);
+            holder.chkAttendance.setImageResource(R.drawable.ic_uncheck);
         }
-        if (holder.chkAttendance.isChecked()) {
+        if (selectedItem.isChecked() && holder.chkAttendance.getDrawable().getConstantState() == context.getResources().getDrawable(R.drawable.ic_check_box).getConstantState()) {
             lastCheckedPosition = position;
             holder.txtAttendanceStatus.setText("Present");
             attendanceListner.present(selectedItem, position);
@@ -120,31 +117,35 @@ public class StudentAttendaceAdapter extends RecyclerView.Adapter<StudentAttenda
             @Override
             public void onClick(View v) {
                 lastCheckedPosition = position;
-                if (!holder.chkAttendance.isChecked()) {
-                    holder.chkAttendance.setChecked(true);
+                if (holder.chkAttendance.getDrawable().getConstantState() == context.getResources().getDrawable(R.drawable.ic_uncheck).getConstantState()) {
+                    holder.chkAttendance.setImageResource(R.drawable.ic_check_box);
+                    holder.txtAttendanceStatus.setText("Present");
+                    attendanceListner.present(selectedItem, position);
                 } else {
-                    holder.chkAttendance.setChecked(false);
+                    holder.chkAttendance.setImageResource(R.drawable.ic_uncheck);
+                    holder.txtAttendanceStatus.setText("Absent");
+                    attendanceListner.absent(selectedItem, position);
                 }
-                // notifyDataSetChanged();
-
             }
         });
 
-        holder.chkAttendance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*holder.chkAttendance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 lastCheckedPosition = position;
                 if (isChecked) {
                     holder.txtAttendanceStatus.setText("Present");
                     attendanceListner.present(selectedItem, position);
+                    listUser.get(position).setChecked(true);
                 } else {
                     holder.txtAttendanceStatus.setText("Absent");
                     attendanceListner.absent(selectedItem, position);
+                    listUser.get(position).setChecked(false);
                 }
                 // notifyDataSetChanged();
             }
         });
-
+*/
 
     }
 

@@ -5,6 +5,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -47,6 +50,7 @@ public class StaffInfoFragment extends CommonFragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.layout_gallery, container, false);
         getMyActivity().toolbar.setTitle("Staff Information");
+        setHasOptionsMenu(true);
         getMyActivity().init();
         initViewBinding(view);
         getTeacherList();

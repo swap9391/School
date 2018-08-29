@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,6 +45,7 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
         private TextView txtTimeStamp;
         private ImageButton imgEdit;
         private LinearLayout linearLayout;
+        private HorizontalScrollView horizontalScrollView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -54,6 +56,7 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
             txtTimeStamp = (TextView) view.findViewById(R.id.txt_time_stamp);
             linearLayout = (LinearLayout) view.findViewById(R.id.lay1);
             imgEdit = (ImageButton) view.findViewById(R.id.img_edit);
+            horizontalScrollView = (HorizontalScrollView) view.findViewById((R.id.horizontalLayout));
         }
 
         @Override
@@ -98,8 +101,12 @@ public class HomeWorkAdapter extends RecyclerView.Adapter<HomeWorkAdapter.MyView
         }*/
 
         if (selectedItem.getAlbumImagesModel() != null && selectedItem.getAlbumImagesModel().size() > 0) {
+            holder.horizontalScrollView.setVisibility(View.VISIBLE);
+            holder.linearLayout.setVisibility(View.VISIBLE);
             bindView(selectedItem.getAlbumImagesModel(), holder.linearLayout);
+
         } else {
+            holder.horizontalScrollView.setVisibility(View.GONE);
             holder.linearLayout.setVisibility(View.GONE);
         }
 

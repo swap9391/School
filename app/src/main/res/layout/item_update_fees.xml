@@ -139,6 +139,34 @@
                 android:layout_margin="7dp"
                 android:background="@color/colorPrimary"
                 android:text="@string/btn_pay" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/txt_payment_status"
+                android:layout_margin="5dp">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/img_check"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp" />
+
+                    <ProgressBar
+                        android:id="@+id/progress_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:indeterminate="false"
+                        android:visibility="gone"
+
+                        />
+                </FrameLayout>
+            </RelativeLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>
